@@ -8,20 +8,22 @@
 
 /* Begin PBXBuildFile section */
 		4638062D1E5D35DD00BD117F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4638062C1E5D35DD00BD117F /* AppDelegate.swift */; };
-		4638062F1E5D35DD00BD117F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4638062E1E5D35DD00BD117F /* ViewController.swift */; };
+		4638062F1E5D35DD00BD117F /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4638062E1E5D35DD00BD117F /* MainViewController.swift */; };
 		463806321E5D35DD00BD117F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 463806301E5D35DD00BD117F /* Main.storyboard */; };
 		463806341E5D35DD00BD117F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 463806331E5D35DD00BD117F /* Assets.xcassets */; };
 		463806371E5D35DD00BD117F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 463806351E5D35DD00BD117F /* LaunchScreen.storyboard */; };
+		463806401E5D3C5C00BD117F /* EditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4638063F1E5D3C5C00BD117F /* EditViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		463806291E5D35DD00BD117F /* Checkitout.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Checkitout.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4638062C1E5D35DD00BD117F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		4638062E1E5D35DD00BD117F /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		4638062E1E5D35DD00BD117F /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		463806311E5D35DD00BD117F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		463806331E5D35DD00BD117F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		463806361E5D35DD00BD117F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		463806381E5D35DD00BD117F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4638063F1E5D3C5C00BD117F /* EditViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,14 +56,23 @@
 		4638062B1E5D35DD00BD117F /* Checkitout */ = {
 			isa = PBXGroup;
 			children = (
+				4638063E1E5D3BFB00BD117F /* AudioSample */,
 				4638062C1E5D35DD00BD117F /* AppDelegate.swift */,
-				4638062E1E5D35DD00BD117F /* ViewController.swift */,
+				4638062E1E5D35DD00BD117F /* MainViewController.swift */,
 				463806301E5D35DD00BD117F /* Main.storyboard */,
 				463806331E5D35DD00BD117F /* Assets.xcassets */,
 				463806351E5D35DD00BD117F /* LaunchScreen.storyboard */,
 				463806381E5D35DD00BD117F /* Info.plist */,
+				4638063F1E5D3C5C00BD117F /* EditViewController.swift */,
 			);
 			path = Checkitout;
+			sourceTree = "<group>";
+		};
+		4638063E1E5D3BFB00BD117F /* AudioSample */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = AudioSample;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -137,8 +148,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4638062F1E5D35DD00BD117F /* ViewController.swift in Sources */,
+				4638062F1E5D35DD00BD117F /* MainViewController.swift in Sources */,
 				4638062D1E5D35DD00BD117F /* AppDelegate.swift in Sources */,
+				463806401E5D3C5C00BD117F /* EditViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
