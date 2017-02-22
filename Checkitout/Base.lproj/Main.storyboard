@@ -371,6 +371,9 @@
                                         <rect key="frame" x="73" y="146" width="32" height="30"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <state key="normal" title="Stop"/>
+                                        <connections>
+                                            <action selector="tapStopButton" destination="BYZ-38-t0r" eventType="touchUpInside" id="CG0-na-kCM"/>
+                                        </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IHq-UH-fz3">
                                         <rect key="frame" x="113" y="146" width="30" height="30"/>
@@ -378,7 +381,6 @@
                                         <state key="normal" title="Play"/>
                                         <connections>
                                             <action selector="tapPlayButton" destination="BYZ-38-t0r" eventType="touchUpInside" id="kio-Rj-d12"/>
-                                            <action selector="tapStopButton" destination="BYZ-38-t0r" eventType="touchUpInside" id="1hi-Cb-0js"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6Ty-pt-WcP">
@@ -408,7 +410,7 @@
                         <outlet property="playRecordButton" destination="IHq-UH-fz3" id="ljH-FH-2BF"/>
                         <outlet property="recButton" destination="ugd-99-3o1" id="a0m-B1-dTs"/>
                         <outlet property="recordButton" destination="lNO-Jh-SnR" id="7O8-Yd-3Hm"/>
-                        <outlet property="stopRecordButton" destination="RxJ-tR-BGN" id="ZUg-nx-2dK"/>
+                        <outlet property="stopRecordButton" destination="RxJ-tR-BGN" id="4hL-rZ-kdh"/>
                         <outlet property="tableView" destination="Hl0-yc-7SN" id="Wq8-xt-FRo"/>
                         <outlet property="titleTextField" destination="Oqc-4G-zcO" id="mNe-fF-evO"/>
                     </connections>

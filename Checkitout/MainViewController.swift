@@ -21,6 +21,7 @@ class MainViewController: UIViewController {
         didSet {
             tableView.delegate = self
             tableView.dataSource = self
+            tableView.allowsSelection = false
         }
     }
     @IBOutlet weak var playButton: UIButton!
@@ -66,6 +67,10 @@ class MainViewController: UIViewController {
         fileUrl.append(Bundle.main.url(forResource: "kirin", withExtension: "wav")!)
         fileUrl.append(Bundle.main.url(forResource: "taguchi", withExtension: "wav")!)
         fileUrl.append(Bundle.main.url(forResource: "touyou", withExtension: "wav")!)
+        
+        for i in 0 ..< 4 {
+            selectedUrl[i] = fileUrl[i]
+        }
         
         loadDocument()
         
@@ -147,7 +152,9 @@ class MainViewController: UIViewController {
                 players[sender.tag]?.numberOfLoops = 1
                 players[sender.tag]?.play()
             }
-        case .edit: break
+        case .edit:
+            // 選択した数字があればその
+            break
         case .record: break
         }
         
@@ -207,9 +214,15 @@ class MainViewController: UIViewController {
     }
     
     @IBAction func tapSaveButton() {
+        guard let titleText = titleTextField.text else {
+            let alert = UIAlertController(title: "ERROR", message: "ファイル名を設定してください。", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+            present(alert, animated: true, completion: nil)
+            return
+        }
+        
         do {
-            try fileManager.moveItem(at: documentFilePath(fileName), to: documentFilePath(titleTextField.text! + ".wav"))
-            
+            try fileManager.moveItem(at: documentFilePath(fileName), to: documentFilePath(titleText + ".wav"))
         } catch {
             let alert = UIAlertController(title: "ERROR", message: "セーブに失敗しました。", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
@@ -234,6 +247,13 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
         let fileNameStr = fileUrl[indexPath.row].absoluteString
         let list = fileNameStr.components(separatedBy: "/")
         cell.fileNameLabel.text = list[list.count-1]
+        
+        for i in 0 ..< 16 {
+            if selectedUrl[i]?.absoluteString == fileNameStr {
+                cell.setNameLabel.text = "PAD \(i)"
+            }
+        }
+        
         return cell
     }
 }
