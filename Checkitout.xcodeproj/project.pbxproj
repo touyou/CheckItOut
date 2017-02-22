@@ -16,7 +16,6 @@
 		463806461E5D3F1100BD117F /* kirin.wav in Resources */ = {isa = PBXBuildFile; fileRef = 463806421E5D3F1100BD117F /* kirin.wav */; };
 		463806481E5D3F1100BD117F /* touyou.wav in Resources */ = {isa = PBXBuildFile; fileRef = 463806441E5D3F1100BD117F /* touyou.wav */; };
 		4638064A1E5D3F5200BD117F /* taguchi.wav in Resources */ = {isa = PBXBuildFile; fileRef = 463806491E5D3F5200BD117F /* taguchi.wav */; };
-		4638064C1E5D455600BD117F /* RecordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4638064B1E5D455600BD117F /* RecordViewController.swift */; };
 		463806501E5D5C1C00BD117F /* logotypejp_mp_b_1.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4638064F1E5D591600BD117F /* logotypejp_mp_b_1.ttf */; };
 		463806541E5D673300BD117F /* CustomTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 463806531E5D673300BD117F /* CustomTableViewCell.swift */; };
 /* End PBXBuildFile section */
@@ -33,7 +32,6 @@
 		463806421E5D3F1100BD117F /* kirin.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = kirin.wav; sourceTree = "<group>"; };
 		463806441E5D3F1100BD117F /* touyou.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = touyou.wav; sourceTree = "<group>"; };
 		463806491E5D3F5200BD117F /* taguchi.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = taguchi.wav; sourceTree = "<group>"; };
-		4638064B1E5D455600BD117F /* RecordViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecordViewController.swift; sourceTree = "<group>"; };
 		4638064F1E5D591600BD117F /* logotypejp_mp_b_1.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = logotypejp_mp_b_1.ttf; sourceTree = "<group>"; };
 		463806531E5D673300BD117F /* CustomTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomTableViewCell.swift; sourceTree = "<group>"; };
 		7AF05C930BD774494E31E532 /* Pods-Checkitout.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Checkitout.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Checkitout/Pods-Checkitout.debug.xcconfig"; sourceTree = "<group>"; };
@@ -78,7 +76,6 @@
 				4638062C1E5D35DD00BD117F /* AppDelegate.swift */,
 				4638062E1E5D35DD00BD117F /* MainViewController.swift */,
 				463806531E5D673300BD117F /* CustomTableViewCell.swift */,
-				4638064B1E5D455600BD117F /* RecordViewController.swift */,
 				463806301E5D35DD00BD117F /* Main.storyboard */,
 				463806331E5D35DD00BD117F /* Assets.xcassets */,
 				463806351E5D35DD00BD117F /* LaunchScreen.storyboard */,
@@ -196,7 +193,6 @@
 				4638062F1E5D35DD00BD117F /* MainViewController.swift in Sources */,
 				463806541E5D673300BD117F /* CustomTableViewCell.swift in Sources */,
 				4638062D1E5D35DD00BD117F /* AppDelegate.swift in Sources */,
-				4638064C1E5D455600BD117F /* RecordViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
