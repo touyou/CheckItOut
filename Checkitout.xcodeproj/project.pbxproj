@@ -13,6 +13,14 @@
 		463806341E5D35DD00BD117F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 463806331E5D35DD00BD117F /* Assets.xcassets */; };
 		463806371E5D35DD00BD117F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 463806351E5D35DD00BD117F /* LaunchScreen.storyboard */; };
 		463806401E5D3C5C00BD117F /* EditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4638063F1E5D3C5C00BD117F /* EditViewController.swift */; };
+		463806451E5D3F1100BD117F /* hosaka.wav in Resources */ = {isa = PBXBuildFile; fileRef = 463806411E5D3F1100BD117F /* hosaka.wav */; };
+		463806461E5D3F1100BD117F /* kirin.wav in Resources */ = {isa = PBXBuildFile; fileRef = 463806421E5D3F1100BD117F /* kirin.wav */; };
+		463806481E5D3F1100BD117F /* touyou.wav in Resources */ = {isa = PBXBuildFile; fileRef = 463806441E5D3F1100BD117F /* touyou.wav */; };
+		4638064A1E5D3F5200BD117F /* taguchi.wav in Resources */ = {isa = PBXBuildFile; fileRef = 463806491E5D3F5200BD117F /* taguchi.wav */; };
+		4638064C1E5D455600BD117F /* RecordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4638064B1E5D455600BD117F /* RecordViewController.swift */; };
+		4638064E1E5D575500BD117F /* MusicTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4638064D1E5D575500BD117F /* MusicTableViewController.swift */; };
+		463806501E5D5C1C00BD117F /* logotypejp_mp_b_1.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4638064F1E5D591600BD117F /* logotypejp_mp_b_1.ttf */; };
+		942A8FEF545EE0D7997A5ED7 /* Pods_Checkitout.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBF47C01DD064D0C191F9A75 /* Pods_Checkitout.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +32,16 @@
 		463806361E5D35DD00BD117F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		463806381E5D35DD00BD117F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4638063F1E5D3C5C00BD117F /* EditViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditViewController.swift; sourceTree = "<group>"; };
+		463806411E5D3F1100BD117F /* hosaka.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = hosaka.wav; sourceTree = "<group>"; };
+		463806421E5D3F1100BD117F /* kirin.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = kirin.wav; sourceTree = "<group>"; };
+		463806441E5D3F1100BD117F /* touyou.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = touyou.wav; sourceTree = "<group>"; };
+		463806491E5D3F5200BD117F /* taguchi.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = taguchi.wav; sourceTree = "<group>"; };
+		4638064B1E5D455600BD117F /* RecordViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecordViewController.swift; sourceTree = "<group>"; };
+		4638064D1E5D575500BD117F /* MusicTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MusicTableViewController.swift; sourceTree = "<group>"; };
+		4638064F1E5D591600BD117F /* logotypejp_mp_b_1.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = logotypejp_mp_b_1.ttf; sourceTree = "<group>"; };
+		7AF05C930BD774494E31E532 /* Pods-Checkitout.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Checkitout.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Checkitout/Pods-Checkitout.debug.xcconfig"; sourceTree = "<group>"; };
+		BC091094922F4D767EE34696 /* Pods-Checkitout.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Checkitout.release.xcconfig"; path = "Pods/Target Support Files/Pods-Checkitout/Pods-Checkitout.release.xcconfig"; sourceTree = "<group>"; };
+		DBF47C01DD064D0C191F9A75 /* Pods_Checkitout.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Checkitout.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -31,6 +49,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				942A8FEF545EE0D7997A5ED7 /* Pods_Checkitout.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -42,6 +61,8 @@
 			children = (
 				4638062B1E5D35DD00BD117F /* Checkitout */,
 				4638062A1E5D35DD00BD117F /* Products */,
+				C190D3E46DD5ADC22CD7814D /* Pods */,
+				74E1C8F8F32B6FA40E4683DD /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -56,14 +77,17 @@
 		4638062B1E5D35DD00BD117F /* Checkitout */ = {
 			isa = PBXGroup;
 			children = (
+				4638064F1E5D591600BD117F /* logotypejp_mp_b_1.ttf */,
 				4638063E1E5D3BFB00BD117F /* AudioSample */,
 				4638062C1E5D35DD00BD117F /* AppDelegate.swift */,
 				4638062E1E5D35DD00BD117F /* MainViewController.swift */,
+				4638063F1E5D3C5C00BD117F /* EditViewController.swift */,
+				4638064B1E5D455600BD117F /* RecordViewController.swift */,
 				463806301E5D35DD00BD117F /* Main.storyboard */,
 				463806331E5D35DD00BD117F /* Assets.xcassets */,
 				463806351E5D35DD00BD117F /* LaunchScreen.storyboard */,
 				463806381E5D35DD00BD117F /* Info.plist */,
-				4638063F1E5D3C5C00BD117F /* EditViewController.swift */,
+				4638064D1E5D575500BD117F /* MusicTableViewController.swift */,
 			);
 			path = Checkitout;
 			sourceTree = "<group>";
@@ -71,8 +95,29 @@
 		4638063E1E5D3BFB00BD117F /* AudioSample */ = {
 			isa = PBXGroup;
 			children = (
+				463806411E5D3F1100BD117F /* hosaka.wav */,
+				463806421E5D3F1100BD117F /* kirin.wav */,
+				463806491E5D3F5200BD117F /* taguchi.wav */,
+				463806441E5D3F1100BD117F /* touyou.wav */,
 			);
 			name = AudioSample;
+			sourceTree = "<group>";
+		};
+		74E1C8F8F32B6FA40E4683DD /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				DBF47C01DD064D0C191F9A75 /* Pods_Checkitout.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		C190D3E46DD5ADC22CD7814D /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				7AF05C930BD774494E31E532 /* Pods-Checkitout.debug.xcconfig */,
+				BC091094922F4D767EE34696 /* Pods-Checkitout.release.xcconfig */,
+			);
+			name = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -135,7 +180,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				463806501E5D5C1C00BD117F /* logotypejp_mp_b_1.ttf in Resources */,
+				463806481E5D3F1100BD117F /* touyou.wav in Resources */,
 				463806371E5D35DD00BD117F /* LaunchScreen.storyboard in Resources */,
+				4638064A1E5D3F5200BD117F /* taguchi.wav in Resources */,
+				463806461E5D3F1100BD117F /* kirin.wav in Resources */,
+				463806451E5D3F1100BD117F /* hosaka.wav in Resources */,
 				463806341E5D35DD00BD117F /* Assets.xcassets in Resources */,
 				463806321E5D35DD00BD117F /* Main.storyboard in Resources */,
 			);
@@ -150,7 +200,9 @@
 			files = (
 				4638062F1E5D35DD00BD117F /* MainViewController.swift in Sources */,
 				4638062D1E5D35DD00BD117F /* AppDelegate.swift in Sources */,
+				4638064E1E5D575500BD117F /* MusicTableViewController.swift in Sources */,
 				463806401E5D3C5C00BD117F /* EditViewController.swift in Sources */,
+				4638064C1E5D455600BD117F /* RecordViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -312,6 +364,7 @@
 				4638063D1E5D35DD00BD117F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
