@@ -28,7 +28,6 @@ class RecordViewController: UIViewController {
     var fileManager = FileManager()
     var audioRecorder: AVAudioRecorder?
     var audioPlayer: AVAudioPlayer?
-    var delegate: MainViewControllerDelegate?
     var selectedNum: Int?
     
     override func viewDidLoad() {
@@ -94,9 +93,7 @@ class RecordViewController: UIViewController {
         do {
             try fileManager.moveItem(at: documentFilePath(fileName), to: documentFilePath(titleTextField.text! + ".wav"))
             
-            dismiss(animated: true, completion: {
-                self.delegate?.setFileName(atIndex: self.selectedNum!, name: self.titleTextField.text ?? "")
-            })
+            dismiss(animated: true, completion: nil)
         } catch {
             let alert = UIAlertController(title: "ERROR", message: "セーブに失敗しました。", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
