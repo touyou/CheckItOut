@@ -22,7 +22,22 @@
 		463806641E5E7CBD00BD117F /* Filer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 463806601E5E7CBD00BD117F /* Filer.swift */; };
 		463806651E5E7CBD00BD117F /* FileReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 463806611E5E7CBD00BD117F /* FileReader.swift */; };
 		463806661E5E7CBD00BD117F /* FileWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 463806621E5E7CBD00BD117F /* FileWriter.swift */; };
-		842C0A417E3BBF16A0F0878F /* Pods_Checkitout.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBF47C01DD064D0C191F9A75 /* Pods_Checkitout.framework */; };
+		467230B31E5E8C8600350F0F /* 1korekara_cut.wav in Resources */ = {isa = PBXBuildFile; fileRef = 467230A31E5E8C8600350F0F /* 1korekara_cut.wav */; };
+		467230B41E5E8C8600350F0F /* 2korekara_cut.wav in Resources */ = {isa = PBXBuildFile; fileRef = 467230A41E5E8C8600350F0F /* 2korekara_cut.wav */; };
+		467230B51E5E8C8600350F0F /* 3apuri_cut.wav in Resources */ = {isa = PBXBuildFile; fileRef = 467230A51E5E8C8600350F0F /* 3apuri_cut.wav */; };
+		467230B61E5E8C8600350F0F /* 4setumei_cut.wav in Resources */ = {isa = PBXBuildFile; fileRef = 467230A61E5E8C8600350F0F /* 4setumei_cut.wav */; };
+		467230B71E5E8C8600350F0F /* 5suruze_cut.wav in Resources */ = {isa = PBXBuildFile; fileRef = 467230A71E5E8C8600350F0F /* 5suruze_cut.wav */; };
+		467230B81E5E8C8600350F0F /* 6onsei_cut.wav in Resources */ = {isa = PBXBuildFile; fileRef = 467230A81E5E8C8600350F0F /* 6onsei_cut.wav */; };
+		467230B91E5E8C8600350F0F /* 7rokuon_cut.wav in Resources */ = {isa = PBXBuildFile; fileRef = 467230A91E5E8C8600350F0F /* 7rokuon_cut.wav */; };
+		467230BA1E5E8C8600350F0F /* 8minnnawo_cut.wav in Resources */ = {isa = PBXBuildFile; fileRef = 467230AA1E5E8C8600350F0F /* 8minnnawo_cut.wav */; };
+		467230BB1E5E8C8600350F0F /* 9rockon_cut.wav in Resources */ = {isa = PBXBuildFile; fileRef = 467230AB1E5E8C8600350F0F /* 9rockon_cut.wav */; };
+		467230BC1E5E8C8600350F0F /* 10korede_cut.wav in Resources */ = {isa = PBXBuildFile; fileRef = 467230AC1E5E8C8600350F0F /* 10korede_cut.wav */; };
+		467230BD1E5E8C8600350F0F /* 11yourname_cut.wav in Resources */ = {isa = PBXBuildFile; fileRef = 467230AD1E5E8C8600350F0F /* 11yourname_cut.wav */; };
+		467230BE1E5E8C8600350F0F /* 12todoroku_cut.wav in Resources */ = {isa = PBXBuildFile; fileRef = 467230AE1E5E8C8600350F0F /* 12todoroku_cut.wav */; };
+		467230BF1E5E8C8600350F0F /* 13menber_cut.wav in Resources */ = {isa = PBXBuildFile; fileRef = 467230AF1E5E8C8600350F0F /* 13menber_cut.wav */; };
+		467230C01E5E8C8600350F0F /* 14menta-_cut.wav in Resources */ = {isa = PBXBuildFile; fileRef = 467230B01E5E8C8600350F0F /* 14menta-_cut.wav */; };
+		467230C11E5E8C8600350F0F /* 15minnade_cut.wav in Resources */ = {isa = PBXBuildFile; fileRef = 467230B11E5E8C8600350F0F /* 15minnade_cut.wav */; };
+		467230C21E5E8C8600350F0F /* 16chekera_cut.wav in Resources */ = {isa = PBXBuildFile; fileRef = 467230B21E5E8C8600350F0F /* 16chekera_cut.wav */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,9 +58,22 @@
 		463806601E5E7CBD00BD117F /* Filer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Filer.swift; sourceTree = "<group>"; };
 		463806611E5E7CBD00BD117F /* FileReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileReader.swift; sourceTree = "<group>"; };
 		463806621E5E7CBD00BD117F /* FileWriter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileWriter.swift; sourceTree = "<group>"; };
-		7AF05C930BD774494E31E532 /* Pods-Checkitout.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Checkitout.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Checkitout/Pods-Checkitout.debug.xcconfig"; sourceTree = "<group>"; };
-		BC091094922F4D767EE34696 /* Pods-Checkitout.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Checkitout.release.xcconfig"; path = "Pods/Target Support Files/Pods-Checkitout/Pods-Checkitout.release.xcconfig"; sourceTree = "<group>"; };
-		DBF47C01DD064D0C191F9A75 /* Pods_Checkitout.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Checkitout.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		467230A31E5E8C8600350F0F /* 1korekara_cut.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 1korekara_cut.wav; sourceTree = "<group>"; };
+		467230A41E5E8C8600350F0F /* 2korekara_cut.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 2korekara_cut.wav; sourceTree = "<group>"; };
+		467230A51E5E8C8600350F0F /* 3apuri_cut.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 3apuri_cut.wav; sourceTree = "<group>"; };
+		467230A61E5E8C8600350F0F /* 4setumei_cut.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 4setumei_cut.wav; sourceTree = "<group>"; };
+		467230A71E5E8C8600350F0F /* 5suruze_cut.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 5suruze_cut.wav; sourceTree = "<group>"; };
+		467230A81E5E8C8600350F0F /* 6onsei_cut.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 6onsei_cut.wav; sourceTree = "<group>"; };
+		467230A91E5E8C8600350F0F /* 7rokuon_cut.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 7rokuon_cut.wav; sourceTree = "<group>"; };
+		467230AA1E5E8C8600350F0F /* 8minnnawo_cut.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 8minnnawo_cut.wav; sourceTree = "<group>"; };
+		467230AB1E5E8C8600350F0F /* 9rockon_cut.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 9rockon_cut.wav; sourceTree = "<group>"; };
+		467230AC1E5E8C8600350F0F /* 10korede_cut.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 10korede_cut.wav; sourceTree = "<group>"; };
+		467230AD1E5E8C8600350F0F /* 11yourname_cut.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 11yourname_cut.wav; sourceTree = "<group>"; };
+		467230AE1E5E8C8600350F0F /* 12todoroku_cut.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 12todoroku_cut.wav; sourceTree = "<group>"; };
+		467230AF1E5E8C8600350F0F /* 13menber_cut.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 13menber_cut.wav; sourceTree = "<group>"; };
+		467230B01E5E8C8600350F0F /* 14menta-_cut.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "14menta-_cut.wav"; sourceTree = "<group>"; };
+		467230B11E5E8C8600350F0F /* 15minnade_cut.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 15minnade_cut.wav; sourceTree = "<group>"; };
+		467230B21E5E8C8600350F0F /* 16chekera_cut.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 16chekera_cut.wav; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,7 +81,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				842C0A417E3BBF16A0F0878F /* Pods_Checkitout.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,7 +92,6 @@
 			children = (
 				4638062B1E5D35DD00BD117F /* Checkitout */,
 				4638062A1E5D35DD00BD117F /* Products */,
-				C190D3E46DD5ADC22CD7814D /* Pods */,
 				74E1C8F8F32B6FA40E4683DD /* Frameworks */,
 			);
 			sourceTree = "<group>";
@@ -102,6 +128,22 @@
 				463806421E5D3F1100BD117F /* kirin.wav */,
 				463806491E5D3F5200BD117F /* taguchi.wav */,
 				463806441E5D3F1100BD117F /* touyou.wav */,
+				467230A31E5E8C8600350F0F /* 1korekara_cut.wav */,
+				467230A41E5E8C8600350F0F /* 2korekara_cut.wav */,
+				467230A51E5E8C8600350F0F /* 3apuri_cut.wav */,
+				467230A61E5E8C8600350F0F /* 4setumei_cut.wav */,
+				467230A71E5E8C8600350F0F /* 5suruze_cut.wav */,
+				467230A81E5E8C8600350F0F /* 6onsei_cut.wav */,
+				467230A91E5E8C8600350F0F /* 7rokuon_cut.wav */,
+				467230AA1E5E8C8600350F0F /* 8minnnawo_cut.wav */,
+				467230AB1E5E8C8600350F0F /* 9rockon_cut.wav */,
+				467230AC1E5E8C8600350F0F /* 10korede_cut.wav */,
+				467230AD1E5E8C8600350F0F /* 11yourname_cut.wav */,
+				467230AE1E5E8C8600350F0F /* 12todoroku_cut.wav */,
+				467230AF1E5E8C8600350F0F /* 13menber_cut.wav */,
+				467230B01E5E8C8600350F0F /* 14menta-_cut.wav */,
+				467230B11E5E8C8600350F0F /* 15minnade_cut.wav */,
+				467230B21E5E8C8600350F0F /* 16chekera_cut.wav */,
 			);
 			name = AudioSample;
 			sourceTree = "<group>";
@@ -120,18 +162,8 @@
 		74E1C8F8F32B6FA40E4683DD /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				DBF47C01DD064D0C191F9A75 /* Pods_Checkitout.framework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		C190D3E46DD5ADC22CD7814D /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				7AF05C930BD774494E31E532 /* Pods-Checkitout.debug.xcconfig */,
-				BC091094922F4D767EE34696 /* Pods-Checkitout.release.xcconfig */,
-			);
-			name = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -141,12 +173,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 4638063B1E5D35DD00BD117F /* Build configuration list for PBXNativeTarget "Checkitout" */;
 			buildPhases = (
-				6CA54FCEB879136BED1DC1DB /* [CP] Check Pods Manifest.lock */,
 				463806251E5D35DD00BD117F /* Sources */,
 				463806261E5D35DD00BD117F /* Frameworks */,
 				463806271E5D35DD00BD117F /* Resources */,
-				63D8B2DF944B04A8A210E866 /* [CP] Embed Pods Frameworks */,
-				BE098E69A7BE3AC5FABBAD4A /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -198,66 +227,34 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				467230B41E5E8C8600350F0F /* 2korekara_cut.wav in Resources */,
+				467230B51E5E8C8600350F0F /* 3apuri_cut.wav in Resources */,
+				467230C21E5E8C8600350F0F /* 16chekera_cut.wav in Resources */,
+				467230B31E5E8C8600350F0F /* 1korekara_cut.wav in Resources */,
+				467230BD1E5E8C8600350F0F /* 11yourname_cut.wav in Resources */,
+				467230B71E5E8C8600350F0F /* 5suruze_cut.wav in Resources */,
 				463806501E5D5C1C00BD117F /* logotypejp_mp_b_1.ttf in Resources */,
 				463806481E5D3F1100BD117F /* touyou.wav in Resources */,
 				463806371E5D35DD00BD117F /* LaunchScreen.storyboard in Resources */,
+				467230BA1E5E8C8600350F0F /* 8minnnawo_cut.wav in Resources */,
 				4638064A1E5D3F5200BD117F /* taguchi.wav in Resources */,
+				467230BF1E5E8C8600350F0F /* 13menber_cut.wav in Resources */,
+				467230BB1E5E8C8600350F0F /* 9rockon_cut.wav in Resources */,
+				467230B61E5E8C8600350F0F /* 4setumei_cut.wav in Resources */,
 				463806461E5D3F1100BD117F /* kirin.wav in Resources */,
+				467230C01E5E8C8600350F0F /* 14menta-_cut.wav in Resources */,
 				463806451E5D3F1100BD117F /* hosaka.wav in Resources */,
+				467230B81E5E8C8600350F0F /* 6onsei_cut.wav in Resources */,
+				467230BC1E5E8C8600350F0F /* 10korede_cut.wav in Resources */,
 				463806341E5D35DD00BD117F /* Assets.xcassets in Resources */,
 				463806321E5D35DD00BD117F /* Main.storyboard in Resources */,
+				467230C11E5E8C8600350F0F /* 15minnade_cut.wav in Resources */,
+				467230B91E5E8C8600350F0F /* 7rokuon_cut.wav in Resources */,
+				467230BE1E5E8C8600350F0F /* 12todoroku_cut.wav in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		63D8B2DF944B04A8A210E866 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Checkitout/Pods-Checkitout-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		6CA54FCEB879136BED1DC1DB /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		BE098E69A7BE3AC5FABBAD4A /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Checkitout/Pods-Checkitout-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		463806251E5D35DD00BD117F /* Sources */ = {
@@ -389,7 +386,6 @@
 		};
 		4638063C1E5D35DD00BD117F /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7AF05C930BD774494E31E532 /* Pods-Checkitout.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = B4S4333JDW;
@@ -403,7 +399,6 @@
 		};
 		4638063D1E5D35DD00BD117F /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = BC091094922F4D767EE34696 /* Pods-Checkitout.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = B4S4333JDW;

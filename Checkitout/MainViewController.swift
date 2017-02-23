@@ -22,6 +22,8 @@ class MainViewController: UIViewController {
             tableView.delegate = self
             tableView.dataSource = self
             tableView.allowsSelection = false
+            tableView.tableFooterView = UIView()
+            tableView.backgroundColor = #colorLiteral(red: 0.4635950923, green: 0.4756785631, blue: 0.4834695458, alpha: 1)
         }
     }
     @IBOutlet weak var playButton: UIButton! {
@@ -80,11 +82,22 @@ class MainViewController: UIViewController {
         fileUrl.append(Bundle.main.url(forResource: "kirin", withExtension: "wav")!)
         fileUrl.append(Bundle.main.url(forResource: "taguchi", withExtension: "wav")!)
         fileUrl.append(Bundle.main.url(forResource: "touyou", withExtension: "wav")!)
-        
-        for i in 0 ..< 4 {
-            selectedUrl[i] = fileUrl[i]
-            mapToNumber[fileUrl[i].absoluteString] = i
-        }
+        fileUrl.append(Bundle.main.url(forResource: "1korekara_cut", withExtension: "wav")!)
+        fileUrl.append(Bundle.main.url(forResource: "2korekara_cut", withExtension: "wav")!)
+        fileUrl.append(Bundle.main.url(forResource: "3apuri_cut", withExtension: "wav")!)
+        fileUrl.append(Bundle.main.url(forResource: "4setumei_cut", withExtension: "wav")!)
+        fileUrl.append(Bundle.main.url(forResource: "5suruze_cut", withExtension: "wav")!)
+        fileUrl.append(Bundle.main.url(forResource: "6onsei_cut", withExtension: "wav")!)
+        fileUrl.append(Bundle.main.url(forResource: "7rokuon_cut", withExtension: "wav")!)
+        fileUrl.append(Bundle.main.url(forResource: "8minnnawo_cut", withExtension: "wav")!)
+        fileUrl.append(Bundle.main.url(forResource: "9rockon_cut", withExtension: "wav")!)
+        fileUrl.append(Bundle.main.url(forResource: "10korede_cut", withExtension: "wav")!)
+        fileUrl.append(Bundle.main.url(forResource: "11yourname_cut", withExtension: "wav")!)
+        fileUrl.append(Bundle.main.url(forResource: "12todoroku_cut", withExtension: "wav")!)
+        fileUrl.append(Bundle.main.url(forResource: "13menber_cut", withExtension: "wav")!)
+        fileUrl.append(Bundle.main.url(forResource: "14menta-_cut", withExtension: "wav")!)
+        fileUrl.append(Bundle.main.url(forResource: "15minnade_cut", withExtension: "wav")!)
+        fileUrl.append(Bundle.main.url(forResource: "16chekera_cut", withExtension: "wav")!)
 
         let files = Filer.ls(.document)
         if let files = files {
@@ -160,6 +173,10 @@ class MainViewController: UIViewController {
                     selectedUrl[num] = nil
                 }
                 
+                if let url = selectedUrl[sender.tag] {
+                    mapToNumber[url.absoluteString] = nil
+                }
+                
                 selectedUrl[sender.tag] = fileUrl[selected]
                 mapToNumber[str] = sender.tag
                 selectedNum = nil
@@ -194,6 +211,10 @@ class MainViewController: UIViewController {
         recButton.isEnabled = true
         
         tableView.allowsSelection = false
+        
+        if let selected = selectedNum {
+            tableView.deselectRow(at: IndexPath(row: selected, section: 0), animated: true)
+        }
         
         loadDocument()
         setPlayers()
