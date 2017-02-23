@@ -55,9 +55,11 @@ class MainViewController: UIViewController {
     var selectedNum: Int?
     var players = [AVAudioPlayer?]()
     var selectedUrl = Array<URL?>(repeating: nil, count: 16)
+    var mapToNumber = Dictionary<String, Int>()
     var fileManager = FileManager()
     var mode = Mode.play
     var fileUrl = [URL]()
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -70,6 +72,7 @@ class MainViewController: UIViewController {
         
         for i in 0 ..< 4 {
             selectedUrl[i] = fileUrl[i]
+            mapToNumber[fileUrl[i].absoluteString] = i
         }
         
         loadDocument()
@@ -82,6 +85,7 @@ class MainViewController: UIViewController {
         let bundlePath = urls[0].absoluteString
         do {
             let list = try fileManager.contentsOfDirectory(atPath: bundlePath)
+            print(list)
             for key in list {
                 var isDir: ObjCBool = false
                 if fileManager.fileExists(atPath: bundlePath + "/" + key, isDirectory: &isDir) {
@@ -102,7 +106,6 @@ class MainViewController: UIViewController {
             if let url = url {
                 do {
                     let player = try AVAudioPlayer(contentsOf: url)
-                    print("load clear")
                     player.prepareToPlay()
                     players.append(player)
                 } catch {
@@ -154,7 +157,19 @@ class MainViewController: UIViewController {
             }
         case .edit:
             // 選択した数字があればその
-            break
+            if let selected = selectedNum {
+                let str = fileUrl[selected].absoluteString
+                if let num = mapToNumber[str] {
+                    selectedUrl[num] = nil
+                }
+                
+                selectedUrl[sender.tag] = fileUrl[selected]
+                mapToNumber[str] = sender.tag
+                selectedNum = nil
+                let indexPath = IndexPath(row: selected, section: 0)
+                tableView.deselectRow(at: indexPath, animated: true)
+                tableView.reloadData()
+            }
         case .record: break
         }
         
@@ -164,6 +179,10 @@ class MainViewController: UIViewController {
         mode = .edit
         containerView.isHidden = true
         
+        playButton.isEnabled = true
+        editButton.isEnabled = false
+        recButton.isEnabled = true
+        
         tableView.allowsSelection = true
     }
     
@@ -171,14 +190,23 @@ class MainViewController: UIViewController {
         mode = .play
         containerView.isHidden = true
         
+        playButton.isEnabled = false
+        editButton.isEnabled = true
+        recButton.isEnabled = true
+        
         tableView.allowsSelection = false
         
+        loadDocument()
         setPlayers()
     }
     
     @IBAction func pushRecordButton() {
         mode = .record
         containerView.isHidden = false
+        
+        playButton.isEnabled = true
+        editButton.isEnabled = true
+        recButton.isEnabled = false
         
         recordButton.isEnabled = true
         stopRecordButton.isEnabled = false
@@ -223,6 +251,13 @@ class MainViewController: UIViewController {
         
         do {
             try fileManager.moveItem(at: documentFilePath(fileName), to: documentFilePath(titleText + ".wav"))
+            
+            let alert = UIAlertController(title: "セーブ完了しました。", message: "\(titleText).wavを保存しました。", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+            present(alert, animated: true, completion: {
+                self.loadDocument()
+                self.tableView.reloadData()
+            })
         } catch {
             let alert = UIAlertController(title: "ERROR", message: "セーブに失敗しました。", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
@@ -248,13 +283,17 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
         let list = fileNameStr.components(separatedBy: "/")
         cell.fileNameLabel.text = list[list.count-1]
         
-        for i in 0 ..< 16 {
-            if selectedUrl[i]?.absoluteString == fileNameStr {
-                cell.setNameLabel.text = "PAD \(i)"
-            }
+        if let num = mapToNumber[fileNameStr] {
+            cell.setNameLabel.text = "PAD \(num)"
+        } else {
+            cell.setNameLabel.text = "NONE"
         }
         
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        selectedNum = indexPath.row
     }
 }
 
