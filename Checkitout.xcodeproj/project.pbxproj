@@ -176,6 +176,7 @@
 				463806251E5D35DD00BD117F /* Sources */,
 				463806261E5D35DD00BD117F /* Frameworks */,
 				463806271E5D35DD00BD117F /* Resources */,
+				463C44C41E5E9166009FAAB7 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -255,6 +256,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		463C44C41E5E9166009FAAB7 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Carthage/Build/iOS/EZAudioiOS.framework",
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/usr/local/bin/carthage copy-frameworks";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		463806251E5D35DD00BD117F /* Sources */ = {
