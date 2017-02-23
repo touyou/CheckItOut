@@ -8,6 +8,7 @@
 
 import UIKit
 import AVFoundation
+import EZAudioiOS
 
 enum Mode {
     case play
@@ -17,6 +18,14 @@ enum Mode {
 
 class MainViewController: UIViewController {
     
+    // MARK: - EZAudio
+    @IBOutlet weak var showWaveView: EZAudioPlot!
+    var audioPlot: EZAudioPlot!
+    var ezMic: EZMicrophone?
+    var ezaudioPlayer:EZAudioPlayer!
+    var audioFile:EZAudioFile!
+    
+    // MARK: - Normal
     @IBOutlet weak var tableView: UITableView! {
         didSet {
             tableView.delegate = self
@@ -71,7 +80,7 @@ class MainViewController: UIViewController {
         super.viewDidLoad()
         
         loadDocument()
-        
+        ezAudioSetup()
         setPlayers()
     }
     
@@ -145,7 +154,6 @@ class MainViewController: UIViewController {
             print("error")
         }
     }
-
     
     fileprivate func documentFilePath(_ name: String) -> URL {
         let urls = fileManager.urls(for: .documentDirectory, in: .userDomainMask)
@@ -243,6 +251,7 @@ class MainViewController: UIViewController {
         playRecordButton.isEnabled = false
         
         audioRecorder?.record()
+        ezAudioMicSet()
     }
     
     @IBAction func tapStopButton() {
@@ -251,6 +260,7 @@ class MainViewController: UIViewController {
         playRecordButton.isEnabled = true
         
         audioRecorder?.stop()
+        ezAudioMicStop()
     }
     
     @IBAction func tapPlayButton() {
@@ -321,5 +331,40 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
 extension MainViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         return textField.resignFirstResponder()
+    }
+}
+
+
+// MARK: - 波形表示
+extension MainViewController: EZMicrophoneDelegate, EZAudioFileDelegate, EZAudioPlayerDelegate {
+    func ezAudioSetup(){
+        ezMic = EZMicrophone()
+        showWaveView.plotType = EZPlotType.buffer
+        
+        ezMic?.delegate = self
+        
+        showWaveView.backgroundColor = UIColor.init(red: 99.0/255.0, green: 102.0/255.0, blue: 104.0/255.0, alpha: 1.0)
+        showWaveView.color = UIColor.black
+        showWaveView.plotType = EZPlotType.rolling //表示の仕方 Buffer or Rolling
+        showWaveView.shouldFill = true            //グラフの表示
+        showWaveView.shouldMirror = true
+        showWaveView.shouldCenterYAxis = true
+    }
+    
+    func ezAudioMicSet(){
+        showWaveView.clear()
+        ezMic?.microphoneOn = true
+        ezMic!.startFetchingAudio()
+    }
+    
+    func ezAudioMicStop(){
+        ezMic?.stopFetchingAudio()
+    }
+    
+    func microphone(_ microphone: EZMicrophone!, hasAudioReceived buffer: UnsafeMutablePointer<UnsafeMutablePointer<Float>?>!, withBufferSize bufferSize: UInt32, withNumberOfChannels numberOfChannels: UInt32) {
+        
+        DispatchQueue.main.async {
+            self.showWaveView.updateBuffer(buffer[0], withBufferSize: bufferSize)
+        }
     }
 }
