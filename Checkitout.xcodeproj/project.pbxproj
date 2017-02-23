@@ -18,6 +18,7 @@
 		4638064A1E5D3F5200BD117F /* taguchi.wav in Resources */ = {isa = PBXBuildFile; fileRef = 463806491E5D3F5200BD117F /* taguchi.wav */; };
 		463806501E5D5C1C00BD117F /* logotypejp_mp_b_1.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4638064F1E5D591600BD117F /* logotypejp_mp_b_1.ttf */; };
 		463806541E5D673300BD117F /* CustomTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 463806531E5D673300BD117F /* CustomTableViewCell.swift */; };
+		842C0A417E3BBF16A0F0878F /* Pods_Checkitout.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBF47C01DD064D0C191F9A75 /* Pods_Checkitout.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -44,6 +45,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				842C0A417E3BBF16A0F0878F /* Pods_Checkitout.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -119,9 +121,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 4638063B1E5D35DD00BD117F /* Build configuration list for PBXNativeTarget "Checkitout" */;
 			buildPhases = (
+				6CA54FCEB879136BED1DC1DB /* [CP] Check Pods Manifest.lock */,
 				463806251E5D35DD00BD117F /* Sources */,
 				463806261E5D35DD00BD117F /* Frameworks */,
 				463806271E5D35DD00BD117F /* Resources */,
+				63D8B2DF944B04A8A210E866 /* [CP] Embed Pods Frameworks */,
+				BE098E69A7BE3AC5FABBAD4A /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -184,6 +189,54 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		63D8B2DF944B04A8A210E866 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Checkitout/Pods-Checkitout-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		6CA54FCEB879136BED1DC1DB /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		BE098E69A7BE3AC5FABBAD4A /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Checkitout/Pods-Checkitout-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		463806251E5D35DD00BD117F /* Sources */ = {
@@ -311,6 +364,7 @@
 		};
 		4638063C1E5D35DD00BD117F /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7AF05C930BD774494E31E532 /* Pods-Checkitout.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = B4S4333JDW;
@@ -324,6 +378,7 @@
 		};
 		4638063D1E5D35DD00BD117F /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = BC091094922F4D767EE34696 /* Pods-Checkitout.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = B4S4333JDW;
