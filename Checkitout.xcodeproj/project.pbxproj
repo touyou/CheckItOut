@@ -148,7 +148,6 @@
 				463806491E5D3F5200BD117F /* taguchi.wav */,
 				463806441E5D3F1100BD117F /* touyou.wav */,
 			);
-			name = AudioSample;
 			path = AudioSample;
 			sourceTree = "<group>";
 		};
@@ -160,7 +159,6 @@
 				463806621E5E7CBD00BD117F /* FileWriter.swift */,
 				463806601E5E7CBD00BD117F /* Filer.swift */,
 			);
-			name = Filer;
 			path = Filer;
 			sourceTree = "<group>";
 		};
@@ -420,6 +418,7 @@
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = Checkitout/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.dev.touyou.Checkitout;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -437,6 +436,7 @@
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = Checkitout/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.dev.touyou.Checkitout;
 				PRODUCT_NAME = "$(TARGET_NAME)";

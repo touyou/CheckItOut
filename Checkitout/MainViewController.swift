@@ -119,6 +119,10 @@ class MainViewController: UIViewController {
     }
     
     func setPlayers() {
+        let session = AVAudioSession.sharedInstance()
+        try! session.setCategory(AVAudioSessionCategoryAmbient)
+        try! session.setActive(true)
+        
         players = []
         
         for url in selectedUrl {
@@ -126,6 +130,8 @@ class MainViewController: UIViewController {
                 do {
                     let player = try AVAudioPlayer(contentsOf: url)
                     player.prepareToPlay()
+                    player.volume = 1.0
+                    
                     players.append(player)
                 } catch {
                     players.append(nil)
