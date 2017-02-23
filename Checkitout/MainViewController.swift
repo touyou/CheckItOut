@@ -24,7 +24,11 @@ class MainViewController: UIViewController {
             tableView.allowsSelection = false
         }
     }
-    @IBOutlet weak var playButton: UIButton!
+    @IBOutlet weak var playButton: UIButton! {
+        didSet {
+            playButton.isEnabled = false
+        }
+    }
     @IBOutlet weak var recButton: UIButton!
     @IBOutlet weak var editButton: UIButton!
     @IBOutlet weak var containerView: UIView! {
@@ -64,6 +68,13 @@ class MainViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        loadDocument()
+        
+        setPlayers()
+    }
+    
+    func loadDocument() {
+        fileUrl = []
         // sample
         fileUrl.append(Bundle.main.url(forResource: "hosaka", withExtension: "wav")!)
         fileUrl.append(Bundle.main.url(forResource: "kirin", withExtension: "wav")!)
@@ -74,28 +85,14 @@ class MainViewController: UIViewController {
             selectedUrl[i] = fileUrl[i]
             mapToNumber[fileUrl[i].absoluteString] = i
         }
-        
-        loadDocument()
-        
-        setPlayers()
-    }
-    
-    func loadDocument() {
-        let urls = fileManager.urls(for: .documentDirectory, in: .userDomainMask)
-        let bundlePath = urls[0].absoluteString
-        do {
-            let list = try fileManager.contentsOfDirectory(atPath: bundlePath)
-            print(list)
-            for key in list {
-                var isDir: ObjCBool = false
-                if fileManager.fileExists(atPath: bundlePath + "/" + key, isDirectory: &isDir) {
-                    if !isDir.boolValue {
-                        fileUrl.append(documentFilePath(key))
-                    }
-                }
+
+        let files = Filer.ls(.document)
+        if let files = files {
+            for file in files {
+                fileUrl.append(file.url)
             }
-        } catch {
-            
+        } else {
+            print("load失敗🙅")
         }
     }
     
@@ -137,11 +134,13 @@ class MainViewController: UIViewController {
     }
 
     
-    private func documentFilePath(_ name: String) -> URL {
+    fileprivate func documentFilePath(_ name: String) -> URL {
         let urls = fileManager.urls(for: .documentDirectory, in: .userDomainMask)
         let dirUrl = urls[0]
         return dirUrl.appendingPathComponent(name)
     }
+    
+    // MARK: - MPC Button
     
     @IBAction func tapMPCButton(_ sender: UIButton) {
         switch mode {
@@ -149,10 +148,8 @@ class MainViewController: UIViewController {
             if players[sender.tag]?.isPlaying ?? false {
                 players[sender.tag]?.stop()
                 players[sender.tag]?.currentTime = 0.0
-                players[sender.tag]?.numberOfLoops = 1
                 players[sender.tag]?.play()
             } else {
-                players[sender.tag]?.numberOfLoops = 1
                 players[sender.tag]?.play()
             }
         case .edit:
@@ -174,6 +171,8 @@ class MainViewController: UIViewController {
         }
         
     }
+    
+    // MARK: - Mode Button
     
     @IBAction func pushEditButton() {
         mode = .edit
@@ -215,6 +214,8 @@ class MainViewController: UIViewController {
         setupAudioRecorder()
     }
     
+    // MARK: - Record Button
+    
     @IBAction func tapRecordButton() {
         recordButton.isEnabled = false
         stopRecordButton.isEnabled = true
@@ -242,26 +243,25 @@ class MainViewController: UIViewController {
     }
     
     @IBAction func tapSaveButton() {
-        guard let titleText = titleTextField.text else {
+        guard let titleText = titleTextField.text, titleText != "" else {
             let alert = UIAlertController(title: "ERROR", message: "ファイル名を設定してください。", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
             present(alert, animated: true, completion: nil)
             return
         }
         
-        do {
-            try fileManager.moveItem(at: documentFilePath(fileName), to: documentFilePath(titleText + ".wav"))
-            
+        if Filer.mv(.document, srcPath: fileName, toPath: titleText + ".wav") {
             let alert = UIAlertController(title: "セーブ完了しました。", message: "\(titleText).wavを保存しました。", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
             present(alert, animated: true, completion: {
                 self.loadDocument()
                 self.tableView.reloadData()
             })
-        } catch {
+        } else {
             let alert = UIAlertController(title: "ERROR", message: "セーブに失敗しました。", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
             present(alert, animated: true, completion: nil)
+
         }
     }
 
