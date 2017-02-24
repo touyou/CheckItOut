@@ -35,6 +35,7 @@ class MainViewController: UIViewController {
             tableView.backgroundColor = #colorLiteral(red: 0.4635950923, green: 0.4756785631, blue: 0.4834695458, alpha: 1)
         }
     }
+
     @IBOutlet weak var playButton: UIButton! {
         didSet {
             playButton.isEnabled = false
@@ -64,6 +65,8 @@ class MainViewController: UIViewController {
         }
     }
     
+    @IBOutlet var mpcButton: [UIButton]!
+    
     let fileName = "temp.wav"
     var audioRecorder: AVAudioRecorder?
     var audioPlayer: AVAudioPlayer?
@@ -82,6 +85,16 @@ class MainViewController: UIViewController {
         loadDocument()
         ezAudioSetup()
         setPlayers()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        mpcButton.forEach {
+            $0.imageView?.contentMode = .scaleAspectFit
+            $0.contentHorizontalAlignment = .fill
+            $0.contentVerticalAlignment = .fill
+        }
     }
     
     func loadDocument() {
