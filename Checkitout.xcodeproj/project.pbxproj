@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		460A156D1E6072CA006285F8 /* Realm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 460A156B1E6072CA006285F8 /* Realm.framework */; };
+		460A156E1E6072CA006285F8 /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 460A156C1E6072CA006285F8 /* RealmSwift.framework */; };
 		4638062D1E5D35DD00BD117F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4638062C1E5D35DD00BD117F /* AppDelegate.swift */; };
 		4638062F1E5D35DD00BD117F /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4638062E1E5D35DD00BD117F /* MainViewController.swift */; };
 		463806321E5D35DD00BD117F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 463806301E5D35DD00BD117F /* Main.storyboard */; };
@@ -42,6 +44,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		460A156B1E6072CA006285F8 /* Realm.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Realm.framework; path = Carthage/Build/iOS/Realm.framework; sourceTree = "<group>"; };
+		460A156C1E6072CA006285F8 /* RealmSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RealmSwift.framework; path = Carthage/Build/iOS/RealmSwift.framework; sourceTree = "<group>"; };
 		463806291E5D35DD00BD117F /* Checkitout.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Checkitout.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4638062C1E5D35DD00BD117F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4638062E1E5D35DD00BD117F /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
@@ -83,6 +87,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				460A156D1E6072CA006285F8 /* Realm.framework in Frameworks */,
+				460A156E1E6072CA006285F8 /* RealmSwift.framework in Frameworks */,
 				463C44C61E5ED046009FAAB7 /* EZAudioiOS.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -165,6 +171,8 @@
 		74E1C8F8F32B6FA40E4683DD /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				460A156B1E6072CA006285F8 /* Realm.framework */,
+				460A156C1E6072CA006285F8 /* RealmSwift.framework */,
 				463C44C51E5ED046009FAAB7 /* EZAudioiOS.framework */,
 			);
 			name = Frameworks;
@@ -269,6 +277,8 @@
 			);
 			inputPaths = (
 				"$(SRCROOT)/Carthage/Build/iOS/EZAudioiOS.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/RealmSwift.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/Realm.framework",
 			);
 			outputPaths = (
 			);
