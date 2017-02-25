@@ -36,7 +36,6 @@ class MainViewController: UIViewController {
             tableView.backgroundColor = #colorLiteral(red: 0.4635950923, green: 0.4756785631, blue: 0.4834695458, alpha: 1)
         }
     }
-
     @IBOutlet weak var playButton: UIButton! {
         didSet {
             playButton.isEnabled = false
@@ -65,17 +64,16 @@ class MainViewController: UIViewController {
             stopRecordButton.isEnabled = false
         }
     }
-    
     @IBOutlet var mpcButton: [UIButton]!
     
     let fileName = "temp.wav"
     let saveData = UserDefaults.standard
+    
     var audioRecorder: AVAudioRecorder?
     var audioPlayer: AVAudioPlayer?
     var selectedNum: Int?
     var players = [AVAudioPlayer?]()
     var selectedUrl = Array<URL?>(repeating: nil, count: 16)
-    var mapToNumber = Dictionary<String, Int>()
     var fileManager = FileManager()
     var mode = Mode.play
     var soundData = [SoundData]()
@@ -86,6 +84,8 @@ class MainViewController: UIViewController {
         if !saveData.bool(forKey: "isFirstLaunch") {
             loadDocument()
         }
+        
+        print(Bundle.main.url(forResource: "hosaka", withExtension: "wav")!.absoluteString)
         
         initData()
         
@@ -134,8 +134,7 @@ class MainViewController: UIViewController {
         
         for sound in soundData {
             if sound.padNum != -1 {
-                selectedUrl[sound.padNum] = URL(fileURLWithPath: sound.urlStr)
-                mapToNumber[sound.urlStr] = sound.padNum
+                selectedUrl[sound.padNum] = sound.url
             }
         }
     }
@@ -154,13 +153,15 @@ class MainViewController: UIViewController {
         
         players = []
         
+        print("debug----")
         for url in selectedUrl {
             if let url = url {
+                print(url.absoluteString)
                 do {
                     let player = try AVAudioPlayer(contentsOf: url)
                     player.prepareToPlay()
                     player.volume = 1.0
-                    
+                    print("loaded")
                     players.append(player)
                 } catch {
                     players.append(nil)
@@ -184,16 +185,10 @@ class MainViewController: UIViewController {
         ]
         
         do {
-            try audioRecorder = AVAudioRecorder(url: documentFilePath(fileName), settings: recordSetting)
+            try audioRecorder = AVAudioRecorder(url: File(directory: .document, fileName: fileName).url, settings: recordSetting)
         } catch {
             print("error")
         }
-    }
-    
-    fileprivate func documentFilePath(_ name: String) -> URL {
-        let urls = fileManager.urls(for: .documentDirectory, in: .userDomainMask)
-        let dirUrl = urls[0]
-        return dirUrl.appendingPathComponent(name)
     }
     
     // MARK: - MPC Button
@@ -215,15 +210,13 @@ class MainViewController: UIViewController {
                     selectedUrl[soundData[selected].padNum] = nil
                 }
                 
-                if let url = selectedUrl[sender.tag] {
-                    soundData[mapToNumber[url.absoluteString]!].update {
-                        soundData[mapToNumber[url.absoluteString]!].padNum = -1
+                if let url = selectedUrl[sender.tag], let data = SoundData.fetch(url.absoluteString) {
+                    data.update {
+                        data.padNum = -1
                     }
-                    mapToNumber[url.absoluteString] = nil
                 }
                 
-                selectedUrl[sender.tag] = URL(fileURLWithPath: soundData[selected].urlStr)
-                mapToNumber[soundData[selected].urlStr] = sender.tag
+                selectedUrl[sender.tag] = soundData[selected].url
                 soundData[selected].update {
                     soundData[selected].padNum = sender.tag
                 }
@@ -264,7 +257,6 @@ class MainViewController: UIViewController {
             tableView.deselectRow(at: IndexPath(row: selected, section: 0), animated: true)
         }
         
-        loadDocument()
         setPlayers()
     }
     
@@ -305,7 +297,7 @@ class MainViewController: UIViewController {
     
     @IBAction func tapPlayButton() {
         do {
-            try audioPlayer = AVAudioPlayer(contentsOf: documentFilePath(fileName))
+            try audioPlayer = AVAudioPlayer(contentsOf: File(directory: .document, fileName: fileName).url)
         } catch {
             print("error")
         }
@@ -315,17 +307,19 @@ class MainViewController: UIViewController {
     
     @IBAction func tapSaveButton() {
         guard let titleText = titleTextField.text, titleText != "" else {
-            let alert = UIAlertController(title: "ERROR", message: "ファイル名を設定してください。", preferredStyle: .alert)
+            let alert = UIAlertController(title: "ERROR", message: "名前を設定してください。", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
             present(alert, animated: true, completion: nil)
             return
         }
         
-        if Filer.mv(.document, srcPath: fileName, toPath: titleText + ".wav") {
-            let alert = UIAlertController(title: "セーブ完了しました。", message: "\(titleText).wavを保存しました。", preferredStyle: .alert)
+        let file = Date().description + ".wav"
+        
+        if Filer.mv(.document, srcPath: fileName, toPath: file) {
+            let alert = UIAlertController(title: "セーブ完了しました。", message: "\(titleText)を保存しました。", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
             present(alert, animated: true, completion: {
-                self.loadDocument()
+                self.addRealm(File(directory: .document, fileName: file).url, name: titleText)
                 self.tableView.reloadData()
             })
         } else {
@@ -352,8 +346,8 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
         
         cell.fileNameLabel.text = soundData[indexPath.row].displayName
         
-        if let num = mapToNumber[soundData[indexPath.row].urlStr] {
-            cell.setNameLabel.text = "PAD \(num)"
+        if soundData[indexPath.row].padNum != -1 {
+            cell.setNameLabel.text = "PAD \(soundData[indexPath.row].padNum + 1)"
         } else {
             cell.setNameLabel.text = "NONE"
         }

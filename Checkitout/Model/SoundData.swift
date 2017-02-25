@@ -16,9 +16,18 @@ class SoundData: Object {
     dynamic var urlStr: String = ""
     dynamic var displayName: String = ""
     dynamic var padNum: Int = -1
+    var url: URL {
+        get {
+            return URL(string: urlStr)!
+        }
+    }
     
     override static func primaryKey() -> String? {
-        return "id"
+        return "urlStr"
+    }
+    
+    override static func ignoredProperties() -> [String] {
+        return ["url"]
     }
     
     static func create() -> SoundData {
@@ -37,7 +46,7 @@ class SoundData: Object {
     }
     
     static func lastId() -> Int {
-        if let sound = realm.objects(SoundData.self).last {
+        if let sound = realm.objects(SoundData.self).sorted(byKeyPath: "id", ascending: true).last {
             return sound.id + 1
         } else {
             return 1
@@ -54,5 +63,12 @@ class SoundData: Object {
         try! SoundData.realm.write {
             method()
         }
+    }
+    
+    static func fetch(_ str: String) -> SoundData? {
+        if let data = realm.object(ofType: self, forPrimaryKey: str as AnyObject) {
+            return data
+        }
+        return nil
     }
 }
