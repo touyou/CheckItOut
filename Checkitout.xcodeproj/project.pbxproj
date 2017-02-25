@@ -25,6 +25,7 @@
 		463806651E5E7CBD00BD117F /* FileReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 463806611E5E7CBD00BD117F /* FileReader.swift */; };
 		463806661E5E7CBD00BD117F /* FileWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 463806621E5E7CBD00BD117F /* FileWriter.swift */; };
 		463C44C61E5ED046009FAAB7 /* EZAudioiOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 463C44C51E5ED046009FAAB7 /* EZAudioiOS.framework */; };
+		465E3DE61E61C60000DFE979 /* SoundData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 465E3DE51E61C60000DFE979 /* SoundData.swift */; };
 		467230B31E5E8C8600350F0F /* 1korekara_cut.wav in Resources */ = {isa = PBXBuildFile; fileRef = 467230A31E5E8C8600350F0F /* 1korekara_cut.wav */; };
 		467230B41E5E8C8600350F0F /* 2korekara_cut.wav in Resources */ = {isa = PBXBuildFile; fileRef = 467230A41E5E8C8600350F0F /* 2korekara_cut.wav */; };
 		467230B51E5E8C8600350F0F /* 3apuri_cut.wav in Resources */ = {isa = PBXBuildFile; fileRef = 467230A51E5E8C8600350F0F /* 3apuri_cut.wav */; };
@@ -64,6 +65,7 @@
 		463806611E5E7CBD00BD117F /* FileReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileReader.swift; sourceTree = "<group>"; };
 		463806621E5E7CBD00BD117F /* FileWriter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileWriter.swift; sourceTree = "<group>"; };
 		463C44C51E5ED046009FAAB7 /* EZAudioiOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EZAudioiOS.framework; path = Carthage/Build/iOS/EZAudioiOS.framework; sourceTree = "<group>"; };
+		465E3DE51E61C60000DFE979 /* SoundData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SoundData.swift; path = Model/SoundData.swift; sourceTree = "<group>"; };
 		467230A31E5E8C8600350F0F /* 1korekara_cut.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 1korekara_cut.wav; sourceTree = "<group>"; };
 		467230A41E5E8C8600350F0F /* 2korekara_cut.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 2korekara_cut.wav; sourceTree = "<group>"; };
 		467230A51E5E8C8600350F0F /* 3apuri_cut.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 3apuri_cut.wav; sourceTree = "<group>"; };
@@ -125,6 +127,7 @@
 				463806351E5D35DD00BD117F /* LaunchScreen.storyboard */,
 				463806301E5D35DD00BD117F /* Main.storyboard */,
 				4638062E1E5D35DD00BD117F /* MainViewController.swift */,
+				465E3DE41E61C59900DFE979 /* Model */,
 				4638064F1E5D591600BD117F /* logotypejp_mp_b_1.ttf */,
 			);
 			path = Checkitout;
@@ -166,6 +169,14 @@
 				463806601E5E7CBD00BD117F /* Filer.swift */,
 			);
 			path = Filer;
+			sourceTree = "<group>";
+		};
+		465E3DE41E61C59900DFE979 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				465E3DE51E61C60000DFE979 /* SoundData.swift */,
+			);
+			name = Model;
 			sourceTree = "<group>";
 		};
 		74E1C8F8F32B6FA40E4683DD /* Frameworks */ = {
@@ -298,6 +309,7 @@
 				463806641E5E7CBD00BD117F /* Filer.swift in Sources */,
 				463806631E5E7CBD00BD117F /* File.swift in Sources */,
 				463806541E5D673300BD117F /* CustomTableViewCell.swift in Sources */,
+				465E3DE61E61C60000DFE979 /* SoundData.swift in Sources */,
 				463806661E5E7CBD00BD117F /* FileWriter.swift in Sources */,
 				4638062D1E5D35DD00BD117F /* AppDelegate.swift in Sources */,
 			);

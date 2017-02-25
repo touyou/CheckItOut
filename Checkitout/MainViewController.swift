@@ -9,6 +9,7 @@
 import UIKit
 import AVFoundation
 import EZAudioiOS
+import RealmSwift
 
 enum Mode {
     case play
@@ -68,6 +69,7 @@ class MainViewController: UIViewController {
     @IBOutlet var mpcButton: [UIButton]!
     
     let fileName = "temp.wav"
+    let saveData = UserDefaults.standard
     var audioRecorder: AVAudioRecorder?
     var audioPlayer: AVAudioPlayer?
     var selectedNum: Int?
@@ -76,13 +78,17 @@ class MainViewController: UIViewController {
     var mapToNumber = Dictionary<String, Int>()
     var fileManager = FileManager()
     var mode = Mode.play
-    var fileUrl = [URL]()
-    
+    var soundData = [SoundData]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        loadDocument()
+        if !saveData.bool(forKey: "isFirstLaunch") {
+            loadDocument()
+        }
+        
+        initData()
+        
         ezAudioSetup()
         setPlayers()
     }
@@ -98,37 +104,47 @@ class MainViewController: UIViewController {
     }
     
     func loadDocument() {
-        fileUrl = []
-        // sample
-        fileUrl.append(Bundle.main.url(forResource: "hosaka", withExtension: "wav")!)
-        fileUrl.append(Bundle.main.url(forResource: "kirin", withExtension: "wav")!)
-        fileUrl.append(Bundle.main.url(forResource: "taguchi", withExtension: "wav")!)
-        fileUrl.append(Bundle.main.url(forResource: "touyou", withExtension: "wav")!)
-        fileUrl.append(Bundle.main.url(forResource: "1korekara_cut", withExtension: "wav")!)
-        fileUrl.append(Bundle.main.url(forResource: "2korekara_cut", withExtension: "wav")!)
-        fileUrl.append(Bundle.main.url(forResource: "3apuri_cut", withExtension: "wav")!)
-        fileUrl.append(Bundle.main.url(forResource: "4setumei_cut", withExtension: "wav")!)
-        fileUrl.append(Bundle.main.url(forResource: "5suruze_cut", withExtension: "wav")!)
-        fileUrl.append(Bundle.main.url(forResource: "6onsei_cut", withExtension: "wav")!)
-        fileUrl.append(Bundle.main.url(forResource: "7rokuon_cut", withExtension: "wav")!)
-        fileUrl.append(Bundle.main.url(forResource: "8minnnawo_cut", withExtension: "wav")!)
-        fileUrl.append(Bundle.main.url(forResource: "9rockon_cut", withExtension: "wav")!)
-        fileUrl.append(Bundle.main.url(forResource: "10korede_cut", withExtension: "wav")!)
-        fileUrl.append(Bundle.main.url(forResource: "11yourname_cut", withExtension: "wav")!)
-        fileUrl.append(Bundle.main.url(forResource: "12todoroku_cut", withExtension: "wav")!)
-        fileUrl.append(Bundle.main.url(forResource: "13menber_cut", withExtension: "wav")!)
-        fileUrl.append(Bundle.main.url(forResource: "14menta-_cut", withExtension: "wav")!)
-        fileUrl.append(Bundle.main.url(forResource: "15minnade_cut", withExtension: "wav")!)
-        fileUrl.append(Bundle.main.url(forResource: "16chekera_cut", withExtension: "wav")!)
-
-        let files = Filer.ls(.document)
-        if let files = files {
-            for file in files {
-                fileUrl.append(file.url)
+        addRealm(Bundle.main.url(forResource: "hosaka", withExtension: "wav")!, name: "保坂")
+        addRealm(Bundle.main.url(forResource: "kirin", withExtension: "wav")!, name: "麒麟")
+        addRealm(Bundle.main.url(forResource: "taguchi", withExtension: "wav")!, name: "しゅんぺーさん")
+        addRealm(Bundle.main.url(forResource: "touyou", withExtension: "wav")!, name: "バスドラ")
+        addRealm(Bundle.main.url(forResource: "1korekara_cut", withExtension: "wav")!, name: "これから")
+        addRealm(Bundle.main.url(forResource: "2korekara_cut", withExtension: "wav")!, name: "これから２")
+        addRealm(Bundle.main.url(forResource: "3apuri_cut", withExtension: "wav")!, name: "アプリ")
+        addRealm(Bundle.main.url(forResource: "4setumei_cut", withExtension: "wav")!, name: "説明")
+        addRealm(Bundle.main.url(forResource: "5suruze_cut", withExtension: "wav")!, name: "するぜ")
+        addRealm(Bundle.main.url(forResource: "6onsei_cut", withExtension: "wav")!, name: "音声")
+        addRealm(Bundle.main.url(forResource: "7rokuon_cut", withExtension: "wav")!, name: "録音")
+        addRealm(Bundle.main.url(forResource: "8minnnawo_cut", withExtension: "wav")!, name: "みんなを")
+        addRealm(Bundle.main.url(forResource: "9rockon_cut", withExtension: "wav")!, name: "ロックオン")
+        addRealm(Bundle.main.url(forResource: "10korede_cut", withExtension: "wav")!, name: "これで")
+        addRealm(Bundle.main.url(forResource: "11yourname_cut", withExtension: "wav")!, name: "君の名")
+        addRealm(Bundle.main.url(forResource: "12todoroku_cut", withExtension: "wav")!, name: "轟く")
+        addRealm(Bundle.main.url(forResource: "13menber_cut", withExtension: "wav")!, name: "メンバー")
+        addRealm(Bundle.main.url(forResource: "14menta-_cut", withExtension: "wav")!, name: "メンター")
+        addRealm(Bundle.main.url(forResource: "15minnade_cut", withExtension: "wav")!, name: "みんなで")
+        addRealm(Bundle.main.url(forResource: "16chekera_cut", withExtension: "wav")!, name: "チェケラ")
+        
+        
+        saveData.set(true, forKey: "isFirstLaunch")
+    }
+    
+    func initData() {
+        soundData = SoundData.loadAll()
+        
+        for sound in soundData {
+            if sound.padNum != -1 {
+                selectedUrl[sound.padNum] = URL(fileURLWithPath: sound.urlStr)
+                mapToNumber[sound.urlStr] = sound.padNum
             }
-        } else {
-            print("load失敗🙅")
         }
+    }
+    
+    func addRealm(_ url: URL, name: String) {
+        let object = SoundData.create()
+        object.urlStr = url.absoluteString
+        object.displayName = name
+        object.save()
     }
     
     func setPlayers() {
@@ -195,17 +211,22 @@ class MainViewController: UIViewController {
         case .edit:
             // 選択した数字があればその
             if let selected = selectedNum {
-                let str = fileUrl[selected].absoluteString
-                if let num = mapToNumber[str] {
-                    selectedUrl[num] = nil
+                if soundData[selected].padNum != -1 {
+                    selectedUrl[soundData[selected].padNum] = nil
                 }
                 
                 if let url = selectedUrl[sender.tag] {
+                    soundData[mapToNumber[url.absoluteString]!].update {
+                        soundData[mapToNumber[url.absoluteString]!].padNum = -1
+                    }
                     mapToNumber[url.absoluteString] = nil
                 }
                 
-                selectedUrl[sender.tag] = fileUrl[selected]
-                mapToNumber[str] = sender.tag
+                selectedUrl[sender.tag] = URL(fileURLWithPath: soundData[selected].urlStr)
+                mapToNumber[soundData[selected].urlStr] = sender.tag
+                soundData[selected].update {
+                    soundData[selected].padNum = sender.tag
+                }
                 selectedNum = nil
                 let indexPath = IndexPath(row: selected, section: 0)
                 tableView.deselectRow(at: indexPath, animated: true)
@@ -323,17 +344,15 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return fileUrl.count
+        return soundData.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "musicCell", for: indexPath) as! CustomTableViewCell
         
-        let fileNameStr = fileUrl[indexPath.row].absoluteString
-        let list = fileNameStr.components(separatedBy: "/")
-        cell.fileNameLabel.text = list[list.count-1]
+        cell.fileNameLabel.text = soundData[indexPath.row].displayName
         
-        if let num = mapToNumber[fileNameStr] {
+        if let num = mapToNumber[soundData[indexPath.row].urlStr] {
             cell.setNameLabel.text = "PAD \(num)"
         } else {
             cell.setNameLabel.text = "NONE"
