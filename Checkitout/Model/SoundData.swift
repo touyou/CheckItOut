@@ -67,8 +67,11 @@ class SoundData: Object {
         }
     }
     
-    static func fetch(_ str: String) -> SoundData? {
-        if let data = realm.object(ofType: self, forPrimaryKey: str as AnyObject) {
+    static func fetch(_ url: URL, isBundle: Bool) -> SoundData? {
+        let str = url.absoluteString
+        let fileName = str.components(separatedBy: "/").last
+        let noun = fileName?.components(separatedBy: ".").first
+        if let data = realm.object(ofType: self, forPrimaryKey: (isBundle ? noun : str) as AnyObject) {
             return data
         }
         return nil

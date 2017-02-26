@@ -137,6 +137,8 @@ class MainViewController: UIViewController {
                 selectedUrl[sound.padNum] = sound.url
             }
         }
+        
+        tableView.reloadData()
     }
     
     func addRealm(_ url: String, name: String, isBundle: Bool) {
@@ -154,7 +156,6 @@ class MainViewController: UIViewController {
         
         players = []
         
-        print("debug----")
         for url in selectedUrl {
             if let url = url {
                 print(url.absoluteString)
@@ -162,7 +163,6 @@ class MainViewController: UIViewController {
                     let player = try AVAudioPlayer(contentsOf: url)
                     player.prepareToPlay()
                     player.volume = 1.0
-                    print("loaded")
                     players.append(player)
                 } catch {
                     players.append(nil)
@@ -211,7 +211,7 @@ class MainViewController: UIViewController {
                     selectedUrl[soundData[selected].padNum] = nil
                 }
                 
-                if let url = selectedUrl[sender.tag], let data = SoundData.fetch(url.absoluteString) {
+                if let url = selectedUrl[sender.tag], let data = SoundData.fetch(url, isBundle: url.absoluteString.contains("Bundle")) {
                     data.update {
                         data.padNum = -1
                     }
@@ -224,7 +224,7 @@ class MainViewController: UIViewController {
                 selectedNum = nil
                 let indexPath = IndexPath(row: selected, section: 0)
                 tableView.deselectRow(at: indexPath, animated: true)
-                tableView.reloadData()
+                initData()
             }
         case .record: break
         }
@@ -324,7 +324,6 @@ class MainViewController: UIViewController {
                 self.titleTextField.text = nil
                 self.addRealm(File(directory: .document, fileName: file).url.absoluteString, name: titleText, isBundle: false)
                 self.initData()
-                self.tableView.reloadData()
             })
         } else {
             let alert = UIAlertController(title: "ERROR", message: "セーブに失敗しました。", preferredStyle: .alert)
