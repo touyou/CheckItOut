@@ -104,9 +104,12 @@ class MainViewController: UIViewController {
     }
     
     func loadDocument() {
-        addRealm("hosaka", name: "保坂", isBundle: true)
-        addRealm("kirin", name: "麒麟", isBundle: true)
-        addRealm("taguchi", name: "しゅんぺーさん", isBundle: true)
+        #if DEBUG
+            addRealm("hosaka", name: "保坂", isBundle: true)
+            addRealm("kirin", name: "麒麟", isBundle: true)
+            addRealm("taguchi", name: "しゅんぺーさん", isBundle: true)
+        #endif
+        
         addRealm("touyou", name: "バスドラ", isBundle: true)
         addRealm("1korekara_cut", name: "これから", isBundle: true)
         addRealm("2korekara_cut", name: "これから２", isBundle: true)
