@@ -104,26 +104,26 @@ class MainViewController: UIViewController {
     }
     
     func loadDocument() {
-        addRealm(Bundle.main.url(forResource: "hosaka", withExtension: "wav")!, name: "保坂")
-        addRealm(Bundle.main.url(forResource: "kirin", withExtension: "wav")!, name: "麒麟")
-        addRealm(Bundle.main.url(forResource: "taguchi", withExtension: "wav")!, name: "しゅんぺーさん")
-        addRealm(Bundle.main.url(forResource: "touyou", withExtension: "wav")!, name: "バスドラ")
-        addRealm(Bundle.main.url(forResource: "1korekara_cut", withExtension: "wav")!, name: "これから")
-        addRealm(Bundle.main.url(forResource: "2korekara_cut", withExtension: "wav")!, name: "これから２")
-        addRealm(Bundle.main.url(forResource: "3apuri_cut", withExtension: "wav")!, name: "アプリ")
-        addRealm(Bundle.main.url(forResource: "4setumei_cut", withExtension: "wav")!, name: "説明")
-        addRealm(Bundle.main.url(forResource: "5suruze_cut", withExtension: "wav")!, name: "するぜ")
-        addRealm(Bundle.main.url(forResource: "6onsei_cut", withExtension: "wav")!, name: "音声")
-        addRealm(Bundle.main.url(forResource: "7rokuon_cut", withExtension: "wav")!, name: "録音")
-        addRealm(Bundle.main.url(forResource: "8minnnawo_cut", withExtension: "wav")!, name: "みんなを")
-        addRealm(Bundle.main.url(forResource: "9rockon_cut", withExtension: "wav")!, name: "ロックオン")
-        addRealm(Bundle.main.url(forResource: "10korede_cut", withExtension: "wav")!, name: "これで")
-        addRealm(Bundle.main.url(forResource: "11yourname_cut", withExtension: "wav")!, name: "君の名")
-        addRealm(Bundle.main.url(forResource: "12todoroku_cut", withExtension: "wav")!, name: "轟く")
-        addRealm(Bundle.main.url(forResource: "13menber_cut", withExtension: "wav")!, name: "メンバー")
-        addRealm(Bundle.main.url(forResource: "14menta-_cut", withExtension: "wav")!, name: "メンター")
-        addRealm(Bundle.main.url(forResource: "15minnade_cut", withExtension: "wav")!, name: "みんなで")
-        addRealm(Bundle.main.url(forResource: "16chekera_cut", withExtension: "wav")!, name: "チェケラ")
+        addRealm("hosaka", name: "保坂", isBundle: true)
+        addRealm("kirin", name: "麒麟", isBundle: true)
+        addRealm("taguchi", name: "しゅんぺーさん", isBundle: true)
+        addRealm("touyou", name: "バスドラ", isBundle: true)
+        addRealm("1korekara_cut", name: "これから", isBundle: true)
+        addRealm("2korekara_cut", name: "これから２", isBundle: true)
+        addRealm("3apuri_cut", name: "アプリ", isBundle: true)
+        addRealm("4setumei_cut", name: "説明", isBundle: true)
+        addRealm("5suruze_cut", name: "するぜ", isBundle: true)
+        addRealm("6onsei_cut", name: "音声", isBundle: true)
+        addRealm("7rokuon_cut", name: "録音", isBundle: true)
+        addRealm("8minnnawo_cut", name: "みんなを", isBundle: true)
+        addRealm("9rockon_cut", name: "ロックオン", isBundle: true)
+        addRealm("10korede_cut", name: "これで", isBundle: true)
+        addRealm("11yourname_cut", name: "君の名", isBundle: true)
+        addRealm("12todoroku_cut", name: "轟く", isBundle: true)
+        addRealm("13menber_cut", name: "メンバー", isBundle: true)
+        addRealm("14menta-_cut", name: "メンター", isBundle: true)
+        addRealm("15minnade_cut", name: "みんなで", isBundle: true)
+        addRealm("16chekera_cut", name: "チェケラ", isBundle: true)
         
         
         saveData.set(true, forKey: "isFirstLaunch")
@@ -139,9 +139,10 @@ class MainViewController: UIViewController {
         }
     }
     
-    func addRealm(_ url: URL, name: String) {
+    func addRealm(_ url: String, name: String, isBundle: Bool) {
         let object = SoundData.create()
-        object.urlStr = url.absoluteString
+        object.isBundle = isBundle
+        object.urlStr = url
         object.displayName = name
         object.save()
     }
@@ -319,7 +320,9 @@ class MainViewController: UIViewController {
             let alert = UIAlertController(title: "セーブ完了しました。", message: "\(titleText)を保存しました。", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
             present(alert, animated: true, completion: {
-                self.addRealm(File(directory: .document, fileName: file).url, name: titleText)
+                // TO-DO: ここでUIを初期化する
+                self.addRealm(File(directory: .document, fileName: file).url.absoluteString, name: titleText, isBundle: false)
+                self.initData()
                 self.tableView.reloadData()
             })
         } else {

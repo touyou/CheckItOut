@@ -13,12 +13,13 @@ class SoundData: Object {
     static let realm = try! Realm()
     
     dynamic private var id = 0
+    dynamic var isBundle: Bool = false
     dynamic var urlStr: String = ""
     dynamic var displayName: String = ""
     dynamic var padNum: Int = -1
     var url: URL {
         get {
-            return URL(string: urlStr)!
+            return isBundle ? Bundle.main.url(forResource: urlStr, withExtension: "wav")! : URL(string: urlStr)!
         }
     }
     
@@ -53,9 +54,10 @@ class SoundData: Object {
         }
     }
     
-    func save() {
+    func save(_ completion: (()->())? = nil) {
         try! SoundData.realm.write {
             SoundData.realm.add(self)
+            completion?()
         }
     }
     
