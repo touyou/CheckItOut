@@ -320,7 +320,8 @@ class MainViewController: UIViewController {
             let alert = UIAlertController(title: "セーブ完了しました。", message: "\(titleText)を保存しました。", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
             present(alert, animated: true, completion: {
-                // TO-DO: ここでUIを初期化する
+                self.showWaveView.clear()
+                self.titleTextField.text = nil
                 self.addRealm(File(directory: .document, fileName: file).url.absoluteString, name: titleText, isBundle: false)
                 self.initData()
                 self.tableView.reloadData()
