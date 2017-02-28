@@ -9,6 +9,7 @@
 import UIKit
 import AVFoundation
 import EZAudioiOS
+import RealmSwift
 
 enum Mode {
     case play
@@ -63,59 +64,100 @@ class MainViewController: UIViewController {
             stopRecordButton.isEnabled = false
         }
     }
+    @IBOutlet var mpcButton: [UIButton]!
     
     let fileName = "temp.wav"
+    let saveData = UserDefaults.standard
+    
     var audioRecorder: AVAudioRecorder?
     var audioPlayer: AVAudioPlayer?
     var selectedNum: Int?
     var players = [AVAudioPlayer?]()
     var selectedUrl = Array<URL?>(repeating: nil, count: 16)
-    var mapToNumber = Dictionary<String, Int>()
     var fileManager = FileManager()
     var mode = Mode.play
-    var fileUrl = [URL]()
-    
+    var soundData = [SoundData]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        loadDocument()
+        if !saveData.bool(forKey: "isFirstLaunch") {
+            loadDocument()
+        }
+        
+        initData()
+        
         ezAudioSetup()
         setPlayers()
     }
     
-    func loadDocument() {
-        fileUrl = []
-        // sample
-        fileUrl.append(Bundle.main.url(forResource: "hosaka", withExtension: "wav")!)
-        fileUrl.append(Bundle.main.url(forResource: "kirin", withExtension: "wav")!)
-        fileUrl.append(Bundle.main.url(forResource: "taguchi", withExtension: "wav")!)
-        fileUrl.append(Bundle.main.url(forResource: "touyou", withExtension: "wav")!)
-        fileUrl.append(Bundle.main.url(forResource: "1korekara_cut", withExtension: "wav")!)
-        fileUrl.append(Bundle.main.url(forResource: "2korekara_cut", withExtension: "wav")!)
-        fileUrl.append(Bundle.main.url(forResource: "3apuri_cut", withExtension: "wav")!)
-        fileUrl.append(Bundle.main.url(forResource: "4setumei_cut", withExtension: "wav")!)
-        fileUrl.append(Bundle.main.url(forResource: "5suruze_cut", withExtension: "wav")!)
-        fileUrl.append(Bundle.main.url(forResource: "6onsei_cut", withExtension: "wav")!)
-        fileUrl.append(Bundle.main.url(forResource: "7rokuon_cut", withExtension: "wav")!)
-        fileUrl.append(Bundle.main.url(forResource: "8minnnawo_cut", withExtension: "wav")!)
-        fileUrl.append(Bundle.main.url(forResource: "9rockon_cut", withExtension: "wav")!)
-        fileUrl.append(Bundle.main.url(forResource: "10korede_cut", withExtension: "wav")!)
-        fileUrl.append(Bundle.main.url(forResource: "11yourname_cut", withExtension: "wav")!)
-        fileUrl.append(Bundle.main.url(forResource: "12todoroku_cut", withExtension: "wav")!)
-        fileUrl.append(Bundle.main.url(forResource: "13menber_cut", withExtension: "wav")!)
-        fileUrl.append(Bundle.main.url(forResource: "14menta-_cut", withExtension: "wav")!)
-        fileUrl.append(Bundle.main.url(forResource: "15minnade_cut", withExtension: "wav")!)
-        fileUrl.append(Bundle.main.url(forResource: "16chekera_cut", withExtension: "wav")!)
-
-        let files = Filer.ls(.document)
-        if let files = files {
-            for file in files {
-                fileUrl.append(file.url)
-            }
-        } else {
-            print("load失敗🙅")
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        mpcButton.forEach {
+            $0.imageView?.contentMode = .scaleAspectFit
+            $0.contentHorizontalAlignment = .fill
+            $0.contentVerticalAlignment = .fill
         }
+    }
+    
+    func loadDocument() {
+        #if DEBUG
+            addRealm("hosaka", name: "保坂", isBundle: true)
+            addRealm("kirin", name: "麒麟", isBundle: true)
+            addRealm("taguchi", name: "しゅんぺーさん", isBundle: true)
+            addRealm("1korekara_cut", name: "これから", isBundle: true)
+            addRealm("2korekara_cut", name: "これから２", isBundle: true)
+            addRealm("3apuri_cut", name: "アプリ", isBundle: true)
+            addRealm("4setumei_cut", name: "説明", isBundle: true)
+            addRealm("5suruze_cut", name: "するぜ", isBundle: true)
+            addRealm("6onsei_cut", name: "音声", isBundle: true)
+            addRealm("7rokuon_cut", name: "録音", isBundle: true)
+            addRealm("8minnnawo_cut", name: "みんなを", isBundle: true)
+            addRealm("9rockon_cut", name: "ロックオン", isBundle: true)
+            addRealm("10korede_cut", name: "これで", isBundle: true)
+            addRealm("11yourname_cut", name: "君の名", isBundle: true)
+            addRealm("12todoroku_cut", name: "轟く", isBundle: true)
+            addRealm("13menber_cut", name: "メンバー", isBundle: true)
+            addRealm("14menta-_cut", name: "メンター", isBundle: true)
+        #endif
+        
+        addRealm("touyou", name: "バスドラ", isBundle: true)
+        addRealm("15minnade_cut", name: "みんなで", isBundle: true)
+        addRealm("16chekera_cut", name: "チェケラ", isBundle: true)
+        
+        let assignDef = ["touyou", "15minnade_cut", "16chekera_cut"]
+        
+        for i in 0 ..< assignDef.count {
+            if let data = SoundData.assignDefault(assignDef[i]) {
+                data.update {
+                    data.padNum = i
+                }
+            }
+        }
+        
+        
+        saveData.set(true, forKey: "isFirstLaunch")
+    }
+    
+    func initData() {
+        soundData = SoundData.loadAll()
+        
+        for sound in soundData {
+            if sound.padNum != -1 {
+                selectedUrl[sound.padNum] = sound.url
+            }
+        }
+        
+        tableView.reloadData()
+    }
+    
+    func addRealm(_ url: String, name: String, isBundle: Bool) {
+        let object = SoundData.create()
+        object.isBundle = isBundle
+        object.urlStr = url
+        object.displayName = name
+        object.save()
     }
     
     func setPlayers() {
@@ -131,7 +173,6 @@ class MainViewController: UIViewController {
                     let player = try AVAudioPlayer(contentsOf: url)
                     player.prepareToPlay()
                     player.volume = 1.0
-                    
                     players.append(player)
                 } catch {
                     players.append(nil)
@@ -155,16 +196,10 @@ class MainViewController: UIViewController {
         ]
         
         do {
-            try audioRecorder = AVAudioRecorder(url: documentFilePath(fileName), settings: recordSetting)
+            try audioRecorder = AVAudioRecorder(url: File(directory: .document, fileName: fileName).url, settings: recordSetting)
         } catch {
             print("error")
         }
-    }
-    
-    fileprivate func documentFilePath(_ name: String) -> URL {
-        let urls = fileManager.urls(for: .documentDirectory, in: .userDomainMask)
-        let dirUrl = urls[0]
-        return dirUrl.appendingPathComponent(name)
     }
     
     // MARK: - MPC Button
@@ -182,21 +217,24 @@ class MainViewController: UIViewController {
         case .edit:
             // 選択した数字があればその
             if let selected = selectedNum {
-                let str = fileUrl[selected].absoluteString
-                if let num = mapToNumber[str] {
-                    selectedUrl[num] = nil
+                if soundData[selected].padNum != -1 {
+                    selectedUrl[soundData[selected].padNum] = nil
                 }
                 
-                if let url = selectedUrl[sender.tag] {
-                    mapToNumber[url.absoluteString] = nil
+                if let url = selectedUrl[sender.tag], let data = SoundData.fetch(url, isBundle: url.absoluteString.contains("Bundle")) {
+                    data.update {
+                        data.padNum = -1
+                    }
                 }
                 
-                selectedUrl[sender.tag] = fileUrl[selected]
-                mapToNumber[str] = sender.tag
+                selectedUrl[sender.tag] = soundData[selected].url
+                soundData[selected].update {
+                    soundData[selected].padNum = sender.tag
+                }
                 selectedNum = nil
                 let indexPath = IndexPath(row: selected, section: 0)
                 tableView.deselectRow(at: indexPath, animated: true)
-                tableView.reloadData()
+                initData()
             }
         case .record: break
         }
@@ -230,7 +268,6 @@ class MainViewController: UIViewController {
             tableView.deselectRow(at: IndexPath(row: selected, section: 0), animated: true)
         }
         
-        loadDocument()
         setPlayers()
     }
     
@@ -271,7 +308,7 @@ class MainViewController: UIViewController {
     
     @IBAction func tapPlayButton() {
         do {
-            try audioPlayer = AVAudioPlayer(contentsOf: documentFilePath(fileName))
+            try audioPlayer = AVAudioPlayer(contentsOf: File(directory: .document, fileName: fileName).url)
         } catch {
             print("error")
         }
@@ -281,18 +318,22 @@ class MainViewController: UIViewController {
     
     @IBAction func tapSaveButton() {
         guard let titleText = titleTextField.text, titleText != "" else {
-            let alert = UIAlertController(title: "ERROR", message: "ファイル名を設定してください。", preferredStyle: .alert)
+            let alert = UIAlertController(title: "ERROR", message: "名前を設定してください。", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
             present(alert, animated: true, completion: nil)
             return
         }
         
-        if Filer.mv(.document, srcPath: fileName, toPath: titleText + ".wav") {
-            let alert = UIAlertController(title: "セーブ完了しました。", message: "\(titleText).wavを保存しました。", preferredStyle: .alert)
+        let file = Date().description + ".wav"
+        
+        if Filer.mv(.document, srcPath: fileName, toPath: file) {
+            let alert = UIAlertController(title: "セーブ完了しました。", message: "\(titleText)を保存しました。", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
             present(alert, animated: true, completion: {
-                self.loadDocument()
-                self.tableView.reloadData()
+                self.showWaveView.clear()
+                self.titleTextField.text = nil
+                self.addRealm(File(directory: .document, fileName: file).url.absoluteString, name: titleText, isBundle: false)
+                self.initData()
             })
         } else {
             let alert = UIAlertController(title: "ERROR", message: "セーブに失敗しました。", preferredStyle: .alert)
@@ -310,18 +351,16 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return fileUrl.count
+        return soundData.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "musicCell", for: indexPath) as! CustomTableViewCell
         
-        let fileNameStr = fileUrl[indexPath.row].absoluteString
-        let list = fileNameStr.components(separatedBy: "/")
-        cell.fileNameLabel.text = list[list.count-1]
+        cell.fileNameLabel.text = soundData[indexPath.row].displayName
         
-        if let num = mapToNumber[fileNameStr] {
-            cell.setNameLabel.text = "PAD \(num)"
+        if soundData[indexPath.row].padNum != -1 {
+            cell.setNameLabel.text = "PAD \(soundData[indexPath.row].padNum + 1)"
         } else {
             cell.setNameLabel.text = "NONE"
         }
