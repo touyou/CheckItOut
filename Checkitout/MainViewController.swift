@@ -85,8 +85,6 @@ class MainViewController: UIViewController {
             loadDocument()
         }
         
-        print(Bundle.main.url(forResource: "hosaka", withExtension: "wav")!.absoluteString)
-        
         initData()
         
         ezAudioSetup()
@@ -108,25 +106,35 @@ class MainViewController: UIViewController {
             addRealm("hosaka", name: "保坂", isBundle: true)
             addRealm("kirin", name: "麒麟", isBundle: true)
             addRealm("taguchi", name: "しゅんぺーさん", isBundle: true)
+            addRealm("1korekara_cut", name: "これから", isBundle: true)
+            addRealm("2korekara_cut", name: "これから２", isBundle: true)
+            addRealm("3apuri_cut", name: "アプリ", isBundle: true)
+            addRealm("4setumei_cut", name: "説明", isBundle: true)
+            addRealm("5suruze_cut", name: "するぜ", isBundle: true)
+            addRealm("6onsei_cut", name: "音声", isBundle: true)
+            addRealm("7rokuon_cut", name: "録音", isBundle: true)
+            addRealm("8minnnawo_cut", name: "みんなを", isBundle: true)
+            addRealm("9rockon_cut", name: "ロックオン", isBundle: true)
+            addRealm("10korede_cut", name: "これで", isBundle: true)
+            addRealm("11yourname_cut", name: "君の名", isBundle: true)
+            addRealm("12todoroku_cut", name: "轟く", isBundle: true)
+            addRealm("13menber_cut", name: "メンバー", isBundle: true)
+            addRealm("14menta-_cut", name: "メンター", isBundle: true)
         #endif
         
         addRealm("touyou", name: "バスドラ", isBundle: true)
-        addRealm("1korekara_cut", name: "これから", isBundle: true)
-        addRealm("2korekara_cut", name: "これから２", isBundle: true)
-        addRealm("3apuri_cut", name: "アプリ", isBundle: true)
-        addRealm("4setumei_cut", name: "説明", isBundle: true)
-        addRealm("5suruze_cut", name: "するぜ", isBundle: true)
-        addRealm("6onsei_cut", name: "音声", isBundle: true)
-        addRealm("7rokuon_cut", name: "録音", isBundle: true)
-        addRealm("8minnnawo_cut", name: "みんなを", isBundle: true)
-        addRealm("9rockon_cut", name: "ロックオン", isBundle: true)
-        addRealm("10korede_cut", name: "これで", isBundle: true)
-        addRealm("11yourname_cut", name: "君の名", isBundle: true)
-        addRealm("12todoroku_cut", name: "轟く", isBundle: true)
-        addRealm("13menber_cut", name: "メンバー", isBundle: true)
-        addRealm("14menta-_cut", name: "メンター", isBundle: true)
         addRealm("15minnade_cut", name: "みんなで", isBundle: true)
         addRealm("16chekera_cut", name: "チェケラ", isBundle: true)
+        
+        let assignDef = ["touyou", "15minnade_cut", "16chekera_cut"]
+        
+        for i in 0 ..< assignDef.count {
+            if let data = SoundData.assignDefault(assignDef[i]) {
+                data.update {
+                    data.padNum = i
+                }
+            }
+        }
         
         
         saveData.set(true, forKey: "isFirstLaunch")
@@ -161,7 +169,6 @@ class MainViewController: UIViewController {
         
         for url in selectedUrl {
             if let url = url {
-                print(url.absoluteString)
                 do {
                     let player = try AVAudioPlayer(contentsOf: url)
                     player.prepareToPlay()

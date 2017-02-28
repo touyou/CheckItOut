@@ -76,4 +76,11 @@ class SoundData: Object {
         }
         return nil
     }
+    
+    static func assignDefault(_ str: String) -> SoundData? {
+        if let data = realm.object(ofType: self, forPrimaryKey: str as AnyObject) {
+            return data
+        }
+        return nil
+    }
 }
