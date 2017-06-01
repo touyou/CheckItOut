@@ -356,6 +356,15 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) RLMSyncManag
 + (RLMSyncManager * _Nonnull)shared SWIFT_WARN_UNUSED_RESULT;
 @end
 
+@class RLMSyncPermissionValue;
+
+@interface RLMSyncPermissionResults (SWIFT_EXTENSION(RealmSwift))
+- (RLMSyncPermissionValue * _Nonnull)objectAtIndexedSubscript:(NSInteger)index SWIFT_WARN_UNUSED_RESULT;
+- (NSInteger)indexAfter:(NSInteger)i SWIFT_WARN_UNUSED_RESULT;
+@property (nonatomic, readonly) NSInteger startIndex;
+@property (nonatomic, readonly) NSInteger endIndex;
+@end
+
 
 @interface RLMSyncSession (SWIFT_EXTENSION(RealmSwift))
 @end

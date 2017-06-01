@@ -1,9 +1,8 @@
 {
-  "xcodeVersion" : "Xcode 8.3.2\nBuild version 8E2002",
   "commitish" : "1.1.5",
   "iOS" : [
     {
-      "hash" : "ec2b9bcfd2fea0228e628132f6397a63c035534a6289d5a117f8b739f1f8c13e",
+      "hash" : "e13125a9a33ad55c9715f57f5161cdb45f7e060de6143fd48c737a9bb550d0f9",
       "name" : "EZAudioiOS"
     }
   ]
