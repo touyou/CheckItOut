@@ -1,9 +1,0 @@
-{
-  "commitish" : "1.1.5",
-  "iOS" : [
-    {
-      "hash" : "e13125a9a33ad55c9715f57f5161cdb45f7e060de6143fd48c737a9bb550d0f9",
-      "name" : "EZAudioiOS"
-    }
-  ]
-}
