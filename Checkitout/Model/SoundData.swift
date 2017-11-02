@@ -12,11 +12,11 @@ import RealmSwift
 class SoundData: Object {
     static let realm = try! Realm()
     
-    dynamic private var id = 0
-    dynamic var isBundle: Bool = false
-    dynamic var urlStr: String = ""
-    dynamic var displayName: String = ""
-    dynamic var padNum: Int = -1
+    @objc dynamic private var id = 0
+    @objc dynamic var isBundle: Bool = false
+    @objc dynamic var urlStr: String = ""
+    @objc dynamic var displayName: String = ""
+    @objc dynamic var padNum: Int = -1
     var url: URL {
         get {
             return isBundle ? Bundle.main.url(forResource: urlStr, withExtension: "wav")! : URL(string: urlStr)!

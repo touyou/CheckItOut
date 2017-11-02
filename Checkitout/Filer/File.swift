@@ -238,22 +238,23 @@ public func ==(lhs: File, rhs: File) -> Bool {
     return lhs.path == rhs.path
 }
 
-infix operator ->> { associativity left }
+//infix operator ->> { associativity left }
+//
+//public func ->>(lhs: String, rhs: File) -> Bool {
+//    return rhs.append(lhs)
+//}
+//
+//public func ->>(lhs: Data, rhs: File) -> Bool {
+//    return rhs.appendData(lhs)
+//}
+//
+//infix operator --> { associativity left }
+//
+//public func -->(lhs: String, rhs: File) -> Bool {
+//    return rhs.write(lhs)
+//}
+//
+//public func -->(lhs: Data, rhs: File) -> Bool {
+//    return rhs.writeData(lhs)
+//}
 
-public func ->>(lhs: String, rhs: File) -> Bool {
-    return rhs.append(lhs)
-}
-
-public func ->>(lhs: Data, rhs: File) -> Bool {
-    return rhs.appendData(lhs)
-}
-
-infix operator --> { associativity left }
-
-public func -->(lhs: String, rhs: File) -> Bool {
-    return rhs.write(lhs)
-}
-
-public func -->(lhs: Data, rhs: File) -> Bool {
-    return rhs.writeData(lhs)
-}
