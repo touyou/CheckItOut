@@ -3,12 +3,10 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		460A156D1E6072CA006285F8 /* Realm.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 460A156B1E6072CA006285F8 /* Realm.framework */; };
-		460A156E1E6072CA006285F8 /* RealmSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 460A156C1E6072CA006285F8 /* RealmSwift.framework */; };
 		4638062D1E5D35DD00BD117F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4638062C1E5D35DD00BD117F /* AppDelegate.swift */; };
 		4638062F1E5D35DD00BD117F /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4638062E1E5D35DD00BD117F /* MainViewController.swift */; };
 		463806321E5D35DD00BD117F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 463806301E5D35DD00BD117F /* Main.storyboard */; };
@@ -26,6 +24,8 @@
 		463806661E5E7CBD00BD117F /* FileWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 463806621E5E7CBD00BD117F /* FileWriter.swift */; };
 		463C44C61E5ED046009FAAB7 /* EZAudioiOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 463C44C51E5ED046009FAAB7 /* EZAudioiOS.framework */; };
 		465E3DE61E61C60000DFE979 /* SoundData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 465E3DE51E61C60000DFE979 /* SoundData.swift */; };
+		466E27CF2377DCE600067FC9 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = 466E27CE2377DCE600067FC9 /* Realm */; };
+		466E27D12377DCE600067FC9 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 466E27D02377DCE600067FC9 /* RealmSwift */; };
 		467230B31E5E8C8600350F0F /* 1korekara_cut.wav in Resources */ = {isa = PBXBuildFile; fileRef = 467230A31E5E8C8600350F0F /* 1korekara_cut.wav */; };
 		467230B41E5E8C8600350F0F /* 2korekara_cut.wav in Resources */ = {isa = PBXBuildFile; fileRef = 467230A41E5E8C8600350F0F /* 2korekara_cut.wav */; };
 		467230B51E5E8C8600350F0F /* 3apuri_cut.wav in Resources */ = {isa = PBXBuildFile; fileRef = 467230A51E5E8C8600350F0F /* 3apuri_cut.wav */; };
@@ -89,8 +89,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				460A156D1E6072CA006285F8 /* Realm.framework in Frameworks */,
-				460A156E1E6072CA006285F8 /* RealmSwift.framework in Frameworks */,
+				466E27CF2377DCE600067FC9 /* Realm in Frameworks */,
+				466E27D12377DCE600067FC9 /* RealmSwift in Frameworks */,
 				463C44C61E5ED046009FAAB7 /* EZAudioiOS.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -206,6 +206,10 @@
 			dependencies = (
 			);
 			name = Checkitout;
+			packageProductDependencies = (
+				466E27CE2377DCE600067FC9 /* Realm */,
+				466E27D02377DCE600067FC9 /* RealmSwift */,
+			);
 			productName = Checkitout;
 			productReference = 463806291E5D35DD00BD117F /* Checkitout.app */;
 			productType = "com.apple.product-type.application";
@@ -237,6 +241,9 @@
 				Base,
 			);
 			mainGroup = 463806201E5D35DD00BD117F;
+			packageReferences = (
+				466E27CD2377DCE600067FC9 /* XCRemoteSwiftPackageReference "realm-cocoa" */,
+			);
 			productRefGroup = 4638062A1E5D35DD00BD117F /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -288,14 +295,12 @@
 			);
 			inputPaths = (
 				"$(SRCROOT)/Carthage/Build/iOS/EZAudioiOS.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/RealmSwift.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/Realm.framework",
 			);
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "/usr/local/bin/carthage copy-frameworks";
+			shellScript = "/usr/local/bin/carthage copy-frameworks\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -443,7 +448,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -460,7 +466,10 @@
 				);
 				INFOPLIST_FILE = Checkitout/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				MARKETING_VERSION = 1.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.dev.touyou.Checkitout;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -482,7 +491,10 @@
 				);
 				INFOPLIST_FILE = Checkitout/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				MARKETING_VERSION = 1.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.dev.touyou.Checkitout;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -514,6 +526,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		466E27CD2377DCE600067FC9 /* XCRemoteSwiftPackageReference "realm-cocoa" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/realm/realm-cocoa";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		466E27CE2377DCE600067FC9 /* Realm */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 466E27CD2377DCE600067FC9 /* XCRemoteSwiftPackageReference "realm-cocoa" */;
+			productName = Realm;
+		};
+		466E27D02377DCE600067FC9 /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 466E27CD2377DCE600067FC9 /* XCRemoteSwiftPackageReference "realm-cocoa" */;
+			productName = RealmSwift;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 463806211E5D35DD00BD117F /* Project object */;
 }
