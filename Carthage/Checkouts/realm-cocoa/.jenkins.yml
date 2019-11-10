@@ -1,268 +1,454 @@
+
 # Yaml Axis Plugin
 # https://wiki.jenkins-ci.org/display/JENKINS/Yaml+Axis+Plugin
+# This is a generated file produced by scripts/pr-ci-matrix.rb.
 
-xcode_version:
-  - 8.0
-  - 8.1
-  - 8.2
-  - 8.3.3
-  - 9.0
-target:
-  - osx
-  - docs
-  - ios-static
-  - ios-dynamic
-  - ios-swift
-  - osx-swift
-  - watchos
-  - cocoapods
-  - swiftlint
-  - tvos
-  - osx-encryption
-  - osx-object-server
-
-  - ios-device-objc-ios8
-  # - ios-device-swift-ios8
-  - ios-device-objc-ios10
-  # - ios-device-swift-ios10
-  - tvos-device
-configuration:
-  - Debug
-  - Release
-
-# Combinations have to be excluded in a way that's hard to read.
-# This table shows which jobs will run:
-
-# +----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-# | Configuration Matrix | osx | docs | ios-static | ios-dynamic | ios-swift | osx-swift | watchos | cocoapods | swiftlint | tvos | osx-encryption | osx-object-server | ios-device-objc-ios8 | ios-device-swift-ios8 | ios-device-objc-ios10 | ios-device-swift-ios10 | tvos-device |
-# | -------------------- | --- | ---- | ---------- | ----------- | --------- | --------- | ------- | --------- | --------- | ---- | -------------- | ----------------- | -------------------- | --------------------- | --------------------- | ---------------------- | ----------- |
-# | 8.0   | Debug        | X   |      |            |             |           |           |         |           |           |      |                |                   |                      |                       |                       |                        |             |
-# | 8.0   | Release      | X   |      | X          | X           | X         | X         | X       | X         |           | X    |                |                   |                      |                       |                       |                        |             |
-# | -------------------- | --- | ---- | ---------- | ----------- | --------- | --------- | ------- | --------- | --------- | ---- | -------------- | ----------------- | -------------------- | --------------------- | --------------------- | ---------------------- | ----------- |
-# | 8.1   | Debug        | X   |      |            |             |           |           |         |           |           |      |                |                   |                      |                       |                       |                        |             |
-# | 8.1   | Release      | X   |      | X          | X           | X         | X         | X       | X         |           | X    |                |                   |                      |                       |                       |                        |             |
-# | -------------------- | --- | ---- | ---------- | ----------- | --------- | --------- | ------- | --------- | --------- | ---- | -------------- | ----------------- | -------------------- | --------------------- | --------------------- | ---------------------- | ----------- |
-# | 8.2   | Debug        | X   |      | X          |             |           |           |         |           |           |      |                |                   |                      |                       |                       |                        |             |
-# | 8.2   | Release      | X   |      | X          | X           | X         | X         | X       | X         |           | X    |                |                   |                      |                       |                       |                        |             |
-# | -------------------- | --- | ---- | ---------- | ----------- | --------- | --------- | ------- | --------- | --------- | ---- | -------------- | ----------------- | -------------------- | --------------------- | --------------------- | ---------------------- | ----------- |
-# | 8.3.3 | Debug        | X   |      |            | X           | X         | X         | X       |           |           | X    |                |                   |                      |                       |                       |                        |             |
-# | 8.3.3 | Release      | X   | X    |            | X           | X         | X         | X       | X         |           | X    | X              | X                 | X                    |                       | X                     |                        | X           |
-# | -------------------- | --- | ---- | ---------- | ----------- | --------- | --------- | ------- | --------- | --------- | ---- | -------------- | ----------------- | -------------------- | --------------------- | --------------------- | ---------------------- | ----------- |
-# | 9.0   | Debug        | X   |      |            | X           | X         | X         | X       |           |           | X    |                |                   |                      |                       |                       |                        |             |
-# | 9.0   | Release      | X   |      |            | X           | X         | X         | X       | X         | X         | X    | X              | X                 | X                    |                       | X                     |                        | X           |
-# +----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+xcode_version: 
+ - 10.0
+ - 10.1
+ - 10.2.1
+ - 10.3
+ - 11.1
+ - 11.2
+target: 
+ - docs
+ - swiftlint
+ - osx
+ - osx-encryption
+ - osx-object-server
+ - ios-static
+ - ios-dynamic
+ - watchos
+ - tvos
+ - ios-swift
+ - osx-swift
+ - tvos-swift
+ - cocoapods-osx
+ - cocoapods-ios
+ - cocoapods-watchos
+ - swiftpm
+configuration: 
+ - Debug
+ - Release
 
 exclude:
-  ################
-  # docs
-  ################
-  # Just run on 8.3.3 Release
-  - xcode_version: 8.0
+
+  - xcode_version: 10.0
     target: docs
-  - xcode_version: 8.1
-    target: docs
-  - xcode_version: 8.2
-    target: docs
-  - xcode_version: 9.0
-    target: docs
-  - target: docs
     configuration: Debug
 
-  ################
-  # ios-static
-  ################
-  # Skip on 8.0/8.1 Debug
-  # Skip 8.3.3/9.0 altogether since it doesn't support the iOS 7 deployment target
-  - xcode_version: 8.0
-    target: ios-static
-    configuration: Debug
-  - xcode_version: 8.1
-    target: ios-static
-    configuration: Debug
-  - xcode_version: 8.3.3
-    target: ios-static
-  - xcode_version: 9.0
-    target: ios-static
+  - xcode_version: 10.0
+    target: docs
+    configuration: Release
 
-  ################
-  # ios-dynamic
-  ################
-  # Skip on 8.0/8.1/8.2 Debug
-  - xcode_version: 8.0
+  - xcode_version: 10.1
+    target: docs
+    configuration: Debug
+
+  - xcode_version: 10.1
+    target: docs
+    configuration: Release
+
+  - xcode_version: 10.2.1
+    target: docs
+    configuration: Debug
+
+  - xcode_version: 10.2.1
+    target: docs
+    configuration: Release
+
+  - xcode_version: 10.3
+    target: docs
+    configuration: Debug
+
+  - xcode_version: 10.3
+    target: docs
+    configuration: Release
+
+  - xcode_version: 11.1
+    target: docs
+    configuration: Debug
+
+  - xcode_version: 11.1
+    target: docs
+    configuration: Release
+
+  - xcode_version: 11.2
+    target: docs
+    configuration: Debug
+
+  - xcode_version: 10.0
+    target: swiftlint
+    configuration: Debug
+
+  - xcode_version: 10.0
+    target: swiftlint
+    configuration: Release
+
+  - xcode_version: 10.1
+    target: swiftlint
+    configuration: Debug
+
+  - xcode_version: 10.1
+    target: swiftlint
+    configuration: Release
+
+  - xcode_version: 10.2.1
+    target: swiftlint
+    configuration: Debug
+
+  - xcode_version: 10.2.1
+    target: swiftlint
+    configuration: Release
+
+  - xcode_version: 10.3
+    target: swiftlint
+    configuration: Debug
+
+  - xcode_version: 10.3
+    target: swiftlint
+    configuration: Release
+
+  - xcode_version: 11.1
+    target: swiftlint
+    configuration: Debug
+
+  - xcode_version: 11.1
+    target: swiftlint
+    configuration: Release
+
+  - xcode_version: 11.2
+    target: swiftlint
+    configuration: Debug
+
+  - xcode_version: 10.0
+    target: osx-encryption
+    configuration: Debug
+
+  - xcode_version: 10.1
+    target: osx-encryption
+    configuration: Debug
+
+  - xcode_version: 10.1
+    target: osx-encryption
+    configuration: Release
+
+  - xcode_version: 10.2.1
+    target: osx-encryption
+    configuration: Debug
+
+  - xcode_version: 10.2.1
+    target: osx-encryption
+    configuration: Release
+
+  - xcode_version: 10.3
+    target: osx-encryption
+    configuration: Debug
+
+  - xcode_version: 10.3
+    target: osx-encryption
+    configuration: Release
+
+  - xcode_version: 11.1
+    target: osx-encryption
+    configuration: Debug
+
+  - xcode_version: 11.1
+    target: osx-encryption
+    configuration: Release
+
+  - xcode_version: 11.2
+    target: osx-encryption
+    configuration: Debug
+
+  - xcode_version: 10.0
+    target: osx-object-server
+    configuration: Debug
+
+  - xcode_version: 10.1
+    target: osx-object-server
+    configuration: Debug
+
+  - xcode_version: 10.1
+    target: osx-object-server
+    configuration: Release
+
+  - xcode_version: 10.2.1
+    target: osx-object-server
+    configuration: Debug
+
+  - xcode_version: 10.2.1
+    target: osx-object-server
+    configuration: Release
+
+  - xcode_version: 10.3
+    target: osx-object-server
+    configuration: Debug
+
+  - xcode_version: 10.3
+    target: osx-object-server
+    configuration: Release
+
+  - xcode_version: 11.1
+    target: osx-object-server
+    configuration: Debug
+
+  - xcode_version: 11.1
+    target: osx-object-server
+    configuration: Release
+
+  - xcode_version: 11.2
+    target: osx-object-server
+    configuration: Debug
+
+  - xcode_version: 10.0
+    target: ios-static
+    configuration: Debug
+
+  - xcode_version: 10.1
+    target: ios-static
+    configuration: Debug
+
+  - xcode_version: 10.2.1
+    target: ios-static
+    configuration: Debug
+
+  - xcode_version: 10.3
+    target: ios-static
+    configuration: Debug
+
+  - xcode_version: 11.1
+    target: ios-static
+    configuration: Debug
+
+  - xcode_version: 10.0
     target: ios-dynamic
     configuration: Debug
-  - xcode_version: 8.1
+
+  - xcode_version: 10.1
     target: ios-dynamic
     configuration: Debug
-  - xcode_version: 8.2
+
+  - xcode_version: 10.2.1
     target: ios-dynamic
     configuration: Debug
 
-  ################
-  # ios-swift
-  ################
-  # Skip 8.0/8.1/8.2 Debug
-  - xcode_version: 8.0
-    target: ios-swift
-    configuration: Debug
-  - xcode_version: 8.1
-    target: ios-swift
-    configuration: Debug
-  - xcode_version: 8.2
-    target: ios-swift
+  - xcode_version: 10.3
+    target: ios-dynamic
     configuration: Debug
 
-  ################
-  # osx-swift
-  ################
-  # Skip 8.0/8.1/8.2 Debug
-  - xcode_version: 8.0
-    target: osx-swift
-    configuration: Debug
-  - xcode_version: 8.1
-    target: osx-swift
-    configuration: Debug
-  - xcode_version: 8.2
-    target: osx-swift
+  - xcode_version: 11.1
+    target: ios-dynamic
     configuration: Debug
 
-  ################
-  # watchos
-  ################
-  # Skip 8.0/8.1/8.2 Debug
-  - xcode_version: 8.0
-    target: watchos
-    configuration: Debug
-  - xcode_version: 8.1
-    target: watchos
-    configuration: Debug
-  - xcode_version: 8.2
+  - xcode_version: 10.0
     target: watchos
     configuration: Debug
 
-  ################
-  # cocoapods
-  ################
-  # Skip Debug
-  - target: cocoapods
+  - xcode_version: 10.1
+    target: watchos
     configuration: Debug
 
-  ################
-  # swiftlint
-  ################
-  # Just run on 9.0 Release
-  - xcode_version: 8.0
-    target: swiftlint
-  - xcode_version: 8.1
-    target: swiftlint
-  - xcode_version: 8.2
-    target: swiftlint
-  - xcode_version: 8.3.3
-    target: swiftlint
-  - target: swiftlint
+  - xcode_version: 10.2.1
+    target: watchos
     configuration: Debug
 
-  ################
-  # tvos
-  ################
-  # Skip 8.0/8.1/8.2 Debug
-  - xcode_version: 8.0
-    target: tvos
+  - xcode_version: 10.3
+    target: watchos
     configuration: Debug
-  - xcode_version: 8.1
-    target: tvos
+
+  - xcode_version: 11.1
+    target: watchos
     configuration: Debug
-  - xcode_version: 8.2
+
+  - xcode_version: 10.0
     target: tvos
     configuration: Debug
 
-  ################
-  # osx-encryption
-  ################
-  # Just run on 8.3.3/9.0 Release
-  - xcode_version: 8.0
-    target: osx-encryption
-  - xcode_version: 8.1
-    target: osx-encryption
-  - xcode_version: 8.2
-    target: osx-encryption
-  - target: osx-encryption
+  - xcode_version: 10.1
+    target: tvos
     configuration: Debug
 
-  ################
-  # osx-object-server
-  ################
-  # Just run on 8.3.3/9.0 Release
-  - xcode_version: 8.0
-    target: osx-object-server
-  - xcode_version: 8.1
-    target: osx-object-server
-  - xcode_version: 8.2
-    target: osx-object-server
-  - target: osx-object-server
+  - xcode_version: 10.2.1
+    target: tvos
     configuration: Debug
 
-  ################
-  # ios-device-objc-ios8
-  ################
-  # Just run on 8.3.3/9.0 Release
-  - xcode_version: 8.0
-    target: ios-device-objc-ios8
-  - xcode_version: 8.1
-    target: ios-device-objc-ios8
-  - xcode_version: 8.2
-    target: ios-device-objc-ios8
-  - target: ios-device-objc-ios8
+  - xcode_version: 10.3
+    target: tvos
     configuration: Debug
 
-  ################
-  # ios-device-swift-ios8
-  ################
-  # Just run on 8.3.3/9.0 Release
-  - xcode_version: 8.0
-    target: ios-device-swift-ios8
-  - xcode_version: 8.1
-    target: ios-device-swift-ios8
-  - xcode_version: 8.2
-    target: ios-device-swift-ios8
-  - target: ios-device-swift-ios8
+  - xcode_version: 11.1
+    target: tvos
     configuration: Debug
 
-  ################
-  # ios-device-objc-ios10
-  ################
-  # Just run on 8.3.3/9.0 Release
-  - xcode_version: 8.0
-    target: ios-device-objc-ios10
-  - xcode_version: 8.1
-    target: ios-device-objc-ios10
-  - xcode_version: 8.2
-    target: ios-device-objc-ios10
-  - target: ios-device-objc-ios10
+  - xcode_version: 10.0
+    target: ios-swift
     configuration: Debug
 
-  ################
-  # ios-device-swift-ios10
-  ################
-  # Just run on 8.3.3/9.0 Release
-  - xcode_version: 8.0
-    target: ios-device-swift-ios10
-  - xcode_version: 8.1
-    target: ios-device-swift-ios10
-  - xcode_version: 8.2
-    target: ios-device-swift-ios10
-  - target: ios-device-swift-ios10
+  - xcode_version: 10.1
+    target: ios-swift
     configuration: Debug
 
-  ################
-  # tvos-device
-  ################
-  # Just run on 8.3.3/9.0 Release
-  - xcode_version: 8.0
-    target: tvos-device
-  - xcode_version: 8.1
-    target: tvos-device
-  - xcode_version: 8.2
-    target: tvos-device
-  - target: tvos-device
+  - xcode_version: 10.2.1
+    target: ios-swift
+    configuration: Debug
+
+  - xcode_version: 10.3
+    target: ios-swift
+    configuration: Debug
+
+  - xcode_version: 11.1
+    target: ios-swift
+    configuration: Debug
+
+  - xcode_version: 10.0
+    target: osx-swift
+    configuration: Debug
+
+  - xcode_version: 10.1
+    target: osx-swift
+    configuration: Debug
+
+  - xcode_version: 10.2.1
+    target: osx-swift
+    configuration: Debug
+
+  - xcode_version: 10.3
+    target: osx-swift
+    configuration: Debug
+
+  - xcode_version: 11.1
+    target: osx-swift
+    configuration: Debug
+
+  - xcode_version: 10.0
+    target: tvos-swift
+    configuration: Debug
+
+  - xcode_version: 10.1
+    target: tvos-swift
+    configuration: Debug
+
+  - xcode_version: 10.2.1
+    target: tvos-swift
+    configuration: Debug
+
+  - xcode_version: 10.3
+    target: tvos-swift
+    configuration: Debug
+
+  - xcode_version: 11.1
+    target: tvos-swift
+    configuration: Debug
+
+  - xcode_version: 10.0
+    target: cocoapods-osx
+    configuration: Debug
+
+  - xcode_version: 10.1
+    target: cocoapods-osx
+    configuration: Debug
+
+  - xcode_version: 10.2.1
+    target: cocoapods-osx
+    configuration: Debug
+
+  - xcode_version: 10.3
+    target: cocoapods-osx
+    configuration: Debug
+
+  - xcode_version: 11.1
+    target: cocoapods-osx
+    configuration: Debug
+
+  - xcode_version: 11.2
+    target: cocoapods-osx
+    configuration: Debug
+
+  - xcode_version: 10.0
+    target: cocoapods-ios
+    configuration: Debug
+
+  - xcode_version: 10.1
+    target: cocoapods-ios
+    configuration: Debug
+
+  - xcode_version: 10.2.1
+    target: cocoapods-ios
+    configuration: Debug
+
+  - xcode_version: 10.3
+    target: cocoapods-ios
+    configuration: Debug
+
+  - xcode_version: 11.1
+    target: cocoapods-ios
+    configuration: Debug
+
+  - xcode_version: 11.2
+    target: cocoapods-ios
+    configuration: Debug
+
+  - xcode_version: 10.0
+    target: cocoapods-watchos
+    configuration: Debug
+
+  - xcode_version: 10.1
+    target: cocoapods-watchos
+    configuration: Debug
+
+  - xcode_version: 10.2.1
+    target: cocoapods-watchos
+    configuration: Debug
+
+  - xcode_version: 10.3
+    target: cocoapods-watchos
+    configuration: Debug
+
+  - xcode_version: 11.1
+    target: cocoapods-watchos
+    configuration: Debug
+
+  - xcode_version: 11.2
+    target: cocoapods-watchos
+    configuration: Debug
+
+  - xcode_version: 10.0
+    target: swiftpm
+    configuration: Debug
+
+  - xcode_version: 10.0
+    target: swiftpm
+    configuration: Release
+
+  - xcode_version: 10.1
+    target: swiftpm
+    configuration: Debug
+
+  - xcode_version: 10.1
+    target: swiftpm
+    configuration: Release
+
+  - xcode_version: 10.2.1
+    target: swiftpm
+    configuration: Debug
+
+  - xcode_version: 10.2.1
+    target: swiftpm
+    configuration: Release
+
+  - xcode_version: 10.3
+    target: swiftpm
+    configuration: Debug
+
+  - xcode_version: 11.1
+    target: swiftpm
+    configuration: Debug
+
+  - xcode_version: 11.1
+    target: swiftpm
+    configuration: Release
+
+  - xcode_version: 11.2
+    target: swiftpm
     configuration: Debug

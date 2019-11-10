@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 open class FileReader {
-    open let file: File
+    public let file: File
     public init(file: File) {
         self.file = file
     }

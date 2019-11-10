@@ -20,18 +20,15 @@ set(SOURCES
     impl/results_notifier.cpp
     impl/transact_log_handler.cpp
     impl/weak_realm_notifier.cpp
-    parser/parser.cpp
-    parser/query_builder.cpp
-    util/format.cpp
     util/uuid.cpp)
 
 set(HEADERS
     binding_callback_thread_observer.hpp
     collection_notifications.hpp
-    descriptor_ordering.hpp
     execution_context_id.hpp
     feature_checks.hpp
     index_set.hpp
+    keypath_helpers.hpp
     list.hpp
     object.hpp
     object_accessor.hpp
@@ -61,22 +58,16 @@ set(HEADERS
     impl/transact_log_handler.hpp
     impl/weak_realm_notifier.hpp
 
-    parser/parser.hpp
-    parser/query_builder.hpp
-
     util/android/event_loop_signal.hpp
     util/apple/event_loop_signal.hpp
     util/generic/event_loop_signal.hpp
     util/uv/event_loop_signal.hpp
 
     util/aligned_union.hpp
-    util/any.hpp
     util/atomic_shared_ptr.hpp
-    util/compiler.hpp
+    util/event_loop_dispatcher.hpp
     util/event_loop_signal.hpp
-    util/format.hpp
     util/tagged_bool.hpp
-    util/time.hpp
     util/uuid.hpp)
 
 if(APPLE)
@@ -100,7 +91,9 @@ set(INCLUDE_DIRS
 
 if(REALM_ENABLE_SYNC)
     list(APPEND HEADERS
+        sync/async_open_task.hpp
         sync/partial_sync.hpp
+        sync/subscription_state.hpp
         sync/sync_config.hpp
         sync/sync_manager.hpp
         sync/sync_permission.hpp
@@ -108,8 +101,10 @@ if(REALM_ENABLE_SYNC)
         sync/sync_user.hpp
         sync/impl/sync_client.hpp
         sync/impl/sync_file.hpp
-        sync/impl/sync_metadata.hpp)
+        sync/impl/sync_metadata.hpp
+        sync/impl/work_queue.hpp)
     list(APPEND SOURCES
+        sync/async_open_task.cpp
         sync/partial_sync.cpp
         sync/sync_config.cpp
         sync/sync_manager.cpp
@@ -117,7 +112,8 @@ if(REALM_ENABLE_SYNC)
         sync/sync_session.cpp
         sync/sync_user.cpp
         sync/impl/sync_file.cpp
-        sync/impl/sync_metadata.cpp)
+        sync/impl/sync_metadata.cpp
+        sync/impl/work_queue.cpp)
     if(APPLE)
         list(APPEND SOURCES
             sync/impl/apple/network_reachability_observer.cpp
@@ -125,6 +121,18 @@ if(REALM_ENABLE_SYNC)
     endif()
     find_package(ZLIB REQUIRED)
     list(APPEND INCLUDE_DIRS ${ZLIB_INCLUDE_DIRS})
+endif()
+
+if(REALM_ENABLE_SERVER)
+    list(APPEND HEADERS
+        server/adapter.hpp
+        server/admin_realm.hpp
+        server/global_notifier.hpp)
+    list(APPEND SOURCES
+        server/adapter.cpp
+        server/admin_realm.cpp
+        server/global_notifier.cpp)
+    list(APPEND INCLUDE_DIRS ../external/json)
 endif()
 
 add_library(realm-object-store STATIC ${SOURCES} ${HEADERS})

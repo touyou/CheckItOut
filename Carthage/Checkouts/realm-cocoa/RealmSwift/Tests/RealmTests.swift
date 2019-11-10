@@ -107,14 +107,14 @@ class RealmTests: TestCase {
         try! fileManager.setAttributes([FileAttributeKey.posixPermissions: permissions], ofItemAtPath: testRealmURL().path)
     }
 
-    #if DEBUG
+    #if !SWIFT_PACKAGE && DEBUG
     func testFileFormatUpgradeRequiredButDisabled() {
         var config = Realm.Configuration()
-        var bundledRealmPath = NSBundle(forClass: RealmTests.self).pathForResource("fileformat-pre-null.realm",
-                                                                                   ofType: nil)!
-        try! NSFileManager.defaultManager.copyItemAtPath(bundledRealmPath, toPath: config.path)
+        let bundledRealmPath = Bundle(for: RealmTests.self).path(forResource: "fileformat-pre-null.realm",
+                                                                 ofType: nil)!
+        try! FileManager.default.copyItem(atPath: bundledRealmPath, toPath: config.fileURL!.path)
         config.disableFormatUpgrade = true
-        assertFails(Error.FileFormatUpgradeRequired) {
+        assertFails(Realm.Error.fileFormatUpgradeRequired) {
             try Realm(configuration: config)
         }
     }
@@ -213,6 +213,20 @@ class RealmTests: TestCase {
             XCTAssertEqual(try! Realm().objects(SwiftStringObject.self).count, 1)
         }
         XCTAssertEqual(try! Realm().objects(SwiftStringObject.self).count, 1)
+    }
+
+    func testWriteWithoutNotifying() {
+        let realm = try! Realm()
+        let token = realm.observe { _, _ in
+            XCTFail("should not have been called")
+        }
+
+        try! realm.write(withoutNotifying: [token]) {
+            realm.deleteAll()
+        }
+
+        // local realm notifications are called synchronously so no need to wait for anything
+        token.invalidate()
     }
 
     func testDynamicWriteSubscripting() {
@@ -317,16 +331,16 @@ class RealmTests: TestCase {
         var defaultRealmObject: SwiftPrimaryStringObject!
         try! realm.write {
             defaultRealmObject = SwiftPrimaryStringObject()
-            realm.add(defaultRealmObject, update: true)
+            realm.add(defaultRealmObject, update: .all)
             XCTAssertEqual(1, realm.objects(SwiftPrimaryStringObject.self).count)
-            realm.add(SwiftPrimaryStringObject(), update: true)
+            realm.add(SwiftPrimaryStringObject(), update: .all)
             XCTAssertEqual(1, realm.objects(SwiftPrimaryStringObject.self).count)
         }
         XCTAssertEqual(1, realm.objects(SwiftPrimaryStringObject.self).count)
 
         let testRealm = realmWithTestPath()
         try! testRealm.write {
-            self.assertThrows(_ = testRealm.add(defaultRealmObject, update: true))
+            self.assertThrows(_ = testRealm.add(defaultRealmObject, update: .all))
         }
     }
 
@@ -352,14 +366,14 @@ class RealmTests: TestCase {
         XCTAssertEqual(0, realm.objects(SwiftPrimaryStringObject.self).count)
         try! realm.write {
             let objs = [SwiftPrimaryStringObject(), SwiftPrimaryStringObject()]
-            realm.add(objs, update: true)
+            realm.add(objs, update: .all)
             XCTAssertEqual(1, realm.objects(SwiftPrimaryStringObject.self).count)
         }
         XCTAssertEqual(1, realm.objects(SwiftPrimaryStringObject.self).count)
 
         let testRealm = realmWithTestPath()
         try! testRealm.write {
-            self.assertThrows(_ = testRealm.add(realm.objects(SwiftPrimaryStringObject.self), update: true))
+            self.assertThrows(_ = testRealm.add(realm.objects(SwiftPrimaryStringObject.self), update: .all))
         }
     }
 

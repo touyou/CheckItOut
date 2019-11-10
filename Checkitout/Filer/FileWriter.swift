@@ -15,7 +15,7 @@ public enum ImageFormat {
 }
 
 open class FileWriter {
-    open let file: File
+    public let file: File
     public init(file: File) {
         self.file = file
     }
@@ -72,9 +72,9 @@ open class FileWriter {
     fileprivate func imageToData(_ image: UIImage, format: ImageFormat) -> Data {
         switch format {
         case .png:
-            return UIImagePNGRepresentation(image)!
+            return image.pngData()!
         case .jpeg(let quality):
-            return UIImageJPEGRepresentation(image, quality)!
+            return image.jpegData(compressionQuality: quality)!
         }
     }
 }

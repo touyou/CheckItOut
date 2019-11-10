@@ -381,4 +381,199 @@
     [realm commitWriteTransaction];
 }
 
+- (void)testRenamedProperties {
+    RenamedProperties1 *obj1 = [[RenamedProperties1 alloc] initWithValue:@{@"propA": @5, @"propB": @"a"}];
+    XCTAssertEqual(obj1.propA, 5);
+    XCTAssertEqualObjects(obj1.propB, @"a");
+    XCTAssertEqualObjects(obj1[@"propA"], @5);
+    XCTAssertEqualObjects(obj1[@"propB"], @"a");
+    XCTAssertEqualObjects([obj1 valueForKey:@"propA"], @5);
+    XCTAssertEqualObjects([obj1 valueForKey:@"propB"], @"a");
+
+    RLMRealm *realm = [RLMRealm defaultRealm];
+    [realm beginWriteTransaction];
+    [realm addObject:obj1];
+    XCTAssertEqual(obj1.propA, 5);
+    XCTAssertEqualObjects(obj1.propB, @"a");
+    XCTAssertEqualObjects(obj1[@"propA"], @5);
+    XCTAssertEqualObjects(obj1[@"propB"], @"a");
+    XCTAssertEqualObjects([obj1 valueForKey:@"propA"], @5);
+    XCTAssertEqualObjects([obj1 valueForKey:@"propB"], @"a");
+
+    RenamedProperties2 *obj2 = [RenamedProperties2 createInRealm:realm withValue:@{@"propC": @6, @"propD": @"b"}];
+    XCTAssertEqual(obj2.propC, 6);
+    XCTAssertEqualObjects(obj2.propD, @"b");
+    XCTAssertEqualObjects(obj2[@"propC"], @6);
+    XCTAssertEqualObjects(obj2[@"propD"], @"b");
+    XCTAssertEqualObjects([obj2 valueForKey:@"propC"], @6);
+    XCTAssertEqualObjects([obj2 valueForKey:@"propD"], @"b");
+
+    RLMResults<RenamedProperties1 *> *results1 = [RenamedProperties1 allObjectsInRealm:realm];
+    RLMResults<RenamedProperties2 *> *results2 = [RenamedProperties2 allObjectsInRealm:realm];
+    XCTAssertTrue([results1[0] isEqualToObject:results2[0]]);
+    XCTAssertTrue([results1[1] isEqualToObject:results2[1]]);
+
+    LinkToRenamedProperties1 *link1 = [LinkToRenamedProperties1 createInRealm:realm withValue:@[obj1, obj2, @[obj1, results1[1]]]];
+    LinkToRenamedProperties2 *link2 = [LinkToRenamedProperties2 createInRealm:realm withValue:@[obj2, obj1, @[obj2, results2[0]]]];
+
+    XCTAssertTrue([link1.linkA isKindOfClass:[RenamedProperties1 class]]);
+    XCTAssertTrue([link1.linkB isKindOfClass:[RenamedProperties2 class]]);
+    XCTAssertTrue([link1.array[0] isKindOfClass:[RenamedProperties1 class]]);
+    XCTAssertTrue([link1.array[1] isKindOfClass:[RenamedProperties1 class]]);
+
+    XCTAssertTrue([link2.linkC isKindOfClass:[RenamedProperties2 class]]);
+    XCTAssertTrue([link2.linkD isKindOfClass:[RenamedProperties1 class]]);
+    XCTAssertTrue([link2.array[0] isKindOfClass:[RenamedProperties2 class]]);
+    XCTAssertTrue([link2.array[1] isKindOfClass:[RenamedProperties2 class]]);
+
+    XCTAssertTrue([link1.linkA isEqualToObject:results1[0]]);
+    XCTAssertTrue([link1.linkB isEqualToObject:results1[1]]);
+    XCTAssertTrue([link1.linkA isEqualToObject:results2[0]]);
+    XCTAssertTrue([link1.linkB isEqualToObject:results2[1]]);
+
+    XCTAssertTrue([link2.linkC isEqualToObject:results1[1]]);
+    XCTAssertTrue([link2.linkD isEqualToObject:results1[0]]);
+    XCTAssertTrue([link2.linkC isEqualToObject:results2[1]]);
+    XCTAssertTrue([link2.linkD isEqualToObject:results2[0]]);
+
+    XCTAssertEqualObjects([link1.array valueForKey:@"propB"], (@[@"a", @"b"]));
+    XCTAssertEqualObjects([link2.array valueForKey:@"propD"], (@[@"b", @"a"]));
+
+    XCTAssertTrue([obj1.linking1[0] isEqualToObject:link1]);
+    XCTAssertTrue([obj1.linking2[0] isEqualToObject:link2]);
+    XCTAssertTrue([obj2.linking1[0] isEqualToObject:link2]);
+    XCTAssertTrue([obj2.linking2[0] isEqualToObject:link1]);
+
+    [realm cancelWriteTransaction];
+}
+
+- (void)testAllMethodsCheckThread {
+    RLMRealm *realm = [RLMRealm defaultRealm];
+    __block AllTypesObject *obj;
+    __block StringObject *stringObj;
+    NSDictionary *values = @{@"boolCol": @NO,
+                             @"intCol": @0,
+                             @"floatCol": @0,
+                             @"doubleCol": @0,
+                             @"stringCol": @"",
+                             @"binaryCol": NSData.data,
+                             @"dateCol": NSDate.date,
+                             @"cBoolCol": @NO,
+                             @"longCol": @0,
+                             @"objectCol": NSNull.null};
+    [realm transactionWithBlock:^{
+        obj = [AllTypesObject createInRealm:realm withValue:values];
+        stringObj = [StringObject createInRealm:realm withValue:@[@""]];
+    }];
+    [realm beginWriteTransaction];
+
+    NSArray<NSString *> *propertyNames = [obj.objectSchema.properties valueForKey:@"name"];
+    [self dispatchAsyncAndWait:^{
+        // Getters
+        for (NSString *prop in propertyNames) {
+            RLMAssertThrowsWithReasonMatching(obj[prop], @"thread");
+            RLMAssertThrowsWithReasonMatching([obj valueForKey:prop], @"thread");
+        }
+        RLMAssertThrowsWithReasonMatching(obj.boolCol, @"thread");
+        RLMAssertThrowsWithReasonMatching(obj.intCol, @"thread");
+        RLMAssertThrowsWithReasonMatching(obj.floatCol, @"thread");
+        RLMAssertThrowsWithReasonMatching(obj.doubleCol, @"thread");
+        RLMAssertThrowsWithReasonMatching(obj.stringCol, @"thread");
+        RLMAssertThrowsWithReasonMatching(obj.binaryCol, @"thread");
+        RLMAssertThrowsWithReasonMatching(obj.dateCol, @"thread");
+        RLMAssertThrowsWithReasonMatching(obj.cBoolCol, @"thread");
+        RLMAssertThrowsWithReasonMatching(obj.longCol, @"thread");
+        RLMAssertThrowsWithReasonMatching(obj.objectCol, @"thread");
+        RLMAssertThrowsWithReasonMatching(obj.linkingObjectsCol, @"thread");
+
+        // Setters
+        for (NSString *prop in propertyNames) {
+            RLMAssertThrowsWithReasonMatching(obj[prop] = values[prop], @"thread");
+            RLMAssertThrowsWithReasonMatching([obj setValue:values[prop] forKey:prop], @"thread");
+        }
+        RLMAssertThrowsWithReasonMatching(obj.boolCol = 0, @"thread");
+        RLMAssertThrowsWithReasonMatching(obj.intCol = 0, @"thread");
+        RLMAssertThrowsWithReasonMatching(obj.floatCol = 0, @"thread");
+        RLMAssertThrowsWithReasonMatching(obj.doubleCol = 0, @"thread");
+        RLMAssertThrowsWithReasonMatching(obj.stringCol = nil, @"thread");
+        RLMAssertThrowsWithReasonMatching(obj.binaryCol = nil, @"thread");
+        RLMAssertThrowsWithReasonMatching(obj.dateCol = nil, @"thread");
+        RLMAssertThrowsWithReasonMatching(obj.cBoolCol = 0, @"thread");
+        RLMAssertThrowsWithReasonMatching(obj.longCol = 0, @"thread");
+        RLMAssertThrowsWithReasonMatching(obj.objectCol = nil, @"thread");
+        RLMAssertThrowsWithReasonMatching(obj.objectCol = [StringObject new], @"thread");
+        RLMAssertThrowsWithReasonMatching(obj.objectCol = stringObj, @"thread");
+    }];
+    [realm cancelWriteTransaction];
+}
+
+- (void)testAllMethodsCheckForInvalidation {
+    RLMRealm *realm = [RLMRealm defaultRealm];
+    __block StringObject *stringObj;
+    NSDictionary *values = @{@"boolCol": @NO,
+                             @"intCol": @0,
+                             @"floatCol": @0,
+                             @"doubleCol": @0,
+                             @"stringCol": @"",
+                             @"binaryCol": NSData.data,
+                             @"dateCol": NSDate.date,
+                             @"cBoolCol": @NO,
+                             @"longCol": @0,
+                             @"objectCol": NSNull.null};
+    [realm transactionWithBlock:^{
+        [AllTypesObject createInRealm:realm withValue:values];
+        stringObj = [StringObject createInRealm:realm withValue:@[@""]];
+    }];
+
+    for (int i = 0; i < 2; ++i) {
+        AllTypesObject *obj = [[AllTypesObject allObjectsInRealm:realm] firstObject];
+        [realm beginWriteTransaction];
+        // Deleting the object directly and indirectly leave the managed
+        // accessor in different states, so test both
+        if (i == 0) {
+            [realm deleteObject:obj];
+        }
+        else {
+            [realm deleteObjects:[AllTypesObject allObjectsInRealm:realm]];
+        }
+
+        NSArray<NSString *> *propertyNames = [obj.objectSchema.properties valueForKey:@"name"];
+        // Getters
+        for (NSString *prop in propertyNames) {
+            RLMAssertThrowsWithReasonMatching(obj[prop], @"invalidated");
+            RLMAssertThrowsWithReasonMatching([obj valueForKey:prop], @"invalidated");
+        }
+        RLMAssertThrowsWithReasonMatching(obj.boolCol, @"invalidated");
+        RLMAssertThrowsWithReasonMatching(obj.intCol, @"invalidated");
+        RLMAssertThrowsWithReasonMatching(obj.floatCol, @"invalidated");
+        RLMAssertThrowsWithReasonMatching(obj.doubleCol, @"invalidated");
+        RLMAssertThrowsWithReasonMatching(obj.stringCol, @"invalidated");
+        RLMAssertThrowsWithReasonMatching(obj.binaryCol, @"invalidated");
+        RLMAssertThrowsWithReasonMatching(obj.dateCol, @"invalidated");
+        RLMAssertThrowsWithReasonMatching(obj.cBoolCol, @"invalidated");
+        RLMAssertThrowsWithReasonMatching(obj.longCol, @"invalidated");
+        RLMAssertThrowsWithReasonMatching(obj.objectCol, @"invalidated");
+        RLMAssertThrowsWithReasonMatching(obj.linkingObjectsCol, @"invalidated");
+
+        // Setters
+        for (NSString *prop in propertyNames) {
+            RLMAssertThrowsWithReasonMatching(obj[prop] = values[prop], @"invalidated");
+            RLMAssertThrowsWithReasonMatching([obj setValue:values[prop] forKey:prop], @"invalidated");
+        }
+        RLMAssertThrowsWithReasonMatching(obj.boolCol = 0, @"invalidated");
+        RLMAssertThrowsWithReasonMatching(obj.intCol = 0, @"invalidated");
+        RLMAssertThrowsWithReasonMatching(obj.floatCol = 0, @"invalidated");
+        RLMAssertThrowsWithReasonMatching(obj.doubleCol = 0, @"invalidated");
+        RLMAssertThrowsWithReasonMatching(obj.stringCol = nil, @"invalidated");
+        RLMAssertThrowsWithReasonMatching(obj.binaryCol = nil, @"invalidated");
+        RLMAssertThrowsWithReasonMatching(obj.dateCol = nil, @"invalidated");
+        RLMAssertThrowsWithReasonMatching(obj.cBoolCol = 0, @"invalidated");
+        RLMAssertThrowsWithReasonMatching(obj.longCol = 0, @"invalidated");
+        RLMAssertThrowsWithReasonMatching(obj.objectCol = nil, @"invalidated");
+        RLMAssertThrowsWithReasonMatching(obj.objectCol = [StringObject new], @"invalidated");
+        RLMAssertThrowsWithReasonMatching(obj.objectCol = stringObj, @"invalidated");
+        [realm cancelWriteTransaction];
+    }
+}
+
 @end

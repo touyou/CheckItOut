@@ -19,6 +19,13 @@
 import UIKit
 import RealmSwift
 
+#if !swift(>=4.2)
+extension UITableViewCell {
+    typealias CellStyle = UITableViewCellStyle
+    typealias EditingStyle = UITableViewCellEditingStyle
+}
+#endif
+
 class DemoObject: Object {
     @objc dynamic var title = ""
     @objc dynamic var date = NSDate()
@@ -26,7 +33,7 @@ class DemoObject: Object {
 }
 
 class Cell: UITableViewCell {
-    override init(style: UITableViewCellStyle, reuseIdentifier: String!) {
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String!) {
         super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
     }
 
@@ -50,7 +57,7 @@ class TableViewController: UITableViewController {
         realm = try! Realm()
 
         // Set realm notification block
-        notificationToken = realm.observe { [unowned self] note, realm in
+        notificationToken = realm.observe { [unowned self] _, _ in
             self.tableView.reloadData()
         }
         for section in sectionTitles {
@@ -95,7 +102,7 @@ class TableViewController: UITableViewController {
         return cell
     }
 
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             try! realm.write {
                 realm.delete(objectForIndexPath(indexPath: indexPath)!)
@@ -109,13 +116,15 @@ class TableViewController: UITableViewController {
         // Import many items in a background thread
         DispatchQueue.global().async {
             // Get new realm and table since we are in a new thread
-            let realm = try! Realm()
-            realm.beginWrite()
-            for _ in 0..<5 {
-                // Add row via dictionary. Order is ignored.
-                realm.create(DemoObject.self, value: ["title": randomTitle(), "date": NSDate(), "sectionTitle": randomSectionTitle()])
+            autoreleasepool {
+                let realm = try! Realm()
+                realm.beginWrite()
+                for _ in 0..<5 {
+                    // Add row via dictionary. Order is ignored.
+                    realm.create(DemoObject.self, value: ["title": randomTitle(), "date": NSDate(), "sectionTitle": randomSectionTitle()])
+                }
+                try! realm.commitWrite()
             }
-            try! realm.commitWrite()
         }
     }
 

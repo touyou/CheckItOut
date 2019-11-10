@@ -32,6 +32,11 @@ class CTTAggregateObject: Object {
     @objc dynamic var trueCol = true
     let stringListCol = List<CTTNullableStringObjectWithLink>()
     @objc dynamic var linkCol: CTTLinkTarget?
+    @objc dynamic var childIntCol: CTTIntegerObject?
+}
+
+class CTTIntegerObject: Object {
+    @objc dynamic var intCol = 0
 }
 
 class CTTAggregateObjectList: Object {
@@ -252,7 +257,7 @@ class RealmCollectionTypeTests: TestCase {
             fatalError("Test precondition failed")
         }
         let expected = Array(collection.map { $0.stringCol })
-        let actual = collection.value(forKey: "stringCol") as! [String]!
+        let actual = collection.value(forKey: "stringCol") as! [String]?
         XCTAssertEqual(expected as! [String], actual!)
 
         assertEqual(collection.map { $0 }, collection.value(forKey: "self") as! [CTTNullableStringObjectWithLink])
@@ -372,48 +377,48 @@ class RealmCollectionTypeTests: TestCase {
 
     func testMin() {
         let collection = getAggregateableCollection()
-        XCTAssertEqual(1, collection.min(ofProperty: "intCol") as NSNumber!)
-        XCTAssertEqual(1, collection.min(ofProperty: "intCol") as Int!)
-        XCTAssertEqual(1, collection.min(ofProperty: "int8Col") as NSNumber!)
-        XCTAssertEqual(1, collection.min(ofProperty: "int8Col") as Int8!)
-        XCTAssertEqual(1, collection.min(ofProperty: "int16Col") as NSNumber!)
-        XCTAssertEqual(1, collection.min(ofProperty: "int16Col") as Int16!)
-        XCTAssertEqual(1, collection.min(ofProperty: "int32Col") as NSNumber!)
-        XCTAssertEqual(1, collection.min(ofProperty: "int32Col") as Int32!)
-        XCTAssertEqual(1, collection.min(ofProperty: "int64Col") as NSNumber!)
-        XCTAssertEqual(1, collection.min(ofProperty: "int64Col") as Int64!)
-        XCTAssertEqual(1.1 as Float as NSNumber, collection.min(ofProperty: "floatCol") as NSNumber!)
-        XCTAssertEqual(1.1, collection.min(ofProperty: "floatCol") as Float!)
-        XCTAssertEqual(1.11, collection.min(ofProperty: "doubleCol") as NSNumber!)
-        XCTAssertEqual(1.11, collection.min(ofProperty: "doubleCol") as Double!)
-        XCTAssertEqual(NSDate(timeIntervalSince1970: 1), collection.min(ofProperty: "dateCol") as NSDate!)
-        XCTAssertEqual(Date(timeIntervalSince1970: 1), collection.min(ofProperty: "dateCol") as Date!)
+        XCTAssertEqual(1, collection.min(ofProperty: "intCol") as NSNumber?)
+        XCTAssertEqual(1, collection.min(ofProperty: "intCol") as Int?)
+        XCTAssertEqual(1, collection.min(ofProperty: "int8Col") as NSNumber?)
+        XCTAssertEqual(1, collection.min(ofProperty: "int8Col") as Int8?)
+        XCTAssertEqual(1, collection.min(ofProperty: "int16Col") as NSNumber?)
+        XCTAssertEqual(1, collection.min(ofProperty: "int16Col") as Int16?)
+        XCTAssertEqual(1, collection.min(ofProperty: "int32Col") as NSNumber?)
+        XCTAssertEqual(1, collection.min(ofProperty: "int32Col") as Int32?)
+        XCTAssertEqual(1, collection.min(ofProperty: "int64Col") as NSNumber?)
+        XCTAssertEqual(1, collection.min(ofProperty: "int64Col") as Int64?)
+        XCTAssertEqual(1.1 as Float as NSNumber, collection.min(ofProperty: "floatCol") as NSNumber?)
+        XCTAssertEqual(1.1, collection.min(ofProperty: "floatCol") as Float?)
+        XCTAssertEqual(1.11, collection.min(ofProperty: "doubleCol") as NSNumber?)
+        XCTAssertEqual(1.11, collection.min(ofProperty: "doubleCol") as Double?)
+        XCTAssertEqual(NSDate(timeIntervalSince1970: 1), collection.min(ofProperty: "dateCol") as NSDate?)
+        XCTAssertEqual(Date(timeIntervalSince1970: 1), collection.min(ofProperty: "dateCol") as Date?)
 
-        assertThrows(collection.min(ofProperty: "noSuchCol") as NSNumber!, named: "Invalid property name")
-        assertThrows(collection.min(ofProperty: "noSuchCol") as Float!, named: "Invalid property name")
+        assertThrows(collection.min(ofProperty: "noSuchCol") as NSNumber?, named: "Invalid property name")
+        assertThrows(collection.min(ofProperty: "noSuchCol") as Float?, named: "Invalid property name")
     }
 
     func testMax() {
         let collection = getAggregateableCollection()
-        XCTAssertEqual(3, collection.max(ofProperty: "intCol") as NSNumber!)
-        XCTAssertEqual(3, collection.max(ofProperty: "intCol") as Int!)
-        XCTAssertEqual(3, collection.max(ofProperty: "int8Col") as NSNumber!)
-        XCTAssertEqual(3, collection.max(ofProperty: "int8Col") as Int8!)
-        XCTAssertEqual(3, collection.max(ofProperty: "int16Col") as NSNumber!)
-        XCTAssertEqual(3, collection.max(ofProperty: "int16Col") as Int16!)
-        XCTAssertEqual(3, collection.max(ofProperty: "int32Col") as NSNumber!)
-        XCTAssertEqual(3, collection.max(ofProperty: "int32Col") as Int32!)
-        XCTAssertEqual(3, collection.max(ofProperty: "int64Col") as NSNumber!)
-        XCTAssertEqual(3, collection.max(ofProperty: "int64Col") as Int64!)
-        XCTAssertEqual(2.2 as Float as NSNumber, collection.max(ofProperty: "floatCol") as NSNumber!)
-        XCTAssertEqual(2.2, collection.max(ofProperty: "floatCol") as Float!)
-        XCTAssertEqual(2.22, collection.max(ofProperty: "doubleCol") as NSNumber!)
-        XCTAssertEqual(2.22, collection.max(ofProperty: "doubleCol") as Double!)
-        XCTAssertEqual(NSDate(timeIntervalSince1970: 2), collection.max(ofProperty: "dateCol") as NSDate!)
-        XCTAssertEqual(Date(timeIntervalSince1970: 2), collection.max(ofProperty: "dateCol") as Date!)
+        XCTAssertEqual(3, collection.max(ofProperty: "intCol") as NSNumber?)
+        XCTAssertEqual(3, collection.max(ofProperty: "intCol") as Int?)
+        XCTAssertEqual(3, collection.max(ofProperty: "int8Col") as NSNumber?)
+        XCTAssertEqual(3, collection.max(ofProperty: "int8Col") as Int8?)
+        XCTAssertEqual(3, collection.max(ofProperty: "int16Col") as NSNumber?)
+        XCTAssertEqual(3, collection.max(ofProperty: "int16Col") as Int16?)
+        XCTAssertEqual(3, collection.max(ofProperty: "int32Col") as NSNumber?)
+        XCTAssertEqual(3, collection.max(ofProperty: "int32Col") as Int32?)
+        XCTAssertEqual(3, collection.max(ofProperty: "int64Col") as NSNumber?)
+        XCTAssertEqual(3, collection.max(ofProperty: "int64Col") as Int64?)
+        XCTAssertEqual(2.2 as Float as NSNumber, collection.max(ofProperty: "floatCol") as NSNumber?)
+        XCTAssertEqual(2.2, collection.max(ofProperty: "floatCol") as Float?)
+        XCTAssertEqual(2.22, collection.max(ofProperty: "doubleCol") as NSNumber?)
+        XCTAssertEqual(2.22, collection.max(ofProperty: "doubleCol") as Double?)
+        XCTAssertEqual(NSDate(timeIntervalSince1970: 2), collection.max(ofProperty: "dateCol") as NSDate?)
+        XCTAssertEqual(Date(timeIntervalSince1970: 2), collection.max(ofProperty: "dateCol") as Date?)
 
-        assertThrows(collection.max(ofProperty: "noSuchCol") as NSNumber!, named: "Invalid property name")
-        assertThrows(collection.max(ofProperty: "noSuchCol") as Float!, named: "Invalid property name")
+        assertThrows(collection.max(ofProperty: "noSuchCol") as NSNumber?, named: "Invalid property name")
+        assertThrows(collection.max(ofProperty: "noSuchCol") as Float?, named: "Invalid property name")
     }
 
     func testSum() {
@@ -680,9 +685,70 @@ class ResultsWithCustomInitializerTests: TestCase {
 
         let collection = realm.objects(SwiftCustomInitializerObject.self)
         let expected = Array(collection.map { $0.stringCol })
-        let actual = collection.value(forKey: "stringCol") as! [String]!
+        let actual = collection.value(forKey: "stringCol") as! [String]?
         XCTAssertEqual(expected, actual!)
         assertEqual(collection.map { $0 }, collection.value(forKey: "self") as! [SwiftCustomInitializerObject])
+    }
+}
+
+class ResultsDistinctTests: TestCase {
+    func testDistinctResultsUsingKeyPaths() {
+        let realm = realmWithTestPath()
+
+        let obj1 = CTTAggregateObject()
+        obj1.intCol = 1
+        obj1.trueCol = true
+        let obj2 = CTTAggregateObject()
+        obj2.intCol = 1
+        obj2.trueCol = true
+        let obj3 = CTTAggregateObject()
+        obj3.intCol = 1
+        obj3.trueCol = false
+        let obj4 = CTTAggregateObject()
+        obj4.intCol = 2
+        obj4.trueCol = false
+
+        let childObj1 = CTTIntegerObject()
+        childObj1.intCol = 1
+        obj1.childIntCol = childObj1
+
+        let childObj2 = CTTIntegerObject()
+        childObj2.intCol = 1
+        obj2.childIntCol = childObj2
+
+        let childObj3 = CTTIntegerObject()
+        childObj3.intCol = 2
+        obj3.childIntCol = childObj3
+
+        try! realm.write {
+            realm.add(obj1)
+            realm.add(obj2)
+            realm.add(obj3)
+            realm.add(obj4)
+        }
+
+        let collection = realm.objects(CTTAggregateObject.self)
+        var distinctResults = collection.distinct(by: ["intCol"])
+        var expected = [["int": 1], ["int": 2]]
+        var actual = Array(distinctResults.map { ["int": $0.intCol] })
+        XCTAssertEqual(expected as NSObject, actual as NSObject)
+        assertEqual(distinctResults.map { $0 }, distinctResults.value(forKey: "self") as! [CTTAggregateObject])
+
+        distinctResults = collection.distinct(by: ["intCol", "trueCol"])
+        expected = [["int": 1, "true": 1], ["int": 1, "true": 0], ["int": 2, "true": 0]]
+        actual = distinctResults.map { ["int": $0.intCol, "true": $0.trueCol ? 1 : 0] }
+        XCTAssertEqual(expected as NSObject, actual as NSObject)
+        assertEqual(distinctResults.map { $0 }, distinctResults.value(forKey: "self") as! [CTTAggregateObject])
+
+        distinctResults = collection.distinct(by: ["childIntCol.intCol"])
+        expected = [["int": 1], ["int": 2]]
+        actual = distinctResults.map { ["int": $0.childIntCol!.intCol] }
+        XCTAssertEqual(expected as NSObject, actual as NSObject)
+        assertEqual(distinctResults.map { $0 }, distinctResults.value(forKey: "self") as! [CTTAggregateObject])
+
+        assertThrows(collection.distinct(by: ["childCol"]))
+        assertThrows(collection.distinct(by: ["@sum.intCol"]))
+        assertThrows(collection.distinct(by: ["stringListCol"]))
     }
 }
 

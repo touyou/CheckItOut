@@ -150,6 +150,15 @@ TEST_CASE("list") {
             REQUIRE(change.empty());
         }
 
+        SECTION("deleting list before first run of notifier reports deletions") {
+            auto token = lst.add_notification_callback([&](CollectionChangeSet c, std::exception_ptr) {
+                change = c;
+            });
+            advance_and_notify(*r);
+            write([&] { origin->move_last_over(0); });
+            REQUIRE_INDICES(change.deletions, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+        }
+
         SECTION("modifying one of the target rows sends a change notification") {
             auto token = require_change();
             write([&] { lst.get(5).set_int(0, 6); });
@@ -472,6 +481,53 @@ TEST_CASE("list") {
             advance_and_notify(*r);
             REQUIRE_INDICES(change.deletions, 5);
         }
+
+        SECTION("changes are sent in initial notification after removing and then re-adding callback") {
+            auto token = lst.add_notification_callback([&](CollectionChangeSet, std::exception_ptr) {
+                REQUIRE(false);
+            });
+            token = {};
+
+            auto write = [&] {
+                r2->begin_transaction();
+                r2_lv->remove(5);
+                r2->commit_transaction();
+            };
+
+            SECTION("add new callback before transaction") {
+                token = lst.add_notification_callback([&](CollectionChangeSet c, std::exception_ptr) {
+                    change = c;
+                });
+
+                write();
+
+                advance_and_notify(*r);
+                REQUIRE_INDICES(change.deletions, 5);
+            }
+
+            SECTION("add new callback after transaction") {
+                write();
+
+                token = lst.add_notification_callback([&](CollectionChangeSet c, std::exception_ptr) {
+                    change = c;
+                });
+
+                advance_and_notify(*r);
+                REQUIRE_INDICES(change.deletions, 5);
+            }
+
+            SECTION("add new callback after transaction and after changeset was calculated") {
+                write();
+                coordinator.on_change();
+
+                token = lst.add_notification_callback([&](CollectionChangeSet c, std::exception_ptr) {
+                    change = c;
+                });
+
+                advance_and_notify(*r);
+                REQUIRE_INDICES(change.deletions, 5);
+            }
+        }
     }
 
     SECTION("sorted add_notification_block()") {
@@ -616,14 +672,12 @@ TEST_CASE("list") {
         REQUIRE_THROWS_WITH(results.get(10), "Requested index 10 greater than max 9");
         REQUIRE(results.get_mode() == Results::Mode::TableView);
 
-#if REALM_VERSION_MAJOR > 2
         // Zero sort columns should leave it in LinkView mode
         results = list.sort({*target, {}, {}});
         for (size_t i = 0; i < 10; ++i)
             REQUIRE(results.get(i).get_index() == i);
         REQUIRE_THROWS_WITH(results.get(10), "Requested index 10 greater than max 9");
         REQUIRE(results.get_mode() == Results::Mode::LinkView);
-#endif
     }
 
     SECTION("filter()") {

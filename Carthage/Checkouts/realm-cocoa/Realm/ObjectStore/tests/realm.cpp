@@ -21,6 +21,7 @@
 #include "util/event_loop.hpp"
 #include "util/test_file.hpp"
 #include "util/templated_test_case.hpp"
+#include "util/test_utils.hpp"
 
 #include "binding_context.hpp"
 #include "object_schema.hpp"
@@ -28,11 +29,16 @@
 #include "property.hpp"
 #include "results.hpp"
 #include "schema.hpp"
+#include "thread_safe_reference.hpp"
 
 #include "impl/realm_coordinator.hpp"
-#include "util/format.hpp"
+
+#if REALM_ENABLE_SYNC
+#include "sync/async_open_task.hpp"
+#endif
 
 #include <realm/group.hpp>
+#include <realm/util/scope_exit.hpp>
 
 namespace realm {
 class TestHelper {
@@ -152,6 +158,50 @@ TEST_CASE("SharedRealm: get_shared_realm()") {
             REQUIRE_THROWS(Realm::get_shared_realm(config));
         }
     }
+
+
+// Windows doesn't use fifos
+#ifndef _WIN32
+    SECTION("should be able to set a FIFO fallback path") {
+        std::string fallback_dir = tmp_dir() + "/fallback/";
+        realm::util::try_make_dir(fallback_dir);
+        TestFile config;
+        config.fifo_files_fallback_path = fallback_dir;
+        config.schema_version = 1;
+        config.schema = Schema{
+            {"object", {
+                {"value", PropertyType::Int}
+            }},
+        };
+
+        realm::util::make_dir(config.path + ".note");
+        auto realm = Realm::get_shared_realm(config);
+        auto fallback_file = util::format("%1realm_%2.note", fallback_dir, std::hash<std::string>()(config.path)); // Mirror internal implementation
+        REQUIRE(File::exists(fallback_file));
+        realm::util::remove_dir(config.path + ".note");
+        realm::util::remove_dir_recursive(fallback_dir);
+    }
+
+    SECTION("automatically append dir separator to end of fallback path") {
+        std::string fallback_dir = tmp_dir() + "/fallback";
+        realm::util::try_make_dir(fallback_dir);
+        TestFile config;
+        config.fifo_files_fallback_path = fallback_dir;
+        config.schema_version = 1;
+        config.schema = Schema{
+            {"object", {
+                {"value", PropertyType::Int}
+            }},
+        };
+
+        realm::util::make_dir(config.path + ".note");
+        auto realm = Realm::get_shared_realm(config);
+        auto fallback_file = util::format("%1/realm_%2.note", fallback_dir, std::hash<std::string>()(config.path)); // Mirror internal implementation
+        REQUIRE(File::exists(fallback_file));
+        realm::util::remove_dir(config.path + ".note");
+        realm::util::remove_dir_recursive(fallback_dir);
+    }
+#endif
 
     SECTION("should verify that the schema is valid") {
         config.schema = Schema{
@@ -338,8 +388,11 @@ TEST_CASE("SharedRealm: get_shared_realm()") {
 #ifndef _WIN32
     SECTION("should throw when creating the notification pipe fails") {
         util::try_make_dir(config.path + ".note");
+        auto sys_fallback_file = util::format("%1realm_%2.note", SharedGroupOptions::get_sys_tmp_dir(), std::hash<std::string>()(config.path)); // Mirror internal implementation
+        util::try_make_dir(sys_fallback_file);
         REQUIRE_THROWS(Realm::get_shared_realm(config));
         util::remove_dir(config.path + ".note");
+        util::remove_dir(sys_fallback_file);
     }
 #endif
 
@@ -395,6 +448,148 @@ TEST_CASE("SharedRealm: get_shared_realm()") {
         REQUIRE(object_schema == &*realm->schema().find("object"));
     }
 }
+
+#if REALM_ENABLE_SYNC
+TEST_CASE("Get Realm using Async Open", "[asyncOpen]") {
+    TestFile local_config;
+    local_config.schema_version = 1;
+    local_config.schema = Schema{
+        {"object", {
+            {"value", PropertyType::Int}
+        }},
+    };
+
+    if (!util::EventLoop::has_implementation())
+        return;
+
+    auto cleanup = util::make_scope_exit([=]() noexcept { SyncManager::shared().reset_for_testing(); });
+    SyncManager::shared().configure(tmp_dir(), SyncManager::MetadataMode::NoEncryption);
+
+    SyncServer server;
+    SyncTestFile config(server, "default");
+    config.cache = false;
+    config.schema = Schema{
+        {"object", {
+            {"value", PropertyType::Int},
+        }},
+    };
+    SyncTestFile config2(server, "default");
+    config2.cache = false;
+    config2.schema = config.schema;
+
+    std::mutex mutex;
+    SECTION("can open synced Realms that don't already exist") {
+        std::atomic<bool> called{false};
+        auto task = Realm::get_synchronized_realm(config);
+        task->start([&](auto ref, auto error) {
+            std::lock_guard<std::mutex> lock(mutex);
+            REQUIRE(!error);
+            called = true;
+
+            REQUIRE(Realm::get_shared_realm(std::move(ref))->read_group().get_table("class_object"));
+        });
+        util::EventLoop::main().run_until([&]{ return called.load(); });
+        std::lock_guard<std::mutex> lock(mutex);
+        REQUIRE(called);
+    }
+
+    SECTION("downloads Realms which exist on the server") {
+        {
+            auto realm = Realm::get_shared_realm(config2);
+            realm->begin_transaction();
+            sync::create_object(realm->read_group(), *realm->read_group().get_table("class_object"));
+            realm->commit_transaction();
+            wait_for_upload(*realm);
+        }
+
+        std::atomic<bool> called{false};
+        auto task = Realm::get_synchronized_realm(config);
+        task->start([&](auto ref, auto error) {
+            std::lock_guard<std::mutex> lock(mutex);
+            REQUIRE(!error);
+            called = true;
+
+            REQUIRE(Realm::get_shared_realm(std::move(ref))->read_group().get_table("class_object"));
+        });
+        util::EventLoop::main().run_until([&]{ return called.load(); });
+        std::lock_guard<std::mutex> lock(mutex);
+        REQUIRE(called);
+    }
+
+    SECTION("downloads latest state for Realms which already exist locally") {
+        wait_for_upload(*Realm::get_shared_realm(config));
+
+        {
+            auto realm = Realm::get_shared_realm(config2);
+            realm->begin_transaction();
+            sync::create_object(realm->read_group(), *realm->read_group().get_table("class_object"));
+            realm->commit_transaction();
+            wait_for_upload(*realm);
+        }
+
+        std::atomic<bool> called{false};
+        auto task = Realm::get_synchronized_realm(config);
+        task->start([&](auto ref, auto error) {
+            std::lock_guard<std::mutex> lock(mutex);
+            REQUIRE(!error);
+            called = true;
+
+            REQUIRE(Realm::get_shared_realm(std::move(ref))->read_group().get_table("class_object")->size() == 1);
+        });
+        util::EventLoop::main().run_until([&]{ return called.load(); });
+        std::lock_guard<std::mutex> lock(mutex);
+        REQUIRE(called);
+    }
+
+    SECTION("can download partial Realms") {
+        config.sync_config->is_partial = true;
+        config2.sync_config->is_partial = true;
+        {
+            auto realm = Realm::get_shared_realm(config2);
+            realm->begin_transaction();
+            sync::create_object(realm->read_group(), *realm->read_group().get_table("class_object"));
+            realm->commit_transaction();
+            wait_for_upload(*realm);
+        }
+
+        std::atomic<bool> called{false};
+        auto task = Realm::get_synchronized_realm(config);
+        task->start([&](auto, auto error) {
+            std::lock_guard<std::mutex> lock(mutex);
+            REQUIRE(!error);
+            called = true;
+        });
+        util::EventLoop::main().run_until([&]{ return called.load(); });
+        std::lock_guard<std::mutex> lock(mutex);
+        REQUIRE(called);
+
+        // No subscriptions, so no objects
+        REQUIRE(Realm::get_shared_realm(config)->read_group().get_table("class_object")->size() == 0);
+    }
+
+    SECTION("can download multiple Realms at a time") {
+        SyncTestFile config1(server, "realm1");
+        SyncTestFile config2(server, "realm2");
+        SyncTestFile config3(server, "realm3");
+        SyncTestFile config4(server, "realm4");
+
+        std::vector<std::shared_ptr<AsyncOpenTask>> tasks = {
+            Realm::get_synchronized_realm(config1),
+            Realm::get_synchronized_realm(config2),
+            Realm::get_synchronized_realm(config3),
+            Realm::get_synchronized_realm(config4),
+        };
+
+        std::atomic<int> completed{0};
+        for (auto& task : tasks) {
+            task->start([&](auto, auto) {
+                ++completed;
+            });
+        }
+        util::EventLoop::main().run_until([&]{ return completed == 4; });
+    }
+}
+#endif
 
 TEST_CASE("SharedRealm: notifications") {
     if (!util::EventLoop::has_implementation())
@@ -1366,5 +1561,370 @@ TEMPLATE_TEST_CASE("SharedRealm: update_schema with initialization_function",
             REQUIRE(schema_version_in_callback == 1);
             REQUIRE(schema_in_callback.compare(schema).size() == 0);
         }
+    }
+}
+
+TEST_CASE("BindingContext is notified about delivery of change notifications") {
+    _impl::RealmCoordinator::assert_no_open_realms();
+
+    InMemoryTestFile config;
+    config.cache = false;
+    config.automatic_change_notifications = false;
+
+    auto r = Realm::get_shared_realm(config);
+    r->update_schema({
+        {"object", {
+            {"value", PropertyType::Int}
+        }},
+    });
+
+    auto coordinator = _impl::RealmCoordinator::get_existing_coordinator(config.path);
+    auto table = r->read_group().get_table("class_object");
+
+    SECTION("BindingContext notified even if no callbacks are registered") {
+        static int binding_context_start_notify_calls = 0;
+        static int binding_context_end_notify_calls = 0;
+        struct Context : BindingContext {
+            void will_send_notifications() override
+            {
+                ++binding_context_start_notify_calls;
+            }
+
+            void did_send_notifications() override
+            {
+                ++binding_context_end_notify_calls;
+            }
+        };
+        r->m_binding_context.reset(new Context());
+
+        SECTION("local commit") {
+            binding_context_start_notify_calls = 0;
+            binding_context_end_notify_calls = 0;
+            coordinator->on_change();
+            r->begin_transaction();
+            REQUIRE(binding_context_start_notify_calls == 1);
+            REQUIRE(binding_context_end_notify_calls == 1);
+            r->cancel_transaction();
+        }
+
+        SECTION("remote commit") {
+            binding_context_start_notify_calls = 0;
+            binding_context_end_notify_calls = 0;
+            JoiningThread([&] {
+                auto r2 = coordinator->get_realm();
+                r2->begin_transaction();
+                auto table2 = r2->read_group().get_table("class_object");
+                table2->add_empty_row();
+                r2->commit_transaction();
+            });
+            advance_and_notify(*r);
+            REQUIRE(binding_context_start_notify_calls == 1);
+            REQUIRE(binding_context_end_notify_calls == 1);
+        }
+    }
+
+    SECTION("notify BindingContext before and after sending notifications") {
+        static int binding_context_start_notify_calls = 0;
+        static int binding_context_end_notify_calls = 0;
+        static int notification_calls = 0;
+
+        Results results1(r, table->where().greater_equal(0, 0));
+        Results results2(r, table->where().less(0, 10));
+
+        auto token1 = results1.add_notification_callback([&](CollectionChangeSet, std::exception_ptr err) {
+            REQUIRE_FALSE(err);
+            ++notification_calls;
+        });
+
+        auto token2 = results2.add_notification_callback([&](CollectionChangeSet, std::exception_ptr err) {
+            REQUIRE_FALSE(err);
+            ++notification_calls;
+        });
+
+        struct Context : BindingContext {
+            void will_send_notifications() override
+            {
+                REQUIRE(notification_calls == 0);
+                REQUIRE(binding_context_end_notify_calls == 0);
+                ++binding_context_start_notify_calls;
+            }
+
+            void did_send_notifications() override
+            {
+                REQUIRE(notification_calls == 2);
+                REQUIRE(binding_context_start_notify_calls == 1);
+                ++binding_context_end_notify_calls;
+            }
+        };
+        r->m_binding_context.reset(new Context());
+
+        SECTION("local commit") {
+            binding_context_start_notify_calls = 0;
+            binding_context_end_notify_calls = 0;
+            notification_calls = 0;
+            coordinator->on_change();
+            r->begin_transaction();
+            table->add_empty_row();
+            r->commit_transaction();
+            REQUIRE(binding_context_start_notify_calls == 1);
+            REQUIRE(binding_context_end_notify_calls == 1);
+        }
+
+        SECTION("remote commit") {
+            binding_context_start_notify_calls = 0;
+            binding_context_end_notify_calls = 0;
+            notification_calls = 0;
+            JoiningThread([&] {
+                auto r2 = coordinator->get_realm();
+                r2->begin_transaction();
+                auto table2 = r2->read_group().get_table("class_object");
+                table2->add_empty_row();
+                r2->commit_transaction();
+            });
+            advance_and_notify(*r);
+            REQUIRE(binding_context_start_notify_calls == 1);
+            REQUIRE(binding_context_end_notify_calls == 1);
+        }
+    }
+
+    SECTION("did_send() is skipped if the Realm is closed first") {
+        Results results(r, table->where());
+        bool do_close = true;
+        auto token = results.add_notification_callback([&](CollectionChangeSet, std::exception_ptr) {
+            if (do_close)
+                r->close();
+        });
+
+        struct FailOnDidSend : BindingContext {
+            void did_send_notifications() override
+            {
+                FAIL("did_send_notifications() should not have been called");
+            }
+        };
+        struct CloseOnWillChange : FailOnDidSend {
+            Realm& realm;
+            CloseOnWillChange(Realm& realm) : realm(realm) {}
+
+            void will_send_notifications() override
+            {
+                realm.close();
+            }
+        };
+
+        SECTION("closed in notification callback for notify()") {
+            r->m_binding_context.reset(new FailOnDidSend);
+            coordinator->on_change();
+            r->notify();
+        }
+
+        SECTION("closed in notification callback for refresh()") {
+            do_close = false;
+            coordinator->on_change();
+            r->notify();
+            do_close = true;
+
+            JoiningThread([&] {
+                auto r = coordinator->get_realm();
+                r->begin_transaction();
+                r->read_group().get_table("class_object")->add_empty_row();
+                r->commit_transaction();
+            });
+
+            r->m_binding_context.reset(new FailOnDidSend);
+            coordinator->on_change();
+            r->refresh();
+        }
+
+        SECTION("closed in will_send() for notify()") {
+            r->m_binding_context.reset(new CloseOnWillChange(*r));
+            coordinator->on_change();
+            r->notify();
+        }
+
+        SECTION("closed in will_send() for refresh()") {
+            do_close = false;
+            coordinator->on_change();
+            r->notify();
+            do_close = true;
+
+            JoiningThread([&] {
+                auto r = coordinator->get_realm();
+                r->begin_transaction();
+                r->read_group().get_table("class_object")->add_empty_row();
+                r->commit_transaction();
+            });
+
+            r->m_binding_context.reset(new CloseOnWillChange(*r));
+            coordinator->on_change();
+            r->refresh();
+        }
+    }
+}
+
+TEST_CASE("Statistics on Realms") {
+    _impl::RealmCoordinator::assert_no_open_realms();
+
+    InMemoryTestFile config;
+    config.cache = false;
+    config.automatic_change_notifications = false;
+
+    auto r = Realm::get_shared_realm(config);
+    r->update_schema({
+        {"object", {
+            {"value", PropertyType::Int}
+        }},
+    });
+
+    SECTION("compute_size") {
+        auto s = r->read_group().compute_aggregated_byte_size();
+        REQUIRE(s > 0);
+    }
+}
+
+#if REALM_PLATFORM_APPLE
+TEST_CASE("BindingContext is notified in case of notifier errors") {
+    _impl::RealmCoordinator::assert_no_open_realms();
+
+    class OpenFileLimiter {
+    public:
+        OpenFileLimiter()
+        {
+            // Set the max open files to zero so that opening new files will fail
+            getrlimit(RLIMIT_NOFILE, &m_old);
+            rlimit rl = m_old;
+            rl.rlim_cur = 0;
+            setrlimit(RLIMIT_NOFILE, &rl);
+        }
+
+        ~OpenFileLimiter()
+        {
+            setrlimit(RLIMIT_NOFILE, &m_old);
+        }
+
+    private:
+        rlimit m_old;
+    };
+
+    InMemoryTestFile config;
+    config.cache = false;
+    config.automatic_change_notifications = false;
+
+    auto r = Realm::get_shared_realm(config);
+    r->update_schema({
+      {"object", {
+        {"value", PropertyType::Int}
+      }},
+    });
+
+    auto coordinator = _impl::RealmCoordinator::get_existing_coordinator(config.path);
+    auto table = r->read_group().get_table("class_object");
+    Results results(r, *r->read_group().get_table("class_object"));
+    static int binding_context_start_notify_calls = 0;
+    static int binding_context_end_notify_calls = 0;
+    static bool error_called = false;
+    struct Context : BindingContext {
+        void will_send_notifications() override
+        {
+            REQUIRE_FALSE(error_called);
+            ++binding_context_start_notify_calls;
+        }
+
+        void did_send_notifications() override
+        {
+            REQUIRE(error_called);
+            ++binding_context_end_notify_calls;
+        }
+    };
+    r->m_binding_context.reset(new Context());
+
+    SECTION("realm on background thread could not be opened") {
+        OpenFileLimiter limiter;
+
+        auto token = results.add_notification_callback([&](CollectionChangeSet, std::exception_ptr err) {
+            REQUIRE(err);
+            REQUIRE_FALSE(error_called);
+            error_called = true;
+        });
+        advance_and_notify(*r);
+        REQUIRE(error_called);
+        REQUIRE(binding_context_start_notify_calls == 1);
+        REQUIRE(binding_context_end_notify_calls == 1);
+    }
+}
+#endif
+
+TEST_CASE("RealmCoordinator: get_unbound_realm()") {
+    TestFile config;
+    config.schema = Schema{
+        {"object", {
+            {"value", PropertyType::Int}
+        }},
+    };
+
+    ThreadSafeReference<Realm> ref;
+    std::thread([&] { ref = _impl::RealmCoordinator::get_coordinator(config)->get_unbound_realm(); }).join();
+
+    SECTION("checks thread after being resolved") {
+        auto realm = Realm::get_shared_realm(std::move(ref));
+        REQUIRE_NOTHROW(realm->verify_thread());
+        std::thread([&] {
+            REQUIRE_THROWS(realm->verify_thread());
+        }).join();
+    }
+
+    SECTION("delivers notifications to the thread it is resolved on") {
+        if (!util::EventLoop::has_implementation())
+            return;
+        auto realm = Realm::get_shared_realm(std::move(ref));
+        Results results(realm, ObjectStore::table_for_object_type(realm->read_group(), "object")->where());
+        bool called = false;
+        auto token = results.add_notification_callback([&](CollectionChangeSet, std::exception_ptr) {
+            called = true;
+        });
+        util::EventLoop::main().run_until([&] { return called; });
+    }
+
+    SECTION("does not check thread if resolved using an execution context") {
+        auto realm = Realm::get_shared_realm(std::move(ref), AbstractExecutionContextID(1));
+        REQUIRE_NOTHROW(realm->verify_thread());
+        std::thread([&] {
+            REQUIRE_NOTHROW(realm->verify_thread());
+        }).join();
+    }
+
+    SECTION("resolves to existing cached Realm for the thread if caching is enabled") {
+        auto r1 = Realm::get_shared_realm(config);
+        auto r2 = Realm::get_shared_realm(std::move(ref));
+        REQUIRE(r1 == r2);
+    }
+
+    SECTION("resolves to existing cached Realm for the execution context if caching is enabled") {
+        config.execution_context = AbstractExecutionContextID(1);
+        auto r1 = Realm::get_shared_realm(config);
+        config.execution_context = AbstractExecutionContextID(2);
+        auto r2 = Realm::get_shared_realm(config);
+        auto r3 = Realm::get_shared_realm(std::move(ref), AbstractExecutionContextID(1));
+        REQUIRE(r1 == r3);
+        REQUIRE(r1 != r2);
+        REQUIRE(r2 != r3);
+    }
+
+    SECTION("resolves to a new Realm if caching is disabled") {
+        // Cache disabled for local realm, enabled for unbound
+        config.cache = false;
+        auto r1 = Realm::get_shared_realm(config);
+        auto r2 = Realm::get_shared_realm(std::move(ref));
+        REQUIRE(r1 != r2);
+
+        // New unbound with cache disabled
+        std::thread([&] { ref = _impl::RealmCoordinator::get_coordinator(config)->get_unbound_realm(); }).join();
+        auto r3 = Realm::get_shared_realm(std::move(ref));
+        REQUIRE(r1 != r3);
+        REQUIRE(r2 != r3);
+
+        // New local with cache enabled should grab the resolved unbound
+        config.cache = true;
+        auto r4 = Realm::get_shared_realm(config);
+        REQUIRE(r4 == r2);
     }
 }

@@ -29,12 +29,18 @@ class Person: Object {
     let dogs = List<Dog>()
 }
 
+#if !swift(>=4.2)
+extension UIApplication {
+    typealias LaunchOptionsKey = UIApplicationLaunchOptionsKey
+}
+#endif
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey : Any]? = nil) -> Bool {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.rootViewController = UIViewController()
         window?.makeKeyAndVisible()
@@ -78,9 +84,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Multi-threading
         DispatchQueue.global().async {
-            let otherRealm = try! Realm()
-            let otherResults = otherRealm.objects(Dog.self).filter(NSPredicate(format: "name contains 'Rex'"))
-            print("Number of dogs \(otherResults.count)")
+            autoreleasepool {
+                let otherRealm = try! Realm()
+                let otherResults = otherRealm.objects(Dog.self).filter(NSPredicate(format: "name contains 'Rex'"))
+                print("Number of dogs \(otherResults.count)")
+            }
         }
 
         return true

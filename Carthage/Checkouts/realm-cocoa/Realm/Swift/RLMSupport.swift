@@ -26,15 +26,9 @@ extension RLMRealm {
         return version
     }
 
-#if swift(>=3.2)
     @nonobjc public func resolve<Confined>(reference: RLMThreadSafeReference<Confined>) -> Confined? {
         return __resolve(reference as! RLMThreadSafeReference<RLMThreadConfined>) as! Confined?
     }
-#else
-    @nonobjc public func resolve<Confined: RLMThreadConfined>(reference: RLMThreadSafeReference<Confined>) -> Confined? {
-        return __resolve(reference as! RLMThreadSafeReference<RLMThreadConfined>) as! Confined?
-    }
-#endif
 }
 
 extension RLMObject {
@@ -87,6 +81,7 @@ extension RLMCollection {
 
 // MARK: - Sync-related
 
+#if REALM_ENABLE_SYNC
 extension RLMSyncManager {
     public static var shared: RLMSyncManager {
         return __shared()
@@ -122,6 +117,14 @@ extension RLMSyncUser {
                        callbackQueue: queue,
                        onCompletion: completion)
     }
+
+    public func configuration(realmURL: URL? = nil, fullSynchronization: Bool = false,
+                              enableSSLValidation: Bool = true, urlPrefix: String? = nil) -> RLMRealmConfiguration {
+        return self.__configuration(with: realmURL,
+                                    fullSynchronization: fullSynchronization,
+                                    enableSSLValidation: enableSSLValidation,
+                                    urlPrefix: urlPrefix)
+    }
 }
 
 extension RLMSyncSession {
@@ -133,8 +136,4 @@ extension RLMSyncSession {
                                          block: block)
     }
 }
-
-extension RLMNotificationToken {
-    @available(*, unavailable, renamed: "invalidate()")
-    @nonobjc public func stop() { fatalError() }
-}
+#endif

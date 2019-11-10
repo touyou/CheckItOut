@@ -162,7 +162,7 @@ class MainViewController: UIViewController {
     
     func setPlayers() {
         let session = AVAudioSession.sharedInstance()
-        try! session.setCategory(AVAudioSessionCategoryAmbient)
+        try! session.setCategory(.ambient)
         try! session.setActive(true)
         
         players = []
@@ -185,7 +185,7 @@ class MainViewController: UIViewController {
     
     func setupAudioRecorder() {
         let session = AVAudioSession.sharedInstance()
-        try! session.setCategory(AVAudioSessionCategoryPlayAndRecord)
+        try! session.setCategory(.playAndRecord)
         try! session.setActive(true)
         
         let recordSetting: [String: Any] = [

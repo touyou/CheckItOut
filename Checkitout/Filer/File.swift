@@ -55,8 +55,8 @@ public enum StoreDirectory {
 
 open class File : CustomStringConvertible, Equatable {
     fileprivate let writePath: String
-    open let directory: StoreDirectory
-    open let fileName: String
+    public let directory: StoreDirectory
+    public let fileName: String
     open var dirName: String?
 
     open var dirPath: String {
@@ -106,7 +106,7 @@ open class File : CustomStringConvertible, Equatable {
     
     open var ext: String? {
         get {
-            return fileName.characters.split(whereSeparator: { $0 == "." }).map { String($0) }.last
+            return fileName.split(whereSeparator: { $0 == "." }).map { String($0) }.last
         }
     }
 
@@ -198,7 +198,7 @@ open class File : CustomStringConvertible, Equatable {
     }
     
     // MARK: static methods
-    open static func parsePath(_ string: String) -> (String?, String) {
+    public static func parsePath(_ string: String) -> (String?, String) {
         let comps = string.components(separatedBy: "/")
         let fileName = comps.last!
         let dirName = comps.dropLast().joined(separator: "/")
@@ -208,7 +208,7 @@ open class File : CustomStringConvertible, Equatable {
         return (dirName, fileName)
     }
 
-    open static func parsePath(_ absoluteString: String) -> (StoreDirectory, String?, String)? {
+    public static func parsePath(_ absoluteString: String) -> (StoreDirectory, String?, String)? {
         let comps = absoluteString.components(separatedBy: NSHomeDirectory())
         let names = Array(StoreDirectory.paths().keys)
         if let homeRelativePath = comps.last {
@@ -224,10 +224,10 @@ open class File : CustomStringConvertible, Equatable {
         return nil
     }
 
-    open static func toDirName(_ dirName: String) -> String {
-        switch Array(dirName.characters).last {
+    public static func toDirName(_ dirName: String) -> String {
+        switch dirName.last {
         case .some("/"):
-            return String(dirName.characters.dropLast())
+            return String(dirName.dropLast())
         default:
             return dirName
         }
@@ -237,24 +237,4 @@ open class File : CustomStringConvertible, Equatable {
 public func ==(lhs: File, rhs: File) -> Bool {
     return lhs.path == rhs.path
 }
-
-//infix operator ->> { associativity left }
-//
-//public func ->>(lhs: String, rhs: File) -> Bool {
-//    return rhs.append(lhs)
-//}
-//
-//public func ->>(lhs: Data, rhs: File) -> Bool {
-//    return rhs.appendData(lhs)
-//}
-//
-//infix operator --> { associativity left }
-//
-//public func -->(lhs: String, rhs: File) -> Bool {
-//    return rhs.write(lhs)
-//}
-//
-//public func -->(lhs: Data, rhs: File) -> Bool {
-//    return rhs.writeData(lhs)
-//}
 
