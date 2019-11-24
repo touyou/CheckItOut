@@ -23,8 +23,8 @@ class MainViewController: UIViewController {
     @IBOutlet weak var showWaveView: EZAudioPlot!
     var audioPlot: EZAudioPlot!
     var ezMic: EZMicrophone?
-    var ezaudioPlayer:EZAudioPlayer!
-    var audioFile:EZAudioFile!
+    var ezaudioPlayer: EZAudioPlayer!
+    var audioFile: EZAudioFile!
     
     // MARK: - Normal
     @IBOutlet weak var tableView: UITableView! {
@@ -164,7 +164,10 @@ class MainViewController: UIViewController {
         let session = AVAudioSession.sharedInstance()
         try! session.setCategory(.ambient)
         try! session.setActive(true)
-        
+
+        _ = players.map {
+            $0?.stop()
+        }
         players = []
         
         for url in selectedUrl {
@@ -370,6 +373,27 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         selectedNum = indexPath.row
+    }
+
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            let data = soundData[indexPath.row]
+            let alert = UIAlertController(title: "削除", message: "\(data.displayName)を削除しますか？", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "削除", style: .destructive, handler: { [unowned self] _ in
+                if data.padNum != -1 {
+                    self.players[data.padNum]?.stop()
+                    self.players[data.padNum] = nil
+                }
+                self.soundData.remove(at: indexPath.row)
+                data.delete {
+                    DispatchQueue.main.async {
+                        self.tableView.reloadData()
+                    }
+                }
+            }))
+            alert.addAction(UIAlertAction(title: "キャンセル", style: .cancel, handler: nil))
+            present(alert, animated: true, completion: nil)
+        }
     }
 }
 

@@ -66,7 +66,14 @@ class SoundData: Object {
             method()
         }
     }
-    
+
+    func delete(_ completion: (()->())? = nil) {
+        try! SoundData.realm.write {
+            SoundData.realm.delete(self)
+            completion?()
+        }
+    }
+
     static func fetch(_ url: URL, isBundle: Bool) -> SoundData? {
         let str = url.absoluteString
         let fileName = str.components(separatedBy: "/").last
