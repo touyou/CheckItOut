@@ -10,7 +10,7 @@ import Foundation
 import RealmSwift
 
 class SoundData: Object {
-    static let realm = try! Realm()
+    static var realm: Realm = try! Realm(configuration: Realm.Configuration.defaultConfiguration)
     
     @objc dynamic private var id = 0
     @objc dynamic var isBundle: Bool = false
