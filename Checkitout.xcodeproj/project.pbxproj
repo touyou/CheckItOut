@@ -456,7 +456,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CURRENT_PROJECT_VERSION = 1.0.5.3;
+				CURRENT_PROJECT_VERSION = 1.0.5.4;
 				DEVELOPMENT_TEAM = B4S4333JDW;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -481,7 +481,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CURRENT_PROJECT_VERSION = 1.0.5.3;
+				CURRENT_PROJECT_VERSION = 1.0.5.4;
 				DEVELOPMENT_TEAM = B4S4333JDW;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
