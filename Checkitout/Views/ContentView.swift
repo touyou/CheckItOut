@@ -39,13 +39,14 @@ struct Pad: Identifiable {
     let color: PadColor
 }
 
-/// The 16 pads in display order. Slots preserve the original storyboard tags
-/// (PAD01→1 … PAD15→15, PAD16→0) so migrated assignments land on the same pad.
+/// The 16 pads in display order, using a natural slot mapping (PAD01→slot 0 …
+/// PAD16→slot 15) so a sound's pad label matches its on-screen position.
+/// (The original storyboard used quirky tags where PAD16 was 0; legacy data is
+/// remapped to this scheme during migration — see RealmMigrationReader.)
 let pads: [Pad] = {
-    let slots = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0]
     let colors: [PadColor] = [.red, .yellow, .green, .blue]
     return (0..<16).map { i in
-        Pad(id: i, slot: slots[i], color: colors[i / 4])
+        Pad(id: i, slot: i, color: colors[i / 4])
     }
 }()
 

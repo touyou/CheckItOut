@@ -76,8 +76,14 @@ enum RealmMigrationReader {
                     let isBundle = (old["isBundle"] as? Bool) ?? false
                     let urlStr = (old["urlStr"] as? String) ?? ""
                     let displayName = (old["displayName"] as? String) ?? ""
-                    let padNum = (old["padNum"] as? Int) ?? -1
                     let id = (old["id"] as? Int) ?? 0
+
+                    // Legacy pad slots used the storyboard tags where PAD16 was
+                    // 0 and PAD01…PAD15 were 1…15. Remap to the natural scheme
+                    // (PAD01→0 … PAD16→15) so sounds stay on the same physical
+                    // pad while the label now matches the position.
+                    let rawPad = (old["padNum"] as? Int) ?? -1
+                    let padNum = rawPad < 0 ? -1 : (rawPad == 0 ? 15 : rawPad - 1)
 
                     // Bundled sounds store a bare resource name; recordings
                     // stored an absolute file URL — normalize to just the name.
