@@ -84,7 +84,8 @@ struct ContentView: View {
                     padGrid
                 }
             }
-            .padding(16)
+            .padding(.horizontal, 20)
+            .padding(.vertical, 28)
 
             if mode == .record {
                 RecordPanelView(recorder: recorder, onSave: save(title:), onClose: { switchTo(.play) })
