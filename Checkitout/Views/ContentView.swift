@@ -2,8 +2,9 @@
 //  ContentView.swift
 //  Checkitout
 //
-//  The single-screen soundboard: header mode switch, sound list, and the
-//  4x4 pad grid, plus the recording panel overlay.
+//  The single-screen soundboard: the 4x4 pad grid on the left, and a right
+//  column with the logo, the sound list, and the mode buttons; plus the
+//  recording panel overlay.
 //
 
 import SwiftUI
@@ -71,18 +72,23 @@ struct ContentView: View {
                 .scaledToFill()
                 .ignoresSafeArea()
 
-            VStack(spacing: 12) {
-                HeaderView(mode: mode, onSelect: switchTo)
+            HStack(spacing: 12) {
+                PadGridView(sounds: sounds, onTap: tapPad)
 
-                HStack(spacing: 12) {
+                VStack(spacing: 12) {
+                    Image("Logo")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 32)
+
                     SoundListView(sounds: sounds,
                                   mode: mode,
                                   selectedID: $selectedID,
                                   requestDelete: { pendingDelete = $0 })
-                        .frame(maxWidth: 260)
 
-                    PadGridView(sounds: sounds, onTap: tapPad)
+                    ModeControls(mode: mode, onSelect: switchTo)
                 }
+                .frame(maxWidth: 260)
             }
             .padding(.horizontal, 20)
             .padding(.vertical, 28)
@@ -199,21 +205,14 @@ struct ContentView: View {
     }
 }
 
-// MARK: - Header
+// MARK: - Mode controls
 
-struct HeaderView: View {
+struct ModeControls: View {
     let mode: Mode
     let onSelect: (Mode) -> Void
 
     var body: some View {
-        HStack {
-            Image("Logo")
-                .resizable()
-                .scaledToFit()
-                .frame(height: 32)
-
-            Spacer()
-
+        HStack(spacing: 12) {
             // 再生 / 編集 are two states of one mode → a segmented control.
             Picker("モード", selection: Binding(
                 get: { mode == .edit ? Mode.edit : Mode.play },
@@ -223,7 +222,6 @@ struct HeaderView: View {
                 Text("編集").tag(Mode.edit)
             }
             .pickerStyle(.segmented)
-            .frame(width: 160)
             // Lift the control off the dark background so the unselected
             // segment stays legible.
             .padding(4)
@@ -233,7 +231,7 @@ struct HeaderView: View {
             Button("録音") { onSelect(.record) }
                 .font(.brand(15))
                 .buttonStyle(.glass)
-                .tint(mode == .record ? .accentColor : nil)
+                .tint(.red)
         }
         .frame(height: 44)
     }
