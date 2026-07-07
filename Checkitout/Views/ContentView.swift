@@ -125,6 +125,10 @@ struct ContentView: View {
     }
 
     private func switchTo(_ target: Mode) {
+        // Leaving record mode mid-recording must stop the engine/mic tap.
+        if mode == .record, target != .record, recorder.isRecording {
+            recorder.stopRecording()
+        }
         mode = target
         if target != .edit { selectedID = nil }
         if target == .play { padPlayer.rebuild(from: sounds) }
