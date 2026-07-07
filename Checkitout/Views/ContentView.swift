@@ -72,7 +72,7 @@ struct ContentView: View {
                 .ignoresSafeArea()
 
             VStack(spacing: 12) {
-                header
+                HeaderView(mode: mode, onSelect: switchTo)
 
                 HStack(spacing: 12) {
                     SoundListView(sounds: sounds,
@@ -81,7 +81,7 @@ struct ContentView: View {
                                   requestDelete: { pendingDelete = $0 })
                         .frame(maxWidth: 260)
 
-                    padGrid
+                    PadGridView(sounds: sounds, onTap: tapPad)
                 }
             }
             .padding(.horizontal, 20)
@@ -115,58 +115,6 @@ struct ContentView: View {
             Button("OK", role: .cancel) { errorMessage = nil }
         } message: {
             Text(errorMessage ?? "")
-        }
-    }
-
-    // MARK: Header
-
-    private var header: some View {
-        HStack {
-            Image("Logo")
-                .resizable()
-                .scaledToFit()
-                .frame(height: 32)
-
-            Spacer()
-
-            GlassEffectContainer(spacing: 12) {
-                HStack(spacing: 12) {
-                    modeButton("再生", .play)
-                    modeButton("編集", .edit)
-                    modeButton("録音", .record)
-                }
-            }
-        }
-        .frame(height: 44)
-    }
-
-    private func modeButton(_ title: String, _ target: Mode) -> some View {
-        Button(title) { switchTo(target) }
-            .font(.brand(15))
-            .buttonStyle(.glass)
-            .tint(mode == target ? .accentColor : nil)
-    }
-
-    // MARK: Pad grid
-
-    private var padGrid: some View {
-        GeometryReader { geo in
-            let spacing: CGFloat = 8
-            // Size pads so all 16 fit within both the available width and
-            // height (landscape height is the tight constraint).
-            let dim = max(1, min((geo.size.width - spacing * 3) / 4,
-                                 (geo.size.height - spacing * 3) / 4))
-            let columns = Array(repeating: GridItem(.fixed(dim), spacing: spacing), count: 4)
-            LazyVGrid(columns: columns, spacing: spacing) {
-                ForEach(pads) { pad in
-                    PadButton(pad: pad,
-                              assignedName: sounds.first { $0.padNum == pad.slot }?.displayName) {
-                        tapPad(pad.slot)
-                    }
-                    .frame(width: dim, height: dim)
-                }
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
         }
     }
 
@@ -244,6 +192,70 @@ struct ContentView: View {
         context.delete(sound)
         try? context.save()
         pendingDelete = nil
+    }
+}
+
+// MARK: - Header
+
+struct HeaderView: View {
+    let mode: Mode
+    let onSelect: (Mode) -> Void
+
+    var body: some View {
+        HStack {
+            Image("Logo")
+                .resizable()
+                .scaledToFit()
+                .frame(height: 32)
+
+            Spacer()
+
+            // 再生 / 編集 are two states of one mode → a segmented control.
+            Picker("モード", selection: Binding(
+                get: { mode == .edit ? Mode.edit : Mode.play },
+                set: { onSelect($0) }
+            )) {
+                Text("再生").tag(Mode.play)
+                Text("編集").tag(Mode.edit)
+            }
+            .pickerStyle(.segmented)
+            .frame(width: 160)
+
+            // 録音 opens a modal panel → kept as a distinct action button.
+            Button("録音") { onSelect(.record) }
+                .font(.brand(15))
+                .buttonStyle(.glass)
+                .tint(mode == .record ? .accentColor : nil)
+        }
+        .frame(height: 44)
+    }
+}
+
+// MARK: - Pad grid
+
+struct PadGridView: View {
+    let sounds: [SoundData]
+    let onTap: (Int) -> Void
+
+    var body: some View {
+        GeometryReader { geo in
+            let spacing: CGFloat = 8
+            // Size pads so all 16 fit within both the available width and
+            // height (landscape height is the tight constraint).
+            let dim = max(1, min((geo.size.width - spacing * 3) / 4,
+                                 (geo.size.height - spacing * 3) / 4))
+            let columns = Array(repeating: GridItem(.fixed(dim), spacing: spacing), count: 4)
+            LazyVGrid(columns: columns, spacing: spacing) {
+                ForEach(pads) { pad in
+                    PadButton(pad: pad,
+                              assignedName: sounds.first { $0.padNum == pad.slot }?.displayName) {
+                        onTap(pad.slot)
+                    }
+                    .frame(width: dim, height: dim)
+                }
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+        }
     }
 }
 

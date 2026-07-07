@@ -43,19 +43,19 @@ struct RecordPanelView: View {
 
             GlassEffectContainer(spacing: 12) {
                 HStack(spacing: 12) {
-                    transportButton("REC", "record.circle", tint: .red,
+                    TransportButton(label: "REC", symbol: "record.circle", tint: .red,
                                     disabled: recorder.isRecording) {
                         recorder.startRecording()
                     }
-                    transportButton("STOP", "stop.fill",
+                    TransportButton(label: "STOP", symbol: "stop.fill",
                                     disabled: !recorder.isRecording) {
                         recorder.stopRecording()
                     }
-                    transportButton("PLAY", "play.fill",
+                    TransportButton(label: "PLAY", symbol: "play.fill",
                                     disabled: recorder.isRecording || !recorder.hasRecording) {
                         recorder.playPreview()
                     }
-                    transportButton("SAVE", "square.and.arrow.down",
+                    TransportButton(label: "SAVE", symbol: "square.and.arrow.down",
                                     disabled: recorder.isRecording || !recorder.hasRecording) {
                         onSave(title)
                         title = ""
@@ -69,12 +69,18 @@ struct RecordPanelView: View {
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
     }
+}
 
-    private func transportButton(_ label: String,
-                                 _ symbol: String,
-                                 tint: Color? = nil,
-                                 disabled: Bool,
-                                 action: @escaping () -> Void) -> some View {
+// MARK: - Transport button
+
+struct TransportButton: View {
+    let label: String
+    let symbol: String
+    var tint: Color? = nil
+    let disabled: Bool
+    let action: () -> Void
+
+    var body: some View {
         Button(action: action) {
             Label(label, systemImage: symbol)
                 .font(.brand(14))
