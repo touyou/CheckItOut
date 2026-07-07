@@ -3,93 +3,37 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		4638062D1E5D35DD00BD117F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4638062C1E5D35DD00BD117F /* AppDelegate.swift */; };
-		4638062F1E5D35DD00BD117F /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4638062E1E5D35DD00BD117F /* MainViewController.swift */; };
-		463806321E5D35DD00BD117F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 463806301E5D35DD00BD117F /* Main.storyboard */; };
-		463806341E5D35DD00BD117F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 463806331E5D35DD00BD117F /* Assets.xcassets */; };
-		463806371E5D35DD00BD117F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 463806351E5D35DD00BD117F /* LaunchScreen.storyboard */; };
-		463806451E5D3F1100BD117F /* hosaka.wav in Resources */ = {isa = PBXBuildFile; fileRef = 463806411E5D3F1100BD117F /* hosaka.wav */; };
-		463806461E5D3F1100BD117F /* kirin.wav in Resources */ = {isa = PBXBuildFile; fileRef = 463806421E5D3F1100BD117F /* kirin.wav */; };
-		463806481E5D3F1100BD117F /* touyou.wav in Resources */ = {isa = PBXBuildFile; fileRef = 463806441E5D3F1100BD117F /* touyou.wav */; };
-		4638064A1E5D3F5200BD117F /* taguchi.wav in Resources */ = {isa = PBXBuildFile; fileRef = 463806491E5D3F5200BD117F /* taguchi.wav */; };
-		463806501E5D5C1C00BD117F /* logotypejp_mp_b_1.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4638064F1E5D591600BD117F /* logotypejp_mp_b_1.ttf */; };
-		463806541E5D673300BD117F /* CustomTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 463806531E5D673300BD117F /* CustomTableViewCell.swift */; };
-		463806631E5E7CBD00BD117F /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4638065F1E5E7CBD00BD117F /* File.swift */; };
-		463806641E5E7CBD00BD117F /* Filer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 463806601E5E7CBD00BD117F /* Filer.swift */; };
-		463806651E5E7CBD00BD117F /* FileReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 463806611E5E7CBD00BD117F /* FileReader.swift */; };
-		463806661E5E7CBD00BD117F /* FileWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 463806621E5E7CBD00BD117F /* FileWriter.swift */; };
-		463C44C61E5ED046009FAAB7 /* EZAudioiOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 463C44C51E5ED046009FAAB7 /* EZAudioiOS.framework */; };
-		465E3DE61E61C60000DFE979 /* SoundData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 465E3DE51E61C60000DFE979 /* SoundData.swift */; };
-		466E27CF2377DCE600067FC9 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = 466E27CE2377DCE600067FC9 /* Realm */; };
-		466E27D12377DCE600067FC9 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 466E27D02377DCE600067FC9 /* RealmSwift */; };
-		467230B31E5E8C8600350F0F /* 1korekara_cut.wav in Resources */ = {isa = PBXBuildFile; fileRef = 467230A31E5E8C8600350F0F /* 1korekara_cut.wav */; };
-		467230B41E5E8C8600350F0F /* 2korekara_cut.wav in Resources */ = {isa = PBXBuildFile; fileRef = 467230A41E5E8C8600350F0F /* 2korekara_cut.wav */; };
-		467230B51E5E8C8600350F0F /* 3apuri_cut.wav in Resources */ = {isa = PBXBuildFile; fileRef = 467230A51E5E8C8600350F0F /* 3apuri_cut.wav */; };
-		467230B61E5E8C8600350F0F /* 4setumei_cut.wav in Resources */ = {isa = PBXBuildFile; fileRef = 467230A61E5E8C8600350F0F /* 4setumei_cut.wav */; };
-		467230B71E5E8C8600350F0F /* 5suruze_cut.wav in Resources */ = {isa = PBXBuildFile; fileRef = 467230A71E5E8C8600350F0F /* 5suruze_cut.wav */; };
-		467230B81E5E8C8600350F0F /* 6onsei_cut.wav in Resources */ = {isa = PBXBuildFile; fileRef = 467230A81E5E8C8600350F0F /* 6onsei_cut.wav */; };
-		467230B91E5E8C8600350F0F /* 7rokuon_cut.wav in Resources */ = {isa = PBXBuildFile; fileRef = 467230A91E5E8C8600350F0F /* 7rokuon_cut.wav */; };
-		467230BA1E5E8C8600350F0F /* 8minnnawo_cut.wav in Resources */ = {isa = PBXBuildFile; fileRef = 467230AA1E5E8C8600350F0F /* 8minnnawo_cut.wav */; };
-		467230BB1E5E8C8600350F0F /* 9rockon_cut.wav in Resources */ = {isa = PBXBuildFile; fileRef = 467230AB1E5E8C8600350F0F /* 9rockon_cut.wav */; };
-		467230BC1E5E8C8600350F0F /* 10korede_cut.wav in Resources */ = {isa = PBXBuildFile; fileRef = 467230AC1E5E8C8600350F0F /* 10korede_cut.wav */; };
-		467230BD1E5E8C8600350F0F /* 11yourname_cut.wav in Resources */ = {isa = PBXBuildFile; fileRef = 467230AD1E5E8C8600350F0F /* 11yourname_cut.wav */; };
-		467230BE1E5E8C8600350F0F /* 12todoroku_cut.wav in Resources */ = {isa = PBXBuildFile; fileRef = 467230AE1E5E8C8600350F0F /* 12todoroku_cut.wav */; };
-		467230BF1E5E8C8600350F0F /* 13menber_cut.wav in Resources */ = {isa = PBXBuildFile; fileRef = 467230AF1E5E8C8600350F0F /* 13menber_cut.wav */; };
-		467230C01E5E8C8600350F0F /* 14menta-_cut.wav in Resources */ = {isa = PBXBuildFile; fileRef = 467230B01E5E8C8600350F0F /* 14menta-_cut.wav */; };
-		467230C11E5E8C8600350F0F /* 15minnade_cut.wav in Resources */ = {isa = PBXBuildFile; fileRef = 467230B11E5E8C8600350F0F /* 15minnade_cut.wav */; };
-		467230C21E5E8C8600350F0F /* 16chekera_cut.wav in Resources */ = {isa = PBXBuildFile; fileRef = 467230B21E5E8C8600350F0F /* 16chekera_cut.wav */; };
+		4622A2C02FFC70A00043E4FD /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 4622A2BF2FFC70A00043E4FD /* RealmSwift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		463806291E5D35DD00BD117F /* Checkitout.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Checkitout.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		4638062C1E5D35DD00BD117F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		4638062E1E5D35DD00BD117F /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
-		463806311E5D35DD00BD117F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		463806331E5D35DD00BD117F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		463806361E5D35DD00BD117F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		463806381E5D35DD00BD117F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		463806411E5D3F1100BD117F /* hosaka.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = hosaka.wav; sourceTree = "<group>"; };
-		463806421E5D3F1100BD117F /* kirin.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = kirin.wav; sourceTree = "<group>"; };
-		463806441E5D3F1100BD117F /* touyou.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = touyou.wav; sourceTree = "<group>"; };
-		463806491E5D3F5200BD117F /* taguchi.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = taguchi.wav; sourceTree = "<group>"; };
-		4638064F1E5D591600BD117F /* logotypejp_mp_b_1.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = logotypejp_mp_b_1.ttf; sourceTree = "<group>"; };
-		463806531E5D673300BD117F /* CustomTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomTableViewCell.swift; sourceTree = "<group>"; };
-		4638065F1E5E7CBD00BD117F /* File.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
-		463806601E5E7CBD00BD117F /* Filer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Filer.swift; sourceTree = "<group>"; };
-		463806611E5E7CBD00BD117F /* FileReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileReader.swift; sourceTree = "<group>"; };
-		463806621E5E7CBD00BD117F /* FileWriter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileWriter.swift; sourceTree = "<group>"; };
-		463C44C51E5ED046009FAAB7 /* EZAudioiOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EZAudioiOS.framework; path = Carthage/Build/iOS/EZAudioiOS.framework; sourceTree = "<group>"; };
-		465E3DE51E61C60000DFE979 /* SoundData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SoundData.swift; path = Model/SoundData.swift; sourceTree = "<group>"; };
-		467230A31E5E8C8600350F0F /* 1korekara_cut.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 1korekara_cut.wav; sourceTree = "<group>"; };
-		467230A41E5E8C8600350F0F /* 2korekara_cut.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 2korekara_cut.wav; sourceTree = "<group>"; };
-		467230A51E5E8C8600350F0F /* 3apuri_cut.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 3apuri_cut.wav; sourceTree = "<group>"; };
-		467230A61E5E8C8600350F0F /* 4setumei_cut.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 4setumei_cut.wav; sourceTree = "<group>"; };
-		467230A71E5E8C8600350F0F /* 5suruze_cut.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 5suruze_cut.wav; sourceTree = "<group>"; };
-		467230A81E5E8C8600350F0F /* 6onsei_cut.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 6onsei_cut.wav; sourceTree = "<group>"; };
-		467230A91E5E8C8600350F0F /* 7rokuon_cut.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 7rokuon_cut.wav; sourceTree = "<group>"; };
-		467230AA1E5E8C8600350F0F /* 8minnnawo_cut.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 8minnnawo_cut.wav; sourceTree = "<group>"; };
-		467230AB1E5E8C8600350F0F /* 9rockon_cut.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 9rockon_cut.wav; sourceTree = "<group>"; };
-		467230AC1E5E8C8600350F0F /* 10korede_cut.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 10korede_cut.wav; sourceTree = "<group>"; };
-		467230AD1E5E8C8600350F0F /* 11yourname_cut.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 11yourname_cut.wav; sourceTree = "<group>"; };
-		467230AE1E5E8C8600350F0F /* 12todoroku_cut.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 12todoroku_cut.wav; sourceTree = "<group>"; };
-		467230AF1E5E8C8600350F0F /* 13menber_cut.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 13menber_cut.wav; sourceTree = "<group>"; };
-		467230B01E5E8C8600350F0F /* 14menta-_cut.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "14menta-_cut.wav"; sourceTree = "<group>"; };
-		467230B11E5E8C8600350F0F /* 15minnade_cut.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 15minnade_cut.wav; sourceTree = "<group>"; };
-		467230B21E5E8C8600350F0F /* 16chekera_cut.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 16chekera_cut.wav; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		4622A2BD2FFC703F0043E4FD /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 463806281E5D35DD00BD117F /* Checkitout */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		4622A2952FFC703E0043E4FD /* Checkitout */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (4622A2BD2FFC703F0043E4FD /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Checkitout; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		463806261E5D35DD00BD117F /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				466E27CF2377DCE600067FC9 /* Realm in Frameworks */,
-				466E27D12377DCE600067FC9 /* RealmSwift in Frameworks */,
-				463C44C61E5ED046009FAAB7 /* EZAudioiOS.framework in Frameworks */,
+				4622A2C02FFC70A00043E4FD /* RealmSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -99,7 +43,7 @@
 		463806201E5D35DD00BD117F = {
 			isa = PBXGroup;
 			children = (
-				4638062B1E5D35DD00BD117F /* Checkitout */,
+				4622A2952FFC703E0043E4FD /* Checkitout */,
 				74E1C8F8F32B6FA40E4683DD /* Frameworks */,
 				4638062A1E5D35DD00BD117F /* Products */,
 			);
@@ -113,74 +57,9 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		4638062B1E5D35DD00BD117F /* Checkitout */ = {
-			isa = PBXGroup;
-			children = (
-				4638063E1E5D3BFB00BD117F /* AudioSample */,
-				4638065E1E5E7CB400BD117F /* Filer */,
-				4638062C1E5D35DD00BD117F /* AppDelegate.swift */,
-				463806331E5D35DD00BD117F /* Assets.xcassets */,
-				463806531E5D673300BD117F /* CustomTableViewCell.swift */,
-				463806381E5D35DD00BD117F /* Info.plist */,
-				463806351E5D35DD00BD117F /* LaunchScreen.storyboard */,
-				463806301E5D35DD00BD117F /* Main.storyboard */,
-				4638062E1E5D35DD00BD117F /* MainViewController.swift */,
-				465E3DE41E61C59900DFE979 /* Model */,
-				4638064F1E5D591600BD117F /* logotypejp_mp_b_1.ttf */,
-			);
-			path = Checkitout;
-			sourceTree = "<group>";
-		};
-		4638063E1E5D3BFB00BD117F /* AudioSample */ = {
-			isa = PBXGroup;
-			children = (
-				467230AC1E5E8C8600350F0F /* 10korede_cut.wav */,
-				467230AD1E5E8C8600350F0F /* 11yourname_cut.wav */,
-				467230AE1E5E8C8600350F0F /* 12todoroku_cut.wav */,
-				467230AF1E5E8C8600350F0F /* 13menber_cut.wav */,
-				467230B01E5E8C8600350F0F /* 14menta-_cut.wav */,
-				467230B11E5E8C8600350F0F /* 15minnade_cut.wav */,
-				467230B21E5E8C8600350F0F /* 16chekera_cut.wav */,
-				467230A31E5E8C8600350F0F /* 1korekara_cut.wav */,
-				467230A41E5E8C8600350F0F /* 2korekara_cut.wav */,
-				467230A51E5E8C8600350F0F /* 3apuri_cut.wav */,
-				467230A61E5E8C8600350F0F /* 4setumei_cut.wav */,
-				467230A71E5E8C8600350F0F /* 5suruze_cut.wav */,
-				467230A81E5E8C8600350F0F /* 6onsei_cut.wav */,
-				467230A91E5E8C8600350F0F /* 7rokuon_cut.wav */,
-				467230AA1E5E8C8600350F0F /* 8minnnawo_cut.wav */,
-				467230AB1E5E8C8600350F0F /* 9rockon_cut.wav */,
-				463806411E5D3F1100BD117F /* hosaka.wav */,
-				463806421E5D3F1100BD117F /* kirin.wav */,
-				463806491E5D3F5200BD117F /* taguchi.wav */,
-				463806441E5D3F1100BD117F /* touyou.wav */,
-			);
-			path = AudioSample;
-			sourceTree = "<group>";
-		};
-		4638065E1E5E7CB400BD117F /* Filer */ = {
-			isa = PBXGroup;
-			children = (
-				4638065F1E5E7CBD00BD117F /* File.swift */,
-				463806611E5E7CBD00BD117F /* FileReader.swift */,
-				463806621E5E7CBD00BD117F /* FileWriter.swift */,
-				463806601E5E7CBD00BD117F /* Filer.swift */,
-			);
-			path = Filer;
-			sourceTree = "<group>";
-		};
-		465E3DE41E61C59900DFE979 /* Model */ = {
-			isa = PBXGroup;
-			children = (
-				465E3DE51E61C60000DFE979 /* SoundData.swift */,
-			);
-			name = Model;
-			sourceTree = "<group>";
-		};
 		74E1C8F8F32B6FA40E4683DD /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				463C44C51E5ED046009FAAB7 /* EZAudioiOS.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -195,16 +74,17 @@
 				463806251E5D35DD00BD117F /* Sources */,
 				463806261E5D35DD00BD117F /* Frameworks */,
 				463806271E5D35DD00BD117F /* Resources */,
-				463C44C41E5E9166009FAAB7 /* ShellScript */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
+			fileSystemSynchronizedGroups = (
+				4622A2952FFC703E0043E4FD /* Checkitout */,
+			);
 			name = Checkitout;
 			packageProductDependencies = (
-				466E27CE2377DCE600067FC9 /* Realm */,
-				466E27D02377DCE600067FC9 /* RealmSwift */,
+				4622A2BF2FFC70A00043E4FD /* RealmSwift */,
 			);
 			productName = Checkitout;
 			productReference = 463806291E5D35DD00BD117F /* Checkitout.app */;
@@ -238,7 +118,7 @@
 			);
 			mainGroup = 463806201E5D35DD00BD117F;
 			packageReferences = (
-				466E27CD2377DCE600067FC9 /* XCRemoteSwiftPackageReference "realm-cocoa" */,
+				4622A2BE2FFC70A00043E4FD /* XCRemoteSwiftPackageReference "realm-swift" */,
 			);
 			productRefGroup = 4638062A1E5D35DD00BD117F /* Products */;
 			projectDirPath = "";
@@ -254,90 +134,20 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				467230B41E5E8C8600350F0F /* 2korekara_cut.wav in Resources */,
-				467230B51E5E8C8600350F0F /* 3apuri_cut.wav in Resources */,
-				467230C21E5E8C8600350F0F /* 16chekera_cut.wav in Resources */,
-				467230B31E5E8C8600350F0F /* 1korekara_cut.wav in Resources */,
-				467230BD1E5E8C8600350F0F /* 11yourname_cut.wav in Resources */,
-				467230B71E5E8C8600350F0F /* 5suruze_cut.wav in Resources */,
-				463806501E5D5C1C00BD117F /* logotypejp_mp_b_1.ttf in Resources */,
-				463806481E5D3F1100BD117F /* touyou.wav in Resources */,
-				463806371E5D35DD00BD117F /* LaunchScreen.storyboard in Resources */,
-				467230BA1E5E8C8600350F0F /* 8minnnawo_cut.wav in Resources */,
-				4638064A1E5D3F5200BD117F /* taguchi.wav in Resources */,
-				467230BF1E5E8C8600350F0F /* 13menber_cut.wav in Resources */,
-				467230BB1E5E8C8600350F0F /* 9rockon_cut.wav in Resources */,
-				467230B61E5E8C8600350F0F /* 4setumei_cut.wav in Resources */,
-				463806461E5D3F1100BD117F /* kirin.wav in Resources */,
-				467230C01E5E8C8600350F0F /* 14menta-_cut.wav in Resources */,
-				463806451E5D3F1100BD117F /* hosaka.wav in Resources */,
-				467230B81E5E8C8600350F0F /* 6onsei_cut.wav in Resources */,
-				467230BC1E5E8C8600350F0F /* 10korede_cut.wav in Resources */,
-				463806341E5D35DD00BD117F /* Assets.xcassets in Resources */,
-				463806321E5D35DD00BD117F /* Main.storyboard in Resources */,
-				467230C11E5E8C8600350F0F /* 15minnade_cut.wav in Resources */,
-				467230B91E5E8C8600350F0F /* 7rokuon_cut.wav in Resources */,
-				467230BE1E5E8C8600350F0F /* 12todoroku_cut.wav in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		463C44C41E5E9166009FAAB7 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"$(SRCROOT)/Carthage/Build/iOS/EZAudioiOS.framework",
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "/usr/local/bin/carthage copy-frameworks\n";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		463806251E5D35DD00BD117F /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				463806651E5E7CBD00BD117F /* FileReader.swift in Sources */,
-				4638062F1E5D35DD00BD117F /* MainViewController.swift in Sources */,
-				463806641E5E7CBD00BD117F /* Filer.swift in Sources */,
-				463806631E5E7CBD00BD117F /* File.swift in Sources */,
-				463806541E5D673300BD117F /* CustomTableViewCell.swift in Sources */,
-				465E3DE61E61C60000DFE979 /* SoundData.swift in Sources */,
-				463806661E5E7CBD00BD117F /* FileWriter.swift in Sources */,
-				4638062D1E5D35DD00BD117F /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXVariantGroup section */
-		463806301E5D35DD00BD117F /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				463806311E5D35DD00BD117F /* Base */,
-			);
-			name = Main.storyboard;
-			path = .;
-			sourceTree = "<group>";
-		};
-		463806351E5D35DD00BD117F /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				463806361E5D35DD00BD117F /* Base */,
-			);
-			name = LaunchScreen.storyboard;
-			path = .;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		463806391E5D35DD00BD117F /* Debug */ = {
@@ -456,19 +266,17 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CURRENT_PROJECT_VERSION = 1.0.5.4;
+				CURRENT_PROJECT_VERSION = 1.1.0.0;
 				DEVELOPMENT_TEAM = B4S4333JDW;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = Checkitout/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.5;
+				MARKETING_VERSION = 1.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.dev.touyou.Checkitout;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;
@@ -481,19 +289,17 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CURRENT_PROJECT_VERSION = 1.0.5.4;
+				CURRENT_PROJECT_VERSION = 1.1.0.0;
 				DEVELOPMENT_TEAM = B4S4333JDW;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = Checkitout/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.5;
+				MARKETING_VERSION = 1.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.dev.touyou.Checkitout;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;
@@ -526,25 +332,20 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		466E27CD2377DCE600067FC9 /* XCRemoteSwiftPackageReference "realm-cocoa" */ = {
+		4622A2BE2FFC70A00043E4FD /* XCRemoteSwiftPackageReference "realm-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/realm/realm-cocoa";
+			repositoryURL = "https://github.com/realm/realm-swift";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 4.0.0;
+				minimumVersion = 20.0.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		466E27CE2377DCE600067FC9 /* Realm */ = {
+		4622A2BF2FFC70A00043E4FD /* RealmSwift */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 466E27CD2377DCE600067FC9 /* XCRemoteSwiftPackageReference "realm-cocoa" */;
-			productName = Realm;
-		};
-		466E27D02377DCE600067FC9 /* RealmSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 466E27CD2377DCE600067FC9 /* XCRemoteSwiftPackageReference "realm-cocoa" */;
+			package = 4622A2BE2FFC70A00043E4FD /* XCRemoteSwiftPackageReference "realm-swift" */;
 			productName = RealmSwift;
 		};
 /* End XCSwiftPackageProductDependency section */
