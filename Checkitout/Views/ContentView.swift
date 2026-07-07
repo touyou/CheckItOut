@@ -220,6 +220,10 @@ struct HeaderView: View {
             }
             .pickerStyle(.segmented)
             .frame(width: 160)
+            // Lift the control off the dark background so the unselected
+            // segment stays legible.
+            .padding(4)
+            .background(.regularMaterial, in: .rect(cornerRadius: 12))
 
             // 録音 opens a modal panel → kept as a distinct action button.
             Button("録音") { onSelect(.record) }
