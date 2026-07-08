@@ -64,39 +64,43 @@ struct ContentView: View {
     @State private var pendingDelete: SoundData?
     @State private var errorMessage: String?
     @State private var didRun = false
+    @State private var isPortrait = false
 
     var body: some View {
         ZStack {
-            Image("background")
-                .resizable()
-                .scaledToFill()
-                .ignoresSafeArea()
-
-            HStack(spacing: 12) {
-                PadGridView(sounds: sounds, onTap: tapPad)
-
-                VStack(spacing: 12) {
-                    Image("Logo")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(height: 32)
-
-                    SoundListView(sounds: sounds,
-                                  mode: mode,
-                                  selectedID: $selectedID,
-                                  requestDelete: { pendingDelete = $0 })
-
-                    ModeControls(mode: mode, onSelect: switchTo)
-                }
-                .frame(maxWidth: 260)
+            // Choose the layout from the actual window shape, not the device
+            // orientation: on iPadOS 26 any app can be resized into a
+            // portrait- or landscape-shaped window.
+            if isPortrait {
+                PortraitLayout(sounds: sounds, mode: mode, selectedID: $selectedID,
+                               onTap: tapPad, onSelectMode: switchTo,
+                               requestDelete: { pendingDelete = $0 })
+            } else {
+                LandscapeLayout(sounds: sounds, mode: mode, selectedID: $selectedID,
+                                onTap: tapPad, onSelectMode: switchTo,
+                                requestDelete: { pendingDelete = $0 })
             }
-            .padding(.horizontal, 20)
-            .padding(.vertical, 28)
 
             if mode == .record {
                 RecordPanelView(recorder: recorder, onSave: save(title:), onClose: { switchTo(.play) })
                     .transition(.move(edge: .bottom).combined(with: .opacity))
             }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        // Full-bleed background applied as a modifier so it can't inflate the
+        // measured layout size (a `scaledToFill` image reports an oversized
+        // frame, which is why measuring it inside the ZStack was unreliable).
+        .background {
+            Image("background")
+                .resizable()
+                .scaledToFill()
+                .ignoresSafeArea()
+        }
+        // Measure the true laid-out size and reflow when the aspect flips.
+        .onGeometryChange(for: Bool.self) { proxy in
+            proxy.size.height > proxy.size.width
+        } action: { newValue in
+            isPortrait = newValue
         }
         .animation(.smooth, value: mode)
         .task {
@@ -202,6 +206,69 @@ struct ContentView: View {
         context.delete(sound)
         try? context.save()
         pendingDelete = nil
+    }
+}
+
+// MARK: - Adaptive layouts
+
+/// Landscape / wide windows: pad grid on the left, a narrow right column with
+/// the logo, sound list, and mode controls.
+struct LandscapeLayout: View {
+    let sounds: [SoundData]
+    let mode: Mode
+    @Binding var selectedID: PersistentIdentifier?
+    let onTap: (Int) -> Void
+    let onSelectMode: (Mode) -> Void
+    let requestDelete: (SoundData) -> Void
+
+    var body: some View {
+        HStack(spacing: 12) {
+            PadGridView(sounds: sounds, onTap: onTap)
+
+            VStack(spacing: 12) {
+                LogoView()
+                SoundListView(sounds: sounds, mode: mode,
+                              selectedID: $selectedID, requestDelete: requestDelete)
+                ModeControls(mode: mode, onSelect: onSelectMode)
+            }
+            .frame(maxWidth: 260)
+        }
+        .padding(.horizontal, 20)
+        .padding(.vertical, 28)
+    }
+}
+
+/// Portrait / tall windows: everything stacked vertically so nothing is pushed
+/// off the edge (the App Store review case on iPad Air 11").
+struct PortraitLayout: View {
+    let sounds: [SoundData]
+    let mode: Mode
+    @Binding var selectedID: PersistentIdentifier?
+    let onTap: (Int) -> Void
+    let onSelectMode: (Mode) -> Void
+    let requestDelete: (SoundData) -> Void
+
+    var body: some View {
+        VStack(spacing: 16) {
+            LogoView()
+            PadGridView(sounds: sounds, onTap: onTap)
+            SoundListView(sounds: sounds, mode: mode,
+                          selectedID: $selectedID, requestDelete: requestDelete)
+                .frame(maxHeight: 240)
+            ModeControls(mode: mode, onSelect: onSelectMode)
+        }
+        .padding(.horizontal, 20)
+        .padding(.vertical, 28)
+    }
+}
+
+/// The brand logo, shared by both layouts.
+struct LogoView: View {
+    var body: some View {
+        Image("Logo")
+            .resizable()
+            .scaledToFit()
+            .frame(height: 32)
     }
 }
 
