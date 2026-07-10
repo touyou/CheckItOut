@@ -21,7 +21,7 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>録音に使用します。</string>
+	<string>あなたの声や掛け声を録音し、サウンドボードのボタンとして登録するために使用します。例：「Check It Out！」と叫んだ音声を録音して、ボタンに割り当てることができます。</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>logotypejp_mp_b_1.ttf</string>
