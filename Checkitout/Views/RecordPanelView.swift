@@ -42,24 +42,14 @@ struct RecordPanelView: View {
                 .onSubmit { titleFocused = false }
 
             GlassEffectContainer(spacing: 12) {
-                HStack(spacing: 12) {
-                    TransportButton(label: "REC", symbol: "record.circle", tint: .red,
-                                    disabled: recorder.isRecording) {
-                        recorder.startRecording()
-                    }
-                    TransportButton(label: "STOP", symbol: "stop.fill",
-                                    disabled: !recorder.isRecording) {
-                        recorder.stopRecording()
-                    }
-                    TransportButton(label: "PLAY", symbol: "play.fill",
-                                    disabled: recorder.isRecording || !recorder.hasRecording) {
-                        recorder.playPreview()
-                    }
-                    TransportButton(label: "SAVE", symbol: "square.and.arrow.down",
-                                    disabled: recorder.isRecording || !recorder.hasRecording) {
-                        onSave(title)
-                        title = ""
-                    }
+                // Narrow windows (e.g. the iPhone Duo cover display) can't fit
+                // all four titled buttons on one line; fall back to icon-only
+                // rather than letting the titles wrap mid-word.
+                ViewThatFits(in: .horizontal) {
+                    transportButtons
+                    transportButtons
+                        .labelStyle(.iconOnly)
+                        .controlSize(.large)
                 }
             }
         }
@@ -68,6 +58,28 @@ struct RecordPanelView: View {
         .glassEffect(.regular, in: .rect(cornerRadius: 24))
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+    }
+
+    private var transportButtons: some View {
+        HStack(spacing: 12) {
+            TransportButton(label: "REC", symbol: "record.circle", tint: .red,
+                            disabled: recorder.isRecording) {
+                recorder.startRecording()
+            }
+            TransportButton(label: "STOP", symbol: "stop.fill",
+                            disabled: !recorder.isRecording) {
+                recorder.stopRecording()
+            }
+            TransportButton(label: "PLAY", symbol: "play.fill",
+                            disabled: recorder.isRecording || !recorder.hasRecording) {
+                recorder.playPreview()
+            }
+            TransportButton(label: "SAVE", symbol: "square.and.arrow.down",
+                            disabled: recorder.isRecording || !recorder.hasRecording) {
+                onSave(title)
+                title = ""
+            }
+        }
     }
 }
 
@@ -84,6 +96,7 @@ struct TransportButton: View {
         Button(action: action) {
             Label(label, systemImage: symbol)
                 .font(.brand(14))
+                .lineLimit(1)
         }
         .buttonStyle(.glass)
         .tint(tint)
