@@ -65,21 +65,36 @@ struct ContentView: View {
     @State private var errorMessage: String?
     @State private var didRun = false
     @State private var isPortrait = false
+    @State private var isHingePartiallyOpen = false
+    @Namespace private var layoutNamespace
 
     var body: some View {
         ZStack {
             // Choose the layout from the actual window shape, not the device
             // orientation: on iPadOS 26 any app can be resized into a
             // portrait- or landscape-shaped window.
-            if isPortrait {
-                PortraitLayout(sounds: sounds, mode: mode, selectedID: $selectedID,
-                               onTap: tapPad, onSelectMode: switchTo,
-                               requestDelete: { pendingDelete = $0 })
-            } else {
-                LandscapeLayout(sounds: sounds, mode: mode, selectedID: $selectedID,
-                                onTap: tapPad, onSelectMode: switchTo,
-                                requestDelete: { pendingDelete = $0 })
+            Group {
+                if #available(iOS 27.1, *), isHingePartiallyOpen {
+                    // iPhone Duo half-open: keep all 16 pads on one side of the
+                    // fold. Only used in this posture so the regular portrait /
+                    // landscape layouts stay untouched.
+                    HingeSplitLayout(sounds: sounds, mode: mode, selectedID: $selectedID,
+                                     onTap: tapPad, onSelectMode: switchTo,
+                                     requestDelete: { pendingDelete = $0 })
+                } else if isPortrait {
+                    PortraitLayout(sounds: sounds, mode: mode, selectedID: $selectedID,
+                                   onTap: tapPad, onSelectMode: switchTo,
+                                   requestDelete: { pendingDelete = $0 })
+                } else {
+                    LandscapeLayout(sounds: sounds, mode: mode, selectedID: $selectedID,
+                                    onTap: tapPad, onSelectMode: switchTo,
+                                    requestDelete: { pendingDelete = $0 })
+                }
             }
+            // No crossfade between layouts; the shared pieces morph into
+            // place instead (see `morphing(_:)`).
+            .transition(.identity)
+            .environment(\.layoutMorphNamespace, layoutNamespace)
 
             if mode == .record {
                 RecordPanelView(recorder: recorder, onSave: save(title:), onClose: { switchTo(.play) })
@@ -102,7 +117,9 @@ struct ContentView: View {
         } action: { newValue in
             isPortrait = newValue
         }
+        .modifier(HingeStatusObserver(isPartiallyOpen: $isHingePartiallyOpen))
         .animation(.smooth, value: mode)
+        .animation(.smooth, value: isHingePartiallyOpen)
         .task {
             guard !didRun else { return }
             didRun = true
@@ -227,9 +244,12 @@ struct LandscapeLayout: View {
 
             VStack(spacing: 12) {
                 LogoView()
+                    .morphing(.logo)
                 SoundListView(sounds: sounds, mode: mode,
                               selectedID: $selectedID, requestDelete: requestDelete)
+                    .morphing(.list)
                 ModeControls(mode: mode, onSelect: onSelectMode)
+                    .morphing(.controls)
             }
             .frame(maxWidth: 260)
         }
@@ -251,14 +271,137 @@ struct PortraitLayout: View {
     var body: some View {
         VStack(spacing: 16) {
             LogoView()
+                .morphing(.logo)
             PadGridView(sounds: sounds, onTap: onTap)
             SoundListView(sounds: sounds, mode: mode,
                           selectedID: $selectedID, requestDelete: requestDelete)
                 .frame(maxHeight: 240)
+                .morphing(.list)
             ModeControls(mode: mode, onSelect: onSelectMode)
+                .morphing(.controls)
         }
         .padding(.horizontal, 20)
         .padding(.vertical, 28)
+    }
+}
+
+/// iPhone Duo half-open: the pad grid fills one side of the fold and the
+/// logo, sound list, and mode controls go on the other.
+@available(iOS 27.1, *)
+struct HingeSplitLayout: View {
+    let sounds: [SoundData]
+    let mode: Mode
+    @Binding var selectedID: PersistentIdentifier?
+    let onTap: (Int) -> Void
+    let onSelectMode: (Mode) -> Void
+    let requestDelete: (SoundData) -> Void
+
+    var body: some View {
+        ArrangementView {
+            PadGridView(sounds: sounds, onTap: onTap)
+                .padding(20)
+        } secondary: {
+            HingeControlsPane(sounds: sounds, mode: mode, selectedID: $selectedID,
+                              onSelectMode: onSelectMode, requestDelete: requestDelete)
+                .padding(20)
+        }
+        .arrangementViewStyle(.split)
+    }
+}
+
+/// The non-pad side of the fold. The split can end up side by side or
+/// stacked, so lay out from the pane's own shape instead of assuming one.
+@available(iOS 27.1, *)
+private struct HingeControlsPane: View {
+    let sounds: [SoundData]
+    let mode: Mode
+    @Binding var selectedID: PersistentIdentifier?
+    let onSelectMode: (Mode) -> Void
+    let requestDelete: (SoundData) -> Void
+
+    @State private var isWide = false
+
+    var body: some View {
+        Group {
+            if isWide {
+                // Short, wide pane: list on the left, logo + controls on the right.
+                HStack(spacing: 12) {
+                    SoundListView(sounds: sounds, mode: mode,
+                                  selectedID: $selectedID, requestDelete: requestDelete)
+                        .morphing(.list)
+                    VStack(spacing: 12) {
+                        LogoView()
+                            .morphing(.logo)
+                        Spacer(minLength: 0)
+                        ModeControls(mode: mode, onSelect: onSelectMode)
+                            .morphing(.controls)
+                    }
+                    .frame(maxWidth: 260)
+                }
+            } else {
+                VStack(spacing: 12) {
+                    LogoView()
+                        .morphing(.logo)
+                    SoundListView(sounds: sounds, mode: mode,
+                                  selectedID: $selectedID, requestDelete: requestDelete)
+                        .morphing(.list)
+                    ModeControls(mode: mode, onSelect: onSelectMode)
+                        .morphing(.controls)
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .onGeometryChange(for: Bool.self) { proxy in
+            proxy.size.width > proxy.size.height
+        } action: { newValue in
+            isWide = newValue
+        }
+    }
+}
+
+/// The pieces every layout shares, matched across layout switches so they
+/// glide to their new frames instead of crossfading.
+enum LayoutPiece: Hashable {
+    case logo, pads, list, controls
+}
+
+extension EnvironmentValues {
+    @Entry var layoutMorphNamespace: Namespace.ID?
+}
+
+private struct MorphingModifier: ViewModifier {
+    let piece: LayoutPiece
+    @Environment(\.layoutMorphNamespace) private var namespace
+
+    func body(content: Content) -> some View {
+        if let namespace {
+            content.matchedGeometryEffect(id: piece, in: namespace)
+        } else {
+            content
+        }
+    }
+}
+
+extension View {
+    /// Ties this piece to its counterpart in the other layouts.
+    func morphing(_ piece: LayoutPiece) -> some View {
+        modifier(MorphingModifier(piece: piece))
+    }
+}
+
+/// Reports whether the device hinge is partially open. No-op before iOS 27.1
+/// and on devices without a hinge.
+private struct HingeStatusObserver: ViewModifier {
+    @Binding var isPartiallyOpen: Bool
+
+    func body(content: Content) -> some View {
+        if #available(iOS 27.1, *) {
+            content.onHingeChange { _, newContext in
+                isPartiallyOpen = newContext.hinge?.status == .partiallyOpen
+            }
+        } else {
+            content
+        }
     }
 }
 
@@ -311,24 +454,27 @@ struct PadGridView: View {
     let onTap: (Int) -> Void
 
     var body: some View {
-        GeometryReader { geo in
-            let spacing: CGFloat = 8
-            // Size pads so all 16 fit within both the available width and
-            // height (landscape height is the tight constraint).
-            let dim = max(1, min((geo.size.width - spacing * 3) / 4,
-                                 (geo.size.height - spacing * 3) / 4))
-            let columns = Array(repeating: GridItem(.fixed(dim), spacing: spacing), count: 4)
-            LazyVGrid(columns: columns, spacing: spacing) {
-                ForEach(pads) { pad in
-                    PadButton(pad: pad,
-                              assignedName: sounds.first { $0.padNum == pad.slot }?.displayName) {
-                        onTap(pad.slot)
+        // A non-lazy Grid: lazy containers create cells on demand and fade
+        // them in, which breaks the morph between layouts.
+        Grid(horizontalSpacing: 8, verticalSpacing: 8) {
+            ForEach(0..<4, id: \.self) { row in
+                GridRow {
+                    ForEach(pads[(row * 4)..<(row * 4 + 4)]) { pad in
+                        PadButton(pad: pad,
+                                  assignedName: sounds.first { $0.padNum == pad.slot }?.displayName) {
+                            onTap(pad.slot)
+                        }
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                     }
-                    .frame(width: dim, height: dim)
                 }
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
         }
+        // Keep the whole grid square so all 16 pads fit within both the
+        // available width and height. Pads are flexible rather than a fixed
+        // size, so they track the square smoothly while it morphs.
+        .aspectRatio(1, contentMode: .fit)
+        .morphing(.pads)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 
