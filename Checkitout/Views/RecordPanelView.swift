@@ -59,7 +59,6 @@ struct RecordPanelView: View {
                 ToolbarItem(placement: savePlacement) {
                     Button("保存", systemImage: "square.and.arrow.down", role: .confirm) {
                         onSave(title)
-                        title = ""
                     }
                     .disabled(recorder.isRecording || !recorder.hasRecording)
                 }
