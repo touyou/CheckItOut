@@ -14,9 +14,9 @@ IPA の 2026-10-09 の注意喚起（[不正アクセスによる漏えい等の
 | 中 | GitHub の Webhook 設定 | 2019-01-11 作成の Webhook が push のたびに `webhooks.receiver.gitguardian.ovh` へ通知していた。GitGuardian の正規の受け口かは未確認 | GitHub API で設定を確認 | 対応済み。2026-10-12 に削除 |
 | 低 | GitHub のセキュリティ設定 | secret scanning と push protection が無効だった | GitHub API で確認 | 対応済み。2026-10-12 に両方を有効化 |
 | 低 | `Checkitout/AudioSample/` の `hosaka.wav`、`kirin.wav`、`taguchi.wav` | 個人の音声が公開リポジトリとアプリに入っている。使うのは `Checkitout/Services/Migration.swift` の `#if DEBUG` 内だけ | リポジトリと Debug ビルドの中身を確認。リリースビルドへの同梱は推測 | 対応済み。2026-10-12 に Release 構成から除外（1.1.3 の次のリリースから反映）。リポジトリには残る |
-| 低 | アプリ本体 | `PrivacyInfo.xcprivacy` が無い。`Checkitout/Services/Migration.swift` で `UserDefaults` を使っており、理由の申告が要る API に当たる。Realm の 3 つのバンドルには同梱されている | ソースと Debug ビルドの中身を確認 | 未対応 |
+| 低 | アプリ本体 | `PrivacyInfo.xcprivacy` が無い。`Checkitout/Services/Migration.swift` で `UserDefaults` を使っており、理由の申告が要る API に当たる。Realm の 3 つのバンドルには同梱されている | ソースと Debug ビルドの中身を確認 | 対応済み。2026-10-12 に追加（1.1.3 の次のリリースから反映） |
 | 低 | コミット履歴 | 47 コミットに個人のメールアドレスが残っている | `git log` で確認 | 未対応 |
-| 低 | 未追跡の `Checkitout.xcodeproj/xcshareddata/xcodecloud/manifest.json` | Xcode Cloud のワークフローの内部 ID が入っている。コミットすると公開される | ファイルの中身を確認 | 未対応。コミットするか判断する |
+| 低 | 未追跡の `Checkitout.xcodeproj/xcshareddata/xcodecloud/manifest.json` | Xcode Cloud のワークフローの内部 ID が入っている。コミットすると公開される | ファイルの中身を確認 | 対応済み。他のプロジェクトに揃えて 2026-10-12 にコミット |
 
 過去の履歴にある `.pem` 6 件は、Carthage で取り込んでいた Realm のテスト用証明書で、自分の鍵ではない。
 
