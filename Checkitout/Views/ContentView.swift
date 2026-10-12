@@ -4,7 +4,7 @@
 //
 //  The single-screen soundboard: the 4x4 pad grid on the left, and a right
 //  column with the logo, the sound list, and the mode buttons; plus the
-//  recording panel overlay.
+//  recording panel sheet.
 //
 
 import SwiftUI
@@ -95,11 +95,6 @@ struct ContentView: View {
             // place instead (see `morphing(_:)`).
             .transition(.identity)
             .environment(\.layoutMorphNamespace, layoutNamespace)
-
-            if mode == .record {
-                RecordPanelView(recorder: recorder, onSave: save(title:), onClose: { switchTo(.play) })
-                    .transition(.move(edge: .bottom).combined(with: .opacity))
-            }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         // Full-bleed background applied as a modifier so it can't inflate the
@@ -137,11 +132,16 @@ struct ContentView: View {
         } message: { sound in
             Text("\(sound.displayName)を削除しますか？")
         }
-        .alert("エラー", isPresented: Binding(get: { errorMessage != nil },
-                                           set: { if !$0 { errorMessage = nil } })) {
-            Button("OK", role: .cancel) { errorMessage = nil }
-        } message: {
-            Text(errorMessage ?? "")
+        .errorAlert($errorMessage, isActive: mode != .record)
+        // A system sheet rather than an overlay, so the panel gets the
+        // standard dismissal (swipe down) and a real toolbar.
+        .sheet(isPresented: Binding(get: { mode == .record },
+                                    set: { if !$0, mode == .record { switchTo(.play) } })) {
+            RecordPanelView(recorder: recorder, onSave: save(title:), onClose: { switchTo(.play) })
+                .presentationDetents([.medium, .large])
+                // Errors raised while recording must come from the sheet;
+                // the view underneath can't present over it.
+                .errorAlert($errorMessage, isActive: mode == .record)
         }
     }
 
@@ -386,6 +386,18 @@ extension View {
     /// Ties this piece to its counterpart in the other layouts.
     func morphing(_ piece: LayoutPiece) -> some View {
         modifier(MorphingModifier(piece: piece))
+    }
+}
+
+extension View {
+    /// Shows `message` as an alert while `isActive`, clearing it on dismiss.
+    fileprivate func errorAlert(_ message: Binding<String?>, isActive: Bool) -> some View {
+        alert("エラー", isPresented: Binding(get: { isActive && message.wrappedValue != nil },
+                                           set: { if !$0 { message.wrappedValue = nil } })) {
+            Button("OK", role: .cancel) { message.wrappedValue = nil }
+        } message: {
+            Text(message.wrappedValue ?? "")
+        }
     }
 }
 
