@@ -307,6 +307,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = 1.1.0.0;
 				DEVELOPMENT_TEAM = B4S4333JDW;
+				EXCLUDED_SOURCE_FILE_NAMES = "hosaka.wav kirin.wav taguchi.wav";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = Checkitout/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";

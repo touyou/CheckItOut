@@ -13,7 +13,7 @@ IPA の 2026-10-09 の注意喚起（[不正アクセスによる漏えい等の
 | 中 | GitHub の共同作業者 | write 権限を持つ共同作業者が 1 名いる。`production` に push でき、Xcode Cloud の TestFlight 向けビルドを起動できる | GitHub API で権限を確認 | 未対応。今も必要か判断する |
 | 中 | GitHub の Webhook 設定 | 2019-01-11 作成の Webhook が push のたびに `webhooks.receiver.gitguardian.ovh` へ通知していた。GitGuardian の正規の受け口かは未確認 | GitHub API で設定を確認 | 対応済み。2026-10-12 に削除 |
 | 低 | GitHub のセキュリティ設定 | secret scanning と push protection が無効だった | GitHub API で確認 | 対応済み。2026-10-12 に両方を有効化 |
-| 低 | `Checkitout/AudioSample/` の `hosaka.wav`、`kirin.wav`、`taguchi.wav` | 個人の音声が公開リポジトリとアプリに入っている。使うのは `Checkitout/Services/Migration.swift` の `#if DEBUG` 内だけ | リポジトリと Debug ビルドの中身を確認。リリースビルドへの同梱は推測 | 未対応 |
+| 低 | `Checkitout/AudioSample/` の `hosaka.wav`、`kirin.wav`、`taguchi.wav` | 個人の音声が公開リポジトリとアプリに入っている。使うのは `Checkitout/Services/Migration.swift` の `#if DEBUG` 内だけ | リポジトリと Debug ビルドの中身を確認。リリースビルドへの同梱は推測 | 対応済み。2026-10-12 に Release 構成から除外（1.1.3 の次のリリースから反映）。リポジトリには残る |
 | 低 | アプリ本体 | `PrivacyInfo.xcprivacy` が無い。`Checkitout/Services/Migration.swift` で `UserDefaults` を使っており、理由の申告が要る API に当たる。Realm の 3 つのバンドルには同梱されている | ソースと Debug ビルドの中身を確認 | 未対応 |
 | 低 | コミット履歴 | 47 コミットに個人のメールアドレスが残っている | `git log` で確認 | 未対応 |
 | 低 | 未追跡の `Checkitout.xcodeproj/xcshareddata/xcodecloud/manifest.json` | Xcode Cloud のワークフローの内部 ID が入っている。コミットすると公開される | ファイルの中身を確認 | 未対応。コミットするか判断する |
