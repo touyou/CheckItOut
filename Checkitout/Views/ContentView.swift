@@ -63,6 +63,7 @@ struct ContentView: View {
     @State private var recorder = Recorder()
     @State private var pendingDelete: SoundData?
     @State private var errorMessage: String?
+    @State private var saveCount = 0
     @State private var didRun = false
     @State private var isPortrait = false
     @State private var isHingePartiallyOpen = false
@@ -115,6 +116,7 @@ struct ContentView: View {
         .modifier(HingeStatusObserver(isPartiallyOpen: $isHingePartiallyOpen))
         .animation(.smooth, value: mode)
         .animation(.smooth, value: isHingePartiallyOpen)
+        .sensoryFeedback(.success, trigger: saveCount)
         .task {
             guard !didRun else { return }
             didRun = true
@@ -207,6 +209,10 @@ struct ContentView: View {
                                   sortIndex: (sounds.map(\.sortIndex).max() ?? 0) + 1)
             context.insert(sound)
             try context.save()
+            // Closing the panel is the confirmation: the new sound shows up
+            // in the list behind it.
+            saveCount += 1
+            switchTo(.play)
         } catch {
             errorMessage = "セーブに失敗しました。"
         }
