@@ -3,7 +3,7 @@
 //  Checkitout
 //
 //  The recording panel: live waveform, transport controls, title field, and
-//  save. Presented as a floating Liquid Glass panel while in record mode.
+//  save. Presented as a sheet while in record mode.
 //
 
 import SwiftUI
@@ -17,57 +17,80 @@ struct RecordPanelView: View {
     @FocusState private var titleFocused: Bool
 
     var body: some View {
-        VStack(spacing: 16) {
-            HStack {
-                Text("録音")
-                    .font(.brand(18))
-                Spacer()
-                Button {
-                    onClose()
-                } label: {
-                    Image(systemName: "xmark")
+        NavigationStack {
+            VStack(spacing: 16) {
+                WaveformView(samples: recorder.waveformSamples)
+                    .frame(height: 96)
+                    .clipShape(.rect(cornerRadius: 12))
+
+                TextField("名前", text: $title)
+                    .font(.brand(16))
+                    .textFieldStyle(.roundedBorder)
+                    .focused($titleFocused)
+                    .submitLabel(.done)
+                    .onSubmit { titleFocused = false }
+
+                GlassEffectContainer(spacing: 12) {
+                    // Narrow windows (e.g. the iPhone Duo cover display) can't
+                    // fit the titled buttons on one line; fall back to
+                    // icon-only rather than letting the titles wrap mid-word.
+                    ViewThatFits(in: .horizontal) {
+                        transportButtons
+                        transportButtons
+                            .labelStyle(.iconOnly)
+                            .controlSize(.large)
+                    }
                 }
-                .buttonStyle(.glass)
             }
-
-            WaveformView(samples: recorder.waveformSamples)
-                .frame(height: 96)
-                .clipShape(.rect(cornerRadius: 12))
-
-            TextField("名前", text: $title)
-                .font(.brand(16))
-                .textFieldStyle(.roundedBorder)
-                .focused($titleFocused)
-                .submitLabel(.done)
-                .onSubmit { titleFocused = false }
-
-            GlassEffectContainer(spacing: 12) {
-                HStack(spacing: 12) {
-                    TransportButton(label: "REC", symbol: "record.circle", tint: .red,
-                                    disabled: recorder.isRecording) {
-                        recorder.startRecording()
+            .padding(20)
+            .frame(maxWidth: 460)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+            .navigationTitle("録音")
+            .navigationBarTitleDisplayMode(.inline)
+            // Close and save live in the system toolbar (not in the panel
+            // body) so iPhone Duo can move them to its vertical bar. Both
+            // carry a title for the overflow menu and for VoiceOver.
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("閉じる", systemImage: "xmark", role: .close) {
+                        onClose()
                     }
-                    TransportButton(label: "STOP", symbol: "stop.fill",
-                                    disabled: !recorder.isRecording) {
-                        recorder.stopRecording()
-                    }
-                    TransportButton(label: "PLAY", symbol: "play.fill",
-                                    disabled: recorder.isRecording || !recorder.hasRecording) {
-                        recorder.playPreview()
-                    }
-                    TransportButton(label: "SAVE", symbol: "square.and.arrow.down",
-                                    disabled: recorder.isRecording || !recorder.hasRecording) {
+                }
+                ToolbarItem(placement: savePlacement) {
+                    Button("保存", systemImage: "square.and.arrow.down", role: .confirm) {
                         onSave(title)
                         title = ""
                     }
+                    .disabled(recorder.isRecording || !recorder.hasRecording)
                 }
             }
         }
-        .padding(20)
-        .frame(maxWidth: 460)
-        .glassEffect(.regular, in: .rect(cornerRadius: 24))
-        .padding()
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+    }
+
+    /// Save is the panel's prominent action: keep it pinned where available.
+    private var savePlacement: ToolbarItemPlacement {
+        if #available(iOS 27.0, *) {
+            .topBarPinnedTrailing
+        } else {
+            .confirmationAction
+        }
+    }
+
+    private var transportButtons: some View {
+        HStack(spacing: 12) {
+            TransportButton(label: "REC", symbol: "record.circle", tint: .red,
+                            disabled: recorder.isRecording) {
+                recorder.startRecording()
+            }
+            TransportButton(label: "STOP", symbol: "stop.fill",
+                            disabled: !recorder.isRecording) {
+                recorder.stopRecording()
+            }
+            TransportButton(label: "PLAY", symbol: "play.fill",
+                            disabled: recorder.isRecording || !recorder.hasRecording) {
+                recorder.playPreview()
+            }
+        }
     }
 }
 
@@ -84,6 +107,7 @@ struct TransportButton: View {
         Button(action: action) {
             Label(label, systemImage: symbol)
                 .font(.brand(14))
+                .lineLimit(1)
         }
         .buttonStyle(.glass)
         .tint(tint)
