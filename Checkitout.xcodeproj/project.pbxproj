@@ -292,7 +292,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.3;
+				MARKETING_VERSION = 1.1.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.dev.touyou.Checkitout;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;
@@ -307,6 +307,25 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = 1.1.0.0;
 				DEVELOPMENT_TEAM = B4S4333JDW;
+				EXCLUDED_SOURCE_FILE_NAMES = (
+					"hosaka.wav",
+					"kirin.wav",
+					"taguchi.wav",
+					"1korekara_cut.wav",
+					"2korekara_cut.wav",
+					"3apuri_cut.wav",
+					"4setumei_cut.wav",
+					"5suruze_cut.wav",
+					"6onsei_cut.wav",
+					"7rokuon_cut.wav",
+					"8minnnawo_cut.wav",
+					"9rockon_cut.wav",
+					"10korede_cut.wav",
+					"11yourname_cut.wav",
+					"12todoroku_cut.wav",
+					"13menber_cut.wav",
+					"14menta-_cut.wav",
+				);
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = Checkitout/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
@@ -315,7 +334,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.3;
+				MARKETING_VERSION = 1.1.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.dev.touyou.Checkitout;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;
