@@ -15,9 +15,19 @@ struct CheckitoutApp: App {
 
     init() {
         do {
-            container = try ModelContainer(for: SoundData.self)
+            if ScreenshotFixture.usesEphemeralStore {
+                container = try ModelContainer(
+                    for: SoundData.self,
+                    configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+                )
+            } else {
+                container = try ModelContainer(for: SoundData.self)
+            }
         } catch {
             fatalError("SwiftData ModelContainer の生成に失敗しました: \(error)")
+        }
+        if ScreenshotFixture.isActive {
+            ScreenshotFixture.seed(into: container.mainContext)
         }
     }
 
