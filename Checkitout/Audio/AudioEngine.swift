@@ -158,6 +158,14 @@ final class Recorder {
         return key
     }
 
+    /// Screenshot fixture only: pretends a take was just recorded, without
+    /// touching the microphone or the audio session.
+    func loadScreenshotFixture() {
+        reset()
+        waveformSamples = ScreenshotFixture.waveformSamples
+        hasRecording = true
+    }
+
     func reset() {
         previewPlayer?.stop()
         previewPlayer = nil

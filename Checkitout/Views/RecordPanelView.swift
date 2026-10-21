@@ -13,7 +13,7 @@ struct RecordPanelView: View {
     let onSave: (String) -> Void
     let onClose: () -> Void
 
-    @State private var title = ""
+    @State private var title = ScreenshotFixture.isActive ? ScreenshotFixture.recordingTitle : ""
     @FocusState private var titleFocused: Bool
 
     var body: some View {
@@ -22,6 +22,7 @@ struct RecordPanelView: View {
                 WaveformView(samples: recorder.waveformSamples)
                     .frame(height: 96)
                     .clipShape(.rect(cornerRadius: 12))
+                    .accessibilityIdentifier("waveform")
 
                 TextField("名前", text: $title)
                     .font(.brand(16))
