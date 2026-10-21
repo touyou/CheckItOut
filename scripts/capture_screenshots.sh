@@ -15,6 +15,18 @@
 # Each destination can be overridden, e.g. to point at a cloned simulator:
 #
 #   IPHONE_DEST="platform=iOS Simulator,id=<udid>" ./scripts/capture_screenshots.sh iphone
+#
+# iPhone Duo is shot both folded (outer screen, portrait 1398x2034) and unfolded
+# (inner screen, landscape 2853x2007). The fold can't be changed from the command
+# line, only with the button under the device in DeviceHub, so each run checks
+# the current state first and stops if it doesn't match:
+#
+#   duo-closed  shoot the folded Duo (a freshly booted Duo is folded)
+#   duo-open    unfold it in DeviceHub first
+#
+# Unfolded, the test captures the inner screen (`SCREENSHOT_DUO_OPEN`). Its
+# framebuffer stays portrait-shaped, so this script turns it 90° clockwise and
+# sizes it to 2853x2007.
 
 set -euo pipefail
 
@@ -27,13 +39,17 @@ LOCALES="${LOCALES:-ja}"
 
 TESTID="CheckitoutUITests/ScreenshotTests"
 
-# platform | destination
-#
 # iPhone Duo only exists on the iOS 27.1 runtime.
+DUO_DEST="${DUO_DEST:-platform=iOS Simulator,name=iPhone Duo,OS=27.1}"
+DUO_OPEN_SIZE="2853x2007"
+DUO_CLOSED_SIZE="1398x2034"
+
+# platform | destination
 PLATFORMS=(
   "iphone|${IPHONE_DEST:-platform=iOS Simulator,name=iPhone 17 Pro Max,OS=27.0}"
   "ipad|${IPAD_DEST:-platform=iOS Simulator,name=iPad Pro 13-inch (M5),OS=27.0}"
-  "duo|${DUO_DEST:-platform=iOS Simulator,name=iPhone Duo,OS=27.1}"
+  "duo-closed|$DUO_DEST"
+  "duo-open|$DUO_DEST"
 )
 
 requested=("$@")
@@ -56,6 +72,66 @@ region_for() {
 
 mkdir -p "$WORK"
 
+# The destination's UDID: id= as is, name=/OS= looked up in that runtime (used for the Duo fold check).
+udid_for() {
+  local destination=$1 udid name os
+  udid=$(echo "$destination" | sed -nE 's/.*id=([0-9A-Fa-f-]{36}).*/\1/p')
+  if [ -z "$udid" ]; then
+    name=$(echo "$destination" | sed -nE 's/.*name=([^,]+).*/\1/p')
+    os=$(echo "$destination" | sed -nE 's/.*OS=([0-9.]+).*/\1/p')
+    udid=$(xcrun simctl list devices available \
+      | awk -v os="-- iOS $os --" -v name="$name" '$0 == os {f=1; next} /^-- /{f=0} f && index($0, "    " name " (") == 1' \
+      | head -1 | sed -E 's/.*\(([0-9A-F-]{36})\).*/\1/')
+  fi
+  echo "$udid"
+}
+
+pixel_size() {
+  sips -g pixelWidth -g pixelHeight "$1" | awk '/pixelWidth/ {w=$2} /pixelHeight/ {h=$2} END {print w"x"h}'
+}
+
+# Whether the Duo is folded the way this platform needs, judged by the default screen's size
+# (the outer screen when folded, the inner one when unfolded).
+check_duo_state() {
+  local platform=$1 destination=$2 udid shot size
+  udid=$(udid_for "$destination")
+  if [ -z "$udid" ]; then
+    echo "    FAILED — no iPhone Duo simulator for $destination"
+    return 1
+  fi
+  xcrun simctl boot "$udid" 2>/dev/null || true
+  xcrun simctl bootstatus "$udid" -b > /dev/null 2>&1 || true
+  shot="$WORK/duo-state.png"
+  xcrun simctl io "$udid" screenshot "$shot" > /dev/null 2>&1
+  size=$(pixel_size "$shot")
+  case "$platform" in
+    duo-open)
+      [ "$size" = "$DUO_OPEN_SIZE" ] && return 0
+      echo "    FAILED — the Duo is folded ($size). Unfold it with the button under the device in DeviceHub, then run again" ;;
+    duo-closed)
+      [ "$size" = "$DUO_CLOSED_SIZE" ] && return 0
+      echo "    FAILED — the Duo is unfolded ($size). Fold it in DeviceHub or reboot the simulator, then run again" ;;
+  esac
+  return 1
+}
+
+# The unfolded Duo's inner screen comes back as a portrait-shaped framebuffer: turn it to
+# landscape and size it to 2853x2007 (XCUIScreen's image is 1px short, 2006x2852).
+normalize_duo_open() {
+  local dest=$1 png size w h
+  for png in "$dest"/*.png; do
+    size=$(pixel_size "$png")
+    w=${size%x*}; h=${size#*x}
+    if [ "$w" -lt "$h" ]; then
+      sips -r 90 "$png" > /dev/null
+    fi
+    if [ "$(pixel_size "$png")" != "$DUO_OPEN_SIZE" ]; then
+      sips -z "${DUO_OPEN_SIZE#*x}" "${DUO_OPEN_SIZE%x*}" "$png" > /dev/null
+    fi
+  done
+  echo "    normalized to $DUO_OPEN_SIZE"
+}
+
 capture() {
   local platform=$1 destination=$2 locale=$3
   local bundle="$WORK/$platform-$locale.xcresult"
@@ -77,7 +153,22 @@ capture() {
 
   # -testLanguage / -testRegion, not -AppleLanguages launch arguments: this is
   # what moves `Locale.current` inside the app under test.
-  if ! xcodebuild test \
+  case "$platform" in
+    duo-*)
+      if ! check_duo_state "$platform" "$destination"; then
+        failed+=("$platform/$locale")
+        return
+      fi ;;
+  esac
+
+  # Only for the unfolded Duo: have the test capture the inner screen (the test
+  # sees it without the TEST_RUNNER_ prefix).
+  local duo_open=0
+  if [ "$platform" = "duo-open" ]; then
+    duo_open=1
+  fi
+
+  if ! TEST_RUNNER_SCREENSHOT_DUO_OPEN=$duo_open xcodebuild test \
     -project Checkitout.xcodeproj \
     -scheme Checkitout \
     -destination "$destination" \
@@ -128,6 +219,11 @@ PY
   then
     echo "    FAILED — no screenshots extracted from $bundle"
     failed+=("$platform/$locale")
+    return
+  fi
+
+  if [ "$platform" = "duo-open" ]; then
+    normalize_duo_open "$dest"
   fi
 }
 

@@ -22,9 +22,15 @@ final class ScreenshotTests: XCTestCase {
         "-uitest-screenshot-fixture",
     ]
 
+    /// Set by the capture script (`TEST_RUNNER_SCREENSHOT_DUO_OPEN=1`) when shooting
+    /// an unfolded iPhone Duo.
+    private let isDuoOpen = ProcessInfo.processInfo.environment["SCREENSHOT_DUO_OPEN"] == "1"
+
     override func setUpWithError() throws {
         continueAfterFailure = false
-        XCUIDevice.shared.orientation = .portrait
+        // An unfolded Duo is shot in landscape; the capture script's clockwise
+        // 90° turn assumes landscapeLeft.
+        XCUIDevice.shared.orientation = isDuoOpen ? .landscapeLeft : .portrait
         app = XCUIApplication()
         app.launchArguments = launchArguments
         app.launch()
@@ -37,15 +43,31 @@ final class ScreenshotTests: XCTestCase {
 
     // MARK: - Capture
 
+    /// The screen to capture: `XCUIScreen.main`, except on an unfolded iPhone Duo.
+    ///
+    /// The Duo has an outer and an inner screen, and `XCUIScreen.main` stays the
+    /// outer one even when the device is open. Unfolded, take the screen with the
+    /// most pixels (the inner one). Its framebuffer is still portrait-shaped; the
+    /// capture script turns it to landscape and fixes the size.
+    private func screenToCapture() -> XCUIScreen {
+        guard isDuoOpen else { return XCUIScreen.main }
+        func pixels(_ screen: XCUIScreen) -> CGFloat {
+            let size = screen.screenshot().image.size
+            return size.width * size.height
+        }
+        return XCUIScreen.screens.max { pixels($0) < pixels($1) } ?? XCUIScreen.main
+    }
+
     /// Attaches the device's framebuffer (exactly the pixel size App Store
     /// Connect asks for) under a name the extraction script can order by.
     private func capture(_ name: String) {
-        let screenshot = XCUIScreen.main.screenshot()
+        let screenshot = screenToCapture().screenshot()
         // In landscape the framebuffer is still portrait-shaped and the
         // orientation lives only in the image's metadata, which the PNG of
         // `XCTAttachment(screenshot:)` drops — the shot would come out
         // sideways. Redraw it upright instead.
-        let attachment = XCUIDevice.shared.orientation.isLandscape
+        // On an unfolded Duo the script does the turn, so keep the raw framebuffer.
+        let attachment = XCUIDevice.shared.orientation.isLandscape && !isDuoOpen
             ? pngAttachment(screenshot.image.redrawnUpright())
             : XCTAttachment(screenshot: screenshot)
         attachment.name = name
@@ -102,8 +124,10 @@ final class ScreenshotTests: XCTestCase {
         XCTAssertTrue(modePicker.waitForExistence(timeout: 10), "Recording panel should dismiss")
 
         // 4. Landscape, where the pads and the list sit side by side.
-        // Skipped where the app doesn't turn with the device (e.g. iPhone Duo
-        // unfolded), since it would only repeat the first shot.
+        // Skipped where the app doesn't turn with the device (the folded iPhone
+        // Duo), since it would only repeat the first shot, and on the unfolded
+        // Duo, where every shot is already landscape.
+        guard !isDuoOpen else { return }
         XCUIDevice.shared.orientation = .landscapeLeft
         settle()
         let window = app.windows.firstMatch.frame
