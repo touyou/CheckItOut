@@ -32,6 +32,7 @@ struct ModeControls: View {
                 Text("編集").tag(Mode.edit)
             }
             .pickerStyle(.segmented)
+            .accessibilityIdentifier("modePicker")
             // Lift the control off the dark background so the unselected
             // segment stays legible.
             .padding(4)
@@ -39,6 +40,7 @@ struct ModeControls: View {
 
             // 録音 opens a modal panel → kept as a distinct action button.
             Button("録音") { onSelect(.record) }
+                .accessibilityIdentifier("recordButton")
                 .font(.brand(15))
                 .buttonStyle(.glass)
                 .tint(.red)

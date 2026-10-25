@@ -26,6 +26,7 @@ struct SoundListView: View {
             }
         }
         .scrollContentBackground(.hidden)
+        .accessibilityIdentifier("soundList")
         .environment(\.editMode, .constant(mode == .edit ? .active : .inactive))
         .glassEffect(.regular, in: .rect(cornerRadius: 16))
     }

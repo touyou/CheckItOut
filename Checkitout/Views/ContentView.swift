@@ -76,7 +76,11 @@ struct ContentView: View {
         .task {
             guard !didRun else { return }
             didRun = true
-            MigrationCoordinator.runIfNeeded(context: context)
+            // The screenshot fixture has already seeded its own sounds; don't
+            // let first-launch seeding/migration add to them or set its flag.
+            if !ScreenshotFixture.isActive {
+                MigrationCoordinator.runIfNeeded(context: context)
+            }
             padPlayer.rebuild(from: sounds)
         }
         .onChange(of: assignmentSignature) {
@@ -117,7 +121,11 @@ struct ContentView: View {
         mode = target
         if target != .edit { selectedID = nil }
         if target == .play { padPlayer.rebuild(from: sounds) }
-        if target == .record {
+        if target == .record, ScreenshotFixture.isActive {
+            // Show a finished take instead of asking for the microphone, so
+            // no permission alert covers the screenshot.
+            recorder.loadScreenshotFixture()
+        } else if target == .record {
             recorder.reset()
             Task {
                 let granted = await recorder.requestPermission()
