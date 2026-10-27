@@ -1,0 +1,52 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "Play ${sound} in ${applicationName}": {
+      "extractionState": "extracted_with_value",
+      "localizations": {
+        "en": {
+          "stringSet": {
+            "state": "new",
+            "values": [
+              "Play ${sound} in ${applicationName}",
+              "Play ${sound} with ${applicationName}"
+            ]
+          }
+        },
+        "ja": {
+          "stringSet": {
+            "state": "translated",
+            "values": [
+              "${applicationName}で${sound}を鳴らして",
+              "${applicationName}で${sound}を再生",
+              "${applicationName}の${sound}を鳴らして"
+            ]
+          }
+        }
+      }
+    },
+    "Play a sound in ${applicationName}": {
+      "extractionState": "extracted_with_value",
+      "localizations": {
+        "en": {
+          "stringSet": {
+            "state": "new",
+            "values": [
+              "Play a sound in ${applicationName}"
+            ]
+          }
+        },
+        "ja": {
+          "stringSet": {
+            "state": "translated",
+            "values": [
+              "${applicationName}で音を鳴らして",
+              "${applicationName}でサウンドを再生"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

@@ -8,6 +8,7 @@
 
 import SwiftUI
 import SwiftData
+import AppIntents
 
 @main
 struct CheckitoutApp: App {
@@ -29,6 +30,10 @@ struct CheckitoutApp: App {
         if ScreenshotFixture.isActive {
             ScreenshotFixture.seed(into: container.mainContext)
         }
+        // Registered synchronously here: a background intent can launch the
+        // app process without ever showing a scene.
+        AppDependencyManager.shared.add(dependency: container)
+        AppDependencyManager.shared.add(dependency: SoundPlaybackService())
     }
 
     var body: some Scene {

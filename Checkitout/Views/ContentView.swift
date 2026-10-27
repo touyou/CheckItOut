@@ -8,6 +8,7 @@
 
 import SwiftUI
 import SwiftData
+import AppIntents
 
 struct ContentView: View {
     @Environment(\.modelContext) private var context
@@ -82,9 +83,12 @@ struct ContentView: View {
                 MigrationCoordinator.runIfNeeded(context: context)
             }
             padPlayer.rebuild(from: sounds)
+            CheckitoutShortcuts.updateAppShortcutParameters()
         }
         .onChange(of: assignmentSignature) {
             if mode != .record { padPlayer.rebuild(from: sounds) }
+            // Phrases with a sound name only match names Siri has fetched.
+            CheckitoutShortcuts.updateAppShortcutParameters()
         }
         .alert("削除", isPresented: Binding(get: { pendingDelete != nil },
                                           set: { if !$0 { pendingDelete = nil } }),
