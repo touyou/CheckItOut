@@ -75,3 +75,7 @@ fastlane/test_output
 
 # Local verification screenshots
 .claude-screens/
+
+# App Store screenshots (scripts/capture_screenshots.sh)
+Screenshots/
+.screenshot-runs/
