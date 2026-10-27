@@ -3,8 +3,8 @@
 //  Checkitout
 //
 //  One-shot playback for intents. Unlike `PadPlayerEngine` it waits for the
-//  sound to finish, because a background intent's process may be suspended
-//  as soon as `perform()` returns.
+//  sound to finish, so the intent's run (and Siri's UI) lasts as long as
+//  the sound.
 //
 
 import AVFoundation
@@ -38,12 +38,15 @@ final class SoundPlaybackService {
             throw SoundPlaybackError.unplayable
         }
         self.player = player
-        // `.ambient` (the pads' category) is silenced by the ring/silent switch
-        // and may not start from the background, so intents use `.playback`
-        // and hand the session back to the pads' setting afterwards.
-        try? AVAudioSession.sharedInstance().setCategory(.playback, options: [.mixWithOthers])
-        try? AVAudioSession.sharedInstance().setActive(true)
-        defer { try? AudioSessionManager.configureForPlayback() }
+        // `.ambient` (the pads' category) is silenced by the ring/silent switch,
+        // so intents use `.playback`, then restore whatever was set before
+        // (it may be `.playAndRecord` if the record panel is open).
+        let session = AVAudioSession.sharedInstance()
+        let previousCategory = session.category
+        let previousOptions = session.categoryOptions
+        try? session.setCategory(.playback, options: [.mixWithOthers])
+        try? session.setActive(true)
+        defer { try? session.setCategory(previousCategory, options: previousOptions) }
 
         guard player.play() else { throw SoundPlaybackError.unplayable }
         let deadline = ContinuousClock.now + min(.seconds(player.duration) + .milliseconds(200), maxWait)

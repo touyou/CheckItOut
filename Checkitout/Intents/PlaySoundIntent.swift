@@ -2,9 +2,9 @@
 //  PlaySoundIntent.swift
 //  Checkitout
 //
-//  Plays one sound without opening the app ("Hey Siri, play チェケラ in
-//  Checkitout"). The in-app pads keep their own preloaded players for
-//  latency; both resolve the file through `SoundData.resolvedURL`.
+//  Plays one sound by name ("Hey Siri, play チェケラ in Checkitout"). The
+//  in-app pads keep their own preloaded players for latency; both resolve
+//  the file through `SoundData.resolvedURL`.
 //
 
 import AppIntents
@@ -12,8 +12,10 @@ import SwiftData
 
 struct PlaySoundIntent: AppIntent {
     static let title: LocalizedStringResource = "サウンドを鳴らす"
-    static let description = IntentDescription("サウンドボードの音をアプリを開かずに再生します。")
-    static let supportedModes: IntentModes = .background
+    static let description = IntentDescription("サウンドボードの音を再生します。")
+    // Foreground: without the `audio` background mode a background launch
+    // cannot start an audio session, and the app has no other use for it.
+    static let supportedModes: IntentModes = .foreground(.immediate)
 
     static var parameterSummary: some ParameterSummary {
         Summary("\(\.$sound)を鳴らす")

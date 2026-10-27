@@ -32,10 +32,11 @@ struct CheckitoutApp: App {
         }
         // Registered synchronously here: a background intent can launch the
         // app process without ever showing a scene.
-        // `dependency:` is an escaping autoclosure, so pass a local, not `self.container`.
+        // `dependency:` is an escaping, nonisolated autoclosure: pass locals built here.
         let container = container
+        let player = SoundPlaybackService()
         AppDependencyManager.shared.add(dependency: container)
-        AppDependencyManager.shared.add(dependency: SoundPlaybackService())
+        AppDependencyManager.shared.add(dependency: player)
     }
 
     var body: some Scene {
