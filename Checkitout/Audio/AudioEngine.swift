@@ -61,11 +61,19 @@ final class PadPlayerEngine {
     /// Plays the pad in `slot`, restarting from the top if already playing.
     func play(slot: Int) {
         guard (0..<16).contains(slot), let player = players[slot] else { return }
+        #if DEBUG
+        TapLatencyProbe.willPlay(slot: slot, player: player)
+        #endif
         if player.isPlaying {
             player.stop()
             player.currentTime = 0
         }
-        player.play()
+        let started = player.play()
+        #if DEBUG
+        TapLatencyProbe.didPlay(slot: slot, player: player, started: started)
+        #else
+        _ = started
+        #endif
     }
 
     func stop(slot: Int) {

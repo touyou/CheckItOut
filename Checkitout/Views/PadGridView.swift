@@ -32,6 +32,9 @@ struct PadGridView: View {
         // available width and height. Pads are flexible rather than a fixed
         // size, so they track the square smoothly while it morphs.
         .aspectRatio(1, contentMode: .fit)
+        #if DEBUG
+        .tapBenchTwoFingerTarget()
+        #endif
         .morphing(.pads)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
@@ -57,6 +60,7 @@ struct PadButton: View {
                 }
         }
         .buttonStyle(PadButtonStyle(pad: pad))
+        .accessibilityIdentifier("pad-\(pad.slot)")
     }
 }
 

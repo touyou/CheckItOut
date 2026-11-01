@@ -79,11 +79,16 @@ struct ContentView: View {
             didRun = true
             // The screenshot fixture has already seeded its own sounds; don't
             // let first-launch seeding/migration add to them or set its flag.
-            if !ScreenshotFixture.isActive {
+            if !ScreenshotFixture.isActive && !isTapBench {
                 MigrationCoordinator.runIfNeeded(context: context)
             }
             padPlayer.rebuild(from: sounds)
             CheckitoutShortcuts.updateAppShortcutParameters()
+            #if DEBUG
+            TapLatencyProbe.installIfNeeded()
+            TapLatencyProbe.recordReady()
+            TapLatencyProbe.runIntentCheckIfNeeded(container: context.container)
+            #endif
         }
         .onChange(of: assignmentSignature) {
             if mode != .record { padPlayer.rebuild(from: sounds) }
@@ -112,6 +117,14 @@ struct ContentView: View {
     }
 
     // MARK: Actions
+
+    private var isTapBench: Bool {
+        #if DEBUG
+        TapLatencyProbe.isActive
+        #else
+        false
+        #endif
+    }
 
     private var assignmentSignature: String {
         sounds.map { "\($0.padNum):\($0.storageKey)" }.joined(separator: "|")
