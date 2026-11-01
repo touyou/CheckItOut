@@ -5,7 +5,7 @@
 
 ## 状態（周ごとに上書き）
 
-- 予算: 4 周 / 4 時間の早い方（2026-11-01 05:25Z 開始。ユーザー指定）。使ったもの: 1 周 / 約 1.4 時間（土台づくりを含む）
+- 予算: 4 周 / 4 時間の早い方（2026-11-01 05:25Z 開始。ユーザー指定）。使ったもの: 1 周 / 約 1.2 時間（土台づくりを含む）
 - 計測の手順: [README.md](README.md)。`compare.py --noise-floor 3`。設定のオフ（`release`）とオン（`touch`）を別々に比べる。
   採否に使う補助の指標: `play_call_ms` / `repeat_play_call_ms` / `first_play_call_ms` / `release_to_play_ms` / `touch_to_play_ms`。
   参考だけ: `hold_ms` / `delivery_ms`（アプリの外で決まる）、`output_est_ms`（セッションの設定を変える案でだけ見る）
