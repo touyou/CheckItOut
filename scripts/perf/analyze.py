@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """Scores one run of the tap-latency bench and checks its integrity.
 
-    analyze.py <log dir> [--expected docs/perf/expected.json] > run.json
+    analyze.py <log dir> [--mode release|touch] [--expected docs/perf/expected.json] > run.json
+
+--mode is the pad setting the logs were taken with: release (default, pads
+play when the finger lifts) or touch ("play on touch" turned on).
 
 <log dir> holds the per-scenario logs written by TapLatencyProbe
 (first_tap-0.json ... repeat.json, simultaneous.json, slide_off.json,
@@ -90,8 +93,9 @@ def check_play(name, play, slot, exp, failures, events):
         failures.append(f"{name}: session category {play['category']}, expected {exp['category']}")
 
 
-def measure(name, events, groups, pads_per_press, exp, failures, samples):
-    """Each press must produce exactly the expected plays, after release."""
+def measure(name, events, groups, pads_per_press, exp, failures, samples, mode):
+    """Each press must produce exactly the expected plays, at the time the
+    setting says: after the finger lifts (release) or while it is down (touch)."""
     if len(groups) != len(pads_per_press):
         failures.append(f"{name}: {len(groups)} presses, expected {len(pads_per_press)}")
         return
@@ -110,10 +114,10 @@ def measure(name, events, groups, pads_per_press, exp, failures, samples):
             check_play(label, play, play["slot"], exp, failures, events)
             if play["t_entry"] < group[0]["down"]["t"]:
                 failures.append(f"{label}: pad {play['slot']} play entered before the touch")
-            # Pads play on release (SwiftUI Button). Playing on touch-down is a
-            # spec change and needs its own expectation (README).
-            if play["t_entry"] < release:
+            if mode == "release" and play["t_entry"] < release:
                 failures.append(f"{label}: pad {play['slot']} played before the finger was lifted")
+            if mode == "touch" and play["t_entry"] >= min(p["end"]["t"] for p in group):
+                failures.append(f"{label}: pad {play['slot']} played after the finger was lifted")
             samples.append(sample(group[0], play))
 
 
@@ -126,7 +130,7 @@ def p(values, q):
     return values[lo] + (values[hi] - values[lo]) * (k - lo)
 
 
-def analyze(log_dir, exp):
+def analyze(log_dir, exp, mode):
     failures = []
     per = {"first_tap": [], "repeat": [], "simultaneous": []}
 
@@ -134,13 +138,13 @@ def analyze(log_dir, exp):
         name = f"first_tap-{i}"
         ev = load_events(log_dir, name, failures)
         if ev is not None:
-            measure(name, ev, touches(ev), [[pad]], exp, failures, per["first_tap"])
+            measure(name, ev, touches(ev), [[pad]], exp, failures, per["first_tap"], mode)
 
     ev = load_events(log_dir, "repeat", failures)
     if ev is not None:
         r = exp["repeat"]
         before = len(per["repeat"])
-        measure("repeat", ev, touches(ev), [[r["pad"]]] * r["count"], exp, failures, per["repeat"])
+        measure("repeat", ev, touches(ev), [[r["pad"]]] * r["count"], exp, failures, per["repeat"], mode)
         # The first press starts from silence; the rest restart a playing sound.
         del per["repeat"][before:before + 1]
         restarts = [e for e in ev if e["kind"] == "play"][1:]
@@ -150,7 +154,7 @@ def analyze(log_dir, exp):
     ev = load_events(log_dir, "simultaneous", failures)
     if ev is not None:
         s = exp["simultaneous"]
-        measure("simultaneous", ev, touches(ev), [s["pads"]] * s["count"], exp, failures, per["simultaneous"])
+        measure("simultaneous", ev, touches(ev), [s["pads"]] * s["count"], exp, failures, per["simultaneous"], mode)
 
     ev = load_events(log_dir, "slide_off", failures)
     if ev is not None:
@@ -160,8 +164,17 @@ def analyze(log_dir, exp):
             failures.append(f"slide_off: {len(groups)} presses, expected 2")
         else:
             bounds = [groups[0][0]["down"]["t"], groups[1][0]["down"]["t"], float("inf")]
-            if plays_between(ev, bounds[0], bounds[1]):
+            slid = plays_between(ev, bounds[0], bounds[1])
+            if mode == "release" and slid:
                 failures.append("slide_off: a press that slid off the pad still played")
+            if mode == "touch":
+                end = groups[0][0]["end"]
+                if [p["slot"] for p in slid] != [pad]:
+                    failures.append(f"slide_off: the sliding press played {[p['slot'] for p in slid]}, expected [{pad}]")
+                elif end is None or slid[0]["t_entry"] >= end["t"]:
+                    failures.append("slide_off: the sliding press did not play while the finger was down")
+                else:
+                    check_play("slide_off", slid[0], pad, exp, failures, ev)
             plays = plays_between(ev, bounds[1], bounds[2])
             if [p["slot"] for p in plays] != [pad]:
                 failures.append(f"slide_off: the normal press played {[p['slot'] for p in plays]}, expected [{pad}]")
@@ -220,11 +233,12 @@ def analyze(log_dir, exp):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("log_dir")
+    ap.add_argument("--mode", choices=["release", "touch"], default="release")
     ap.add_argument("--expected", default=DEFAULT_EXPECTED)
     args = ap.parse_args()
     with open(args.expected, encoding="utf-8") as f:
         exp = json.load(f)
-    result = analyze(args.log_dir, exp)
+    result = analyze(args.log_dir, exp, args.mode)
     json.dump(result, sys.stdout, ensure_ascii=False, indent=2)
     print()
     return 0 if result["valid"] else 1
