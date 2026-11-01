@@ -13,7 +13,8 @@
 # one this script lives in, or --trusted), copied over each build, so a
 # candidate can't change how it is measured or checked.
 #
-# Output: <out>/base-N.json (and cand-N.json), one per run, in the shape
+# Output: <out>/base-<mode>-N.json (and cand-<mode>-N.json), one per run and
+# pad setting (release / touch, see PERF_MODES), in the shape
 # skills/autonomous-perf-loop/scripts/compare.py reads.
 
 set -euo pipefail
@@ -23,6 +24,8 @@ BASE="$TRUSTED"
 CAND=""
 RUNS=3
 OUT=""
+# Pad settings to measure: release (default) and touch ("play on touch").
+MODES="${PERF_MODES:-release touch}"
 SIM_NAME="CheckItOut Perf"
 SIM_TYPE="com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro"
 SIM_RUNTIME="${PERF_SIM_RUNTIME:-com.apple.CoreSimulator.SimRuntime.iOS-27-2}"
@@ -86,14 +89,18 @@ hook_lines() {
 
 gate() {
   local src=$1 ok=1
-  if [ -n "$(find "$src" -type l -not -path '*/.git/*' | head -1)" ]; then
+  # Only what prepare() copies (build output and caches are excluded there).
+  if [ -n "$(find "$src" \( -name .git -o -name .perf-runs -o -name build -o -name DerivedData \
+      -o -name Screenshots -o -name .screenshot-runs \) -prune -o -type l -print | head -1)" ]; then
     echo "gate: $src contains symlinks" >&2; ok=0
   fi
-  if ! diff -rq --exclude xcuserdata "$TRUSTED/Checkitout.xcodeproj" "$src/Checkitout.xcodeproj" >/dev/null; then
+  if ! diff -q "$TRUSTED/Checkitout.xcodeproj/project.pbxproj" "$src/Checkitout.xcodeproj/project.pbxproj" >/dev/null \
+    || ! diff -rq "$TRUSTED/Checkitout.xcodeproj/xcshareddata/xcschemes" \
+      "$src/Checkitout.xcodeproj/xcshareddata/xcschemes" >/dev/null; then
     if [ "${PERF_ALLOW_PROJECT_DIFF:-0}" = 1 ]; then
       echo "gate: Checkitout.xcodeproj differs (allowed by PERF_ALLOW_PROJECT_DIFF)" >&2
     else
-      echo "gate: Checkitout.xcodeproj (build settings, schemes, file membership) differs from trusted" >&2; ok=0
+      echo "gate: project.pbxproj or the schemes (build settings, file membership) differ from trusted" >&2; ok=0
     fi
   fi
   if ! diff -rq "$TRUSTED/Checkitout/AudioSample" "$src/Checkitout/AudioSample" >/dev/null; then
@@ -123,20 +130,28 @@ build() {
 }
 
 run() {
-  local name=$1 index=$2 logs="$WORK/$1/logs-$2"
+  local name=$1 index=$2 mode
+  for mode in $MODES; do
+    run_mode "$name" "$index" "$mode"
+  done
+}
+
+run_mode() {
+  local name=$1 index=$2 mode=$3 logs="$WORK/$1/logs-$3-$2" result="$OUT/$1-$3-$2.json"
   rm -rf "$logs" && mkdir -p "$logs"
   # Exit status is ignored here: a failing UI test leaves logs missing, which
   # analyze.py reports as an integrity failure (score 0).
-  TEST_RUNNER_PERF_TAP_BENCH_OUT="$logs" xcodebuild test-without-building -quiet \
+  TEST_RUNNER_PERF_TAP_BENCH_OUT="$logs" TEST_RUNNER_PERF_TAP_BENCH_MODE="$mode" \
+    xcodebuild test-without-building -quiet \
     -project "$WORK/$name/src/Checkitout.xcodeproj" -scheme Checkitout \
     -destination "id=$UDID" -derivedDataPath "$WORK/$name/dd" \
     -only-testing:CheckitoutUITests/TapLatencyBenchTests \
     > "$logs/test.log" 2>&1 || true
-  python3 "$TRUSTED/scripts/perf/analyze.py" "$logs" \
-    --expected "$TRUSTED/docs/perf/expected.json" > "$OUT/$name-$index.json" || true
+  python3 "$TRUSTED/scripts/perf/analyze.py" "$logs" --mode "$mode" \
+    --expected "$TRUSTED/docs/perf/expected.json" > "$result" || true
   python3 -c "
-import json; r = json.load(open('$OUT/$name-$index.json'))
-print(f\"$name-$index: score {r['score']} valid {r['valid']} touch_to_audio_ms {r.get('touch_to_audio_ms')}\")
+import json; r = json.load(open('$result'))
+print(f\"$name-$mode-$index: score {r['score']} valid {r['valid']} touch_to_audio_ms {r.get('touch_to_audio_ms')}\")
 for f in r['failures'][:5]: print('  -', f)"
 }
 

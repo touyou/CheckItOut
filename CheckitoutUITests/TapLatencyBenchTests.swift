@@ -27,6 +27,9 @@ final class TapLatencyBenchTests: XCTestCase {
     static let simultaneousCount = 5
 
     private var outputDirectory: String!
+    /// `release` (the default: pads play when the finger lifts) or `touch`
+    /// (the "play on touch" setting turned on).
+    private var playMode = "release"
 
     override func setUpWithError() throws {
         continueAfterFailure = false
@@ -34,12 +37,16 @@ final class TapLatencyBenchTests: XCTestCase {
             throw XCTSkip("Run through scripts/perf/bench.sh")
         }
         outputDirectory = dir
+        playMode = ProcessInfo.processInfo.environment["PERF_TAP_BENCH_MODE"] ?? "release"
         XCUIDevice.shared.orientation = .portrait
     }
 
     private func launch(_ scenario: String, extraArguments: [String] = []) -> XCUIApplication {
         let app = XCUIApplication()
-        app.launchArguments = ["-perf-tap-bench"] + extraArguments
+        // The setting goes in through the arguments domain, so it never
+        // persists in the simulator's defaults.
+        app.launchArguments = ["-perf-tap-bench",
+                               "-playOnTouchDown", playMode == "touch" ? "YES" : "NO"] + extraArguments
         app.launchEnvironment["PERF_TAP_BENCH_OUT"] = outputDirectory
         app.launchEnvironment["PERF_TAP_BENCH_SCENARIO"] = scenario
         app.launch()
@@ -93,9 +100,9 @@ final class TapLatencyBenchTests: XCTestCase {
         finish(app)
     }
 
-    /// Pads play on release and a press that slides off the pad is cancelled:
-    /// the first press drags away from pad 3 and must stay silent, the second
-    /// is a normal press.
+    /// The first press drags away from pad 3, the second is a normal press.
+    /// With pads playing on release the first is cancelled and stays silent;
+    /// with "play on touch" it has already played when the finger went down.
     @MainActor
     func testSlideOffCancels() throws {
         let app = launch("slide_off")
