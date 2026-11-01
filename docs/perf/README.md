@@ -16,12 +16,21 @@ autonomous-perf-loop スキル（touyou/skills、0.4.0）の Step 0 に沿って
 - **内訳**（すべて中央値、ms）
   - `hold_ms`: 触れてから離すまで（UI テストが押す長さ 0.08 秒で決めているので、ほぼ一定）
   - `delivery_ms`: 離したイベントの時刻 → アプリが受け取るまで（シミュレータの配送の遅れを含む）
-  - `release_to_play_ms`: 離したイベントの時刻 → `PadPlayerEngine.play` に入るまで（`delivery_ms` を含む）
+  - `release_to_play_ms`: 離したイベントの時刻 → `PadPlayerEngine.play` に入るまで（`delivery_ms` を含む）。
+    オンの設定では負になる（離す前に鳴る）
+  - `touch_to_play_ms`: 触れたイベントの時刻 → `play` に入るまで
   - `play_call_ms`: `play` に入ってから `AVAudioPlayer.play()` が返るまで。
     `repeat_play_call_ms`（連打で鳴っている音を止めて鳴らし直す場合）と `first_play_call_ms`（初回）も分けて出す
   - `output_est_ms`: `outputLatency + ioBufferDuration`
 - **環境**: 専用のシミュレータ `CheckItOut Perf`（iPhone 17 Pro / iOS 27.2。無ければ bench.sh が作る）。
   **数字は前後の比較にだけ使う**。実機とは配送の遅れも出力の遅れも違う
+
+## 2 つの設定
+
+パッドには「触れた瞬間に鳴らす」の設定がある（既定はオフ。`SettingsKey.playOnTouchDown`）。
+ベンチは両方の設定で同じシナリオを流し、点数を別々に出す（`--mode release` / `--mode touch`、結果のファイル名は
+`base-release-N.json` / `base-touch-N.json`）。設定は UI テストが起動引数（`-playOnTouchDown YES|NO`）で渡すので、
+シミュレータに残らない。どちらの設定も悪化させない。測る設定は `PERF_MODES` で絞れる（例: `PERF_MODES=release`）。
 
 ## シナリオ
 
@@ -38,7 +47,8 @@ autonomous-perf-loop スキル（touyou/skills、0.4.0）の Step 0 に沿って
 - 押したパッドが、押した回数だけ鳴る。鳴ったパッドの番号と音（ファイル名）が `expected.json` の割り当てと一致する
 - `play()` が成功し、再生中で、頭から（位置 0.05 秒以内）鳴っている。連打では毎回頭から鳴り直す
 - 2 本指の同時押しで、両方のパッドが鳴る
-- **指を離したあとに鳴る**（今の仕様: SwiftUI の `Button`）。ずらして離したら鳴らない
+- オフ（`release`）: **指を離したあとに鳴る**（SwiftUI の `Button`）。ずらして離したら鳴らない
+- オン（`touch`）: **指が触れている間に鳴る**（離す前に `play` に入る）。ずらしても、触れたときに 1 回鳴っている
 - パッドの再生時のセッションのカテゴリが `.ambient`（消音スイッチで鳴らない振る舞い。シミュレータに消音スイッチは無いので、カテゴリで見る）
 - App Intents の再生: 再生中は `.playback`、終わると `.ambient` に戻る。音の長さぶん待ってから返る。そのあともパッドが鳴る
 - ログが欠けている（UI テストが落ちた、アプリが落ちた）ときも不合格
@@ -50,11 +60,12 @@ scripts/perf/bench.sh                          # このチェックアウトを 
 scripts/perf/bench.sh --cand ../CheckItOut-wt  # 基準と候補を 3 回ずつ交互に
 python3 ~/Developer/Private/skills/skills/autonomous-perf-loop/scripts/compare.py \
   --noise-floor 3 \
-  --base .perf-runs/results/<dir>/base-{1,2,3}.json \
-  --cand .perf-runs/results/<dir>/cand-{1,2,3}.json --touched repeat
+  --base .perf-runs/results/<dir>/base-release-{1,2,3}.json \
+  --cand .perf-runs/results/<dir>/cand-release-{1,2,3}.json --touched repeat
+# オンの設定も同じように base-touch / cand-touch で比べる
 ```
 
-- 1 回の計測は 2〜3 分（起動 8 回）。結果は `.perf-runs/`（gitignore 済み。終わったら消してよい）
+- 1 回の計測は設定 1 つあたり 2〜3 分（起動 8 回）。結果は `.perf-runs/`（gitignore 済み。終わったら消してよい）
 - `compare.py` には `--noise-floor 3`（3% 未満の差はぶれとみなす）を渡す。シミュレータの配送の遅れは
   1 回ごとに数 ms 揺れるため（[ledger.md](ledger.md) の基準値のぶれを参照）
 - 採否に使う補助の指標: `play_call_ms` / `repeat_play_call_ms` / `first_play_call_ms` / `release_to_play_ms`。
@@ -101,8 +112,7 @@ python3 ~/Developer/Private/skills/skills/autonomous-perf-loop/scripts/compare.p
 ## 期待値を変えるとき
 
 - `expected.json` は、振る舞いを意図して変えるときだけ変える（例: ユーザーが決めた仕様の変更）
-- 「指を離したあとに鳴る」のチェックは analyze.py の `measure` にある。触れた瞬間に鳴らす設定を足すときは、
-  設定ごとに期待値を分ける（オフ: 離したときに鳴る・ずらすと鳴らない。オン: 触れたときに鳴る）
+- 鳴るタイミングのチェックは analyze.py の `measure` と slide_off の判定にあり、設定（`--mode`）ごとに期待値を分けている
 - 期待値やチェックを変えたら、別のエージェントに「だませないか」を 1 回レビューさせる（スキルの bench-harness.md 7 節）
 
 ## わかっている穴

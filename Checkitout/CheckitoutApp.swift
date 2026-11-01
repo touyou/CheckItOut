@@ -61,6 +61,13 @@ struct CheckitoutApp: App {
     }
 }
 
+/// `UserDefaults` keys of the app's settings.
+enum SettingsKey {
+    /// Pads play the moment a finger touches them instead of on release.
+    /// Off by default: on release, sliding off a pad cancels the press.
+    static let playOnTouchDown = "playOnTouchDown"
+}
+
 /// The three interaction modes of the soundboard.
 enum Mode {
     case play

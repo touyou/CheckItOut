@@ -14,6 +14,7 @@ struct ContentView: View {
     @Environment(\.modelContext) private var context
     @Query(sort: \SoundData.sortIndex) private var sounds: [SoundData]
 
+    @AppStorage(SettingsKey.playOnTouchDown) private var playOnTouchDown = false
     @State private var mode: Mode = .play
     @State private var selectedID: PersistentIdentifier?
     @State private var padPlayer = PadPlayerEngine()
@@ -53,6 +54,9 @@ struct ContentView: View {
             // place instead (see `morphing(_:)`).
             .transition(.identity)
             .environment(\.layoutMorphNamespace, layoutNamespace)
+            // Assigning a sound in edit mode stays on release, so it can
+            // still be cancelled by sliding off.
+            .environment(\.padsPlayOnTouchDown, playOnTouchDown && mode == .play)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         // Full-bleed background applied as a modifier so it can't inflate the
