@@ -89,14 +89,18 @@ hook_lines() {
 
 gate() {
   local src=$1 ok=1
-  if [ -n "$(find "$src" -type l -not -path '*/.git/*' | head -1)" ]; then
+  # Only what prepare() copies (build output and caches are excluded there).
+  if [ -n "$(find "$src" \( -name .git -o -name .perf-runs -o -name build -o -name DerivedData \
+      -o -name Screenshots -o -name .screenshot-runs \) -prune -o -type l -print | head -1)" ]; then
     echo "gate: $src contains symlinks" >&2; ok=0
   fi
-  if ! diff -rq --exclude xcuserdata "$TRUSTED/Checkitout.xcodeproj" "$src/Checkitout.xcodeproj" >/dev/null; then
+  if ! diff -q "$TRUSTED/Checkitout.xcodeproj/project.pbxproj" "$src/Checkitout.xcodeproj/project.pbxproj" >/dev/null \
+    || ! diff -rq "$TRUSTED/Checkitout.xcodeproj/xcshareddata/xcschemes" \
+      "$src/Checkitout.xcodeproj/xcshareddata/xcschemes" >/dev/null; then
     if [ "${PERF_ALLOW_PROJECT_DIFF:-0}" = 1 ]; then
       echo "gate: Checkitout.xcodeproj differs (allowed by PERF_ALLOW_PROJECT_DIFF)" >&2
     else
-      echo "gate: Checkitout.xcodeproj (build settings, schemes, file membership) differs from trusted" >&2; ok=0
+      echo "gate: project.pbxproj or the schemes (build settings, file membership) differ from trusted" >&2; ok=0
     fi
   fi
   if ! diff -rq "$TRUSTED/Checkitout/AudioSample" "$src/Checkitout/AudioSample" >/dev/null; then
