@@ -16,7 +16,7 @@ struct CheckitoutApp: App {
 
     init() {
         do {
-            if ScreenshotFixture.usesEphemeralStore {
+            if ScreenshotFixture.usesEphemeralStore || Self.isTapBench {
                 container = try ModelContainer(
                     for: SoundData.self,
                     configurations: ModelConfiguration(isStoredInMemoryOnly: true)
@@ -30,6 +30,11 @@ struct CheckitoutApp: App {
         if ScreenshotFixture.isActive {
             ScreenshotFixture.seed(into: container.mainContext)
         }
+        #if DEBUG
+        if Self.isTapBench {
+            TapLatencyProbe.seed(into: container.mainContext)
+        }
+        #endif
         // Registered synchronously here: a background intent can launch the
         // app process without ever showing a scene.
         // `dependency:` is an escaping, nonisolated autoclosure: pass locals built here.
@@ -37,6 +42,15 @@ struct CheckitoutApp: App {
         let player = SoundPlaybackService()
         AppDependencyManager.shared.add(dependency: container)
         AppDependencyManager.shared.add(dependency: player)
+    }
+
+    /// The tap-latency bench (Debug only) runs on its own in-memory board.
+    private static var isTapBench: Bool {
+        #if DEBUG
+        TapLatencyProbe.isActive
+        #else
+        false
+        #endif
     }
 
     var body: some Scene {

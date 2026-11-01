@@ -79,3 +79,6 @@ fastlane/test_output
 # App Store screenshots (scripts/capture_screenshots.sh)
 Screenshots/
 .screenshot-runs/
+
+# Tap-latency bench (scripts/perf/bench.sh)
+.perf-runs/
