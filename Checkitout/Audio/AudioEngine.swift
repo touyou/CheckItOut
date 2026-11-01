@@ -36,21 +36,47 @@ enum AudioSessionManager {
 
 @Observable
 final class PadPlayerEngine {
-    private var players: [AVAudioPlayer?] = Array(repeating: nil, count: 16)
+    /// Two players per pad, so a restart can start an idle, prepared player
+    /// right away. Stopping or seeking the one that is sounding took about
+    /// 10 ms longer before the sound started again.
+    private var players: [PlayerPair?] = Array(repeating: nil, count: 16)
+
+    private final class PlayerPair {
+        let players: [AVAudioPlayer]
+        var current = 0
+
+        init(url: URL) throws {
+            players = try (0..<2).map { _ in
+                let player = try AVAudioPlayer(contentsOf: url)
+                player.prepareToPlay()
+                player.volume = 1.0
+                return player
+            }
+        }
+
+        var sounding: AVAudioPlayer { players[current] }
+
+        /// Switches to the other player and returns it.
+        func swap() -> AVAudioPlayer {
+            current = 1 - current
+            return players[current]
+        }
+
+        func stop() {
+            for player in players { player.stop() }
+        }
+    }
 
     /// Rebuilds the 16 pad players from the current sound assignments.
     func rebuild(from sounds: [SoundData]) {
-        for player in players { player?.stop() }
+        for pair in players { pair?.stop() }
         players = Array(repeating: nil, count: 16)
         try? AudioSessionManager.configureForPlayback()
 
         for sound in sounds where (0..<16).contains(sound.padNum) {
             guard let url = sound.resolvedURL else { continue }
             do {
-                let player = try AVAudioPlayer(contentsOf: url)
-                player.prepareToPlay()
-                player.volume = 1.0
-                players[sound.padNum] = player
+                players[sound.padNum] = try PlayerPair(url: url)
             } catch {
                 // Skip unplayable files rather than crashing.
                 continue
@@ -60,20 +86,27 @@ final class PadPlayerEngine {
 
     /// Plays the pad in `slot`, restarting from the top if already playing.
     func play(slot: Int) {
-        guard (0..<16).contains(slot), let player = players[slot] else { return }
+        guard (0..<16).contains(slot), let pair = players[slot] else { return }
+        let previous = pair.sounding
         #if DEBUG
-        TapLatencyProbe.willPlay(slot: slot, player: player)
+        TapLatencyProbe.willPlay(slot: slot, player: previous)
         #endif
-        if player.isPlaying {
-            player.stop()
-            player.currentTime = 0
-        }
+        let player = previous.isPlaying ? pair.swap() : previous
         let started = player.play()
         #if DEBUG
         TapLatencyProbe.didPlay(slot: slot, player: player, started: started)
         #else
         _ = started
         #endif
+        if player !== previous {
+            // Cut the old sound once the new one has started. stop() undoes
+            // prepareToPlay(), so prepare it again for the next restart.
+            DispatchQueue.main.async {
+                previous.stop()
+                previous.currentTime = 0
+                previous.prepareToPlay()
+            }
+        }
     }
 
     func stop(slot: Int) {
