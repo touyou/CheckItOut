@@ -65,6 +65,7 @@ def sample(press, play):
         "hold_ms": (end["t"] - down["t"]) * 1000,
         "delivery_ms": (end["t_received"] - end["t"]) * 1000,
         "release_to_play_ms": (play["t_entry"] - end["t"]) * 1000,
+        "touch_to_play_ms": (play["t_entry"] - down["t"]) * 1000,
         "play_call_ms": (play["t_returned"] - play["t_entry"]) * 1000,
         "output_est_ms": (play["output_latency"] + play["io_buffer"]) * 1000,
     }
@@ -221,7 +222,8 @@ def analyze(log_dir, exp, mode):
         "valid": True,
         "touch_to_audio_ms": round(weighted, 3),
     })
-    for key in ("hold_ms", "delivery_ms", "release_to_play_ms", "play_call_ms", "output_est_ms"):
+    for key in ("hold_ms", "delivery_ms", "release_to_play_ms", "touch_to_play_ms", "play_call_ms",
+                "output_est_ms"):
         out[key] = round(statistics.median(s[key] for s in every), 3)
     out["repeat_play_call_ms"] = round(statistics.median(s["play_call_ms"] for s in per["repeat"]), 3)
     out["first_play_call_ms"] = round(statistics.median(s["play_call_ms"] for s in per["first_tap"]), 3)
