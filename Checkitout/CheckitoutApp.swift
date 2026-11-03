@@ -16,7 +16,7 @@ struct CheckitoutApp: App {
 
     init() {
         do {
-            if ScreenshotFixture.usesEphemeralStore {
+            if ScreenshotFixture.usesEphemeralStore || Self.isTapBench {
                 container = try ModelContainer(
                     for: SoundData.self,
                     configurations: ModelConfiguration(isStoredInMemoryOnly: true)
@@ -30,6 +30,11 @@ struct CheckitoutApp: App {
         if ScreenshotFixture.isActive {
             ScreenshotFixture.seed(into: container.mainContext)
         }
+        #if DEBUG
+        if Self.isTapBench {
+            TapLatencyProbe.seed(into: container.mainContext)
+        }
+        #endif
         // Registered synchronously here: a background intent can launch the
         // app process without ever showing a scene.
         // `dependency:` is an escaping, nonisolated autoclosure: pass locals built here.
@@ -39,12 +44,28 @@ struct CheckitoutApp: App {
         AppDependencyManager.shared.add(dependency: player)
     }
 
+    /// The tap-latency bench (Debug only) runs on its own in-memory board.
+    private static var isTapBench: Bool {
+        #if DEBUG
+        TapLatencyProbe.isActive
+        #else
+        false
+        #endif
+    }
+
     var body: some Scene {
         WindowGroup {
             ContentView()
         }
         .modelContainer(container)
     }
+}
+
+/// `UserDefaults` keys of the app's settings.
+enum SettingsKey {
+    /// Pads play the moment a finger touches them instead of on release.
+    /// Off by default: on release, sliding off a pad cancels the press.
+    static let playOnTouchDown = "playOnTouchDown"
 }
 
 /// The three interaction modes of the soundboard.

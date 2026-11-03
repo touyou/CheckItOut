@@ -14,6 +14,7 @@ struct ContentView: View {
     @Environment(\.modelContext) private var context
     @Query(sort: \SoundData.sortIndex) private var sounds: [SoundData]
 
+    @AppStorage(SettingsKey.playOnTouchDown) private var playOnTouchDown = false
     @State private var mode: Mode = .play
     @State private var selectedID: PersistentIdentifier?
     @State private var padPlayer = PadPlayerEngine()
@@ -53,6 +54,9 @@ struct ContentView: View {
             // place instead (see `morphing(_:)`).
             .transition(.identity)
             .environment(\.layoutMorphNamespace, layoutNamespace)
+            // Assigning a sound in edit mode stays on release, so it can
+            // still be cancelled by sliding off.
+            .environment(\.padsPlayOnTouchDown, playOnTouchDown && mode == .play)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         // Full-bleed background applied as a modifier so it can't inflate the
@@ -79,11 +83,16 @@ struct ContentView: View {
             didRun = true
             // The screenshot fixture has already seeded its own sounds; don't
             // let first-launch seeding/migration add to them or set its flag.
-            if !ScreenshotFixture.isActive {
+            if !ScreenshotFixture.isActive && !isTapBench {
                 MigrationCoordinator.runIfNeeded(context: context)
             }
             padPlayer.rebuild(from: sounds)
             CheckitoutShortcuts.updateAppShortcutParameters()
+            #if DEBUG
+            TapLatencyProbe.installIfNeeded()
+            TapLatencyProbe.recordReady()
+            TapLatencyProbe.runIntentCheckIfNeeded(container: context.container)
+            #endif
         }
         .onChange(of: assignmentSignature) {
             if mode != .record { padPlayer.rebuild(from: sounds) }
@@ -112,6 +121,14 @@ struct ContentView: View {
     }
 
     // MARK: Actions
+
+    private var isTapBench: Bool {
+        #if DEBUG
+        TapLatencyProbe.isActive
+        #else
+        false
+        #endif
+    }
 
     private var assignmentSignature: String {
         sounds.map { "\($0.padNum):\($0.storageKey)" }.joined(separator: "|")

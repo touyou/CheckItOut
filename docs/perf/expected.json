@@ -1,0 +1,18 @@
+{
+  "_comment": "Expected behaviour for scripts/perf/analyze.py. Mirrors TapLatencyProbe.assignment and the press sequences in TapLatencyBenchTests. Re-record only when the behaviour is meant to change (docs/perf/README.md).",
+  "assignment": {
+    "0": "11yourname_cut", "1": "touyou", "2": "15minnade_cut", "3": "16chekera_cut",
+    "4": "1korekara_cut", "5": "2korekara_cut", "6": "3apuri_cut", "7": "4setumei_cut",
+    "8": "5suruze_cut", "9": "6onsei_cut", "10": "7rokuon_cut", "11": "8minnnawo_cut",
+    "12": "9rockon_cut", "13": "10korede_cut", "14": "12todoroku_cut", "15": "13menber_cut"
+  },
+  "first_tap_pads": [1, 2, 3, 4, 5],
+  "repeat": {"pad": 0, "count": 10},
+  "simultaneous": {"pads": [1, 2], "count": 5},
+  "slide_off": {"pad": 3},
+  "intent": {"pad": 0, "min_duration_s": 1.1, "tap_pad": 2},
+  "category": "AVAudioSessionCategoryAmbient",
+  "intent_category": "AVAudioSessionCategoryPlayback",
+  "max_start_position_s": 0.05,
+  "weights": {"first_tap": 0.3, "repeat": 0.4, "simultaneous": 0.3}
+}

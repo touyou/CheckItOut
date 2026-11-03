@@ -21,6 +21,8 @@ struct ModeControls: View {
     let mode: Mode
     let onSelect: (Mode) -> Void
 
+    @AppStorage(SettingsKey.playOnTouchDown) private var playOnTouchDown = false
+
     var body: some View {
         HStack(spacing: 12) {
             // 再生 / 編集 are two states of one mode → a segmented control.
@@ -44,6 +46,19 @@ struct ModeControls: View {
                 .font(.brand(15))
                 .buttonStyle(.glass)
                 .tint(.red)
+
+            // The app's only setting, so a menu rather than a settings screen.
+            Menu {
+                Toggle(isOn: $playOnTouchDown) {
+                    Text("触れた瞬間に鳴らす")
+                    Text("オフのときは指を離すと鳴り、ずらすと取り消せます")
+                }
+            } label: {
+                Image(systemName: "gearshape")
+            }
+            .accessibilityLabel("設定")
+            .accessibilityIdentifier("settingsMenu")
+            .buttonStyle(.glass)
         }
         .frame(height: 44)
     }
