@@ -36,8 +36,8 @@ struct RecordPanelView: View {
                     // fit the titled buttons on one line; fall back to
                     // icon-only rather than letting the titles wrap mid-word.
                     ViewThatFits(in: .horizontal) {
-                        transportButtons
-                        transportButtons
+                        TransportButtons(recorder: recorder)
+                        TransportButtons(recorder: recorder)
                             .labelStyle(.iconOnly)
                             .controlSize(.large)
                     }
@@ -75,8 +75,14 @@ struct RecordPanelView: View {
             .confirmationAction
         }
     }
+}
 
-    private var transportButtons: some View {
+// MARK: - Transport buttons
+
+private struct TransportButtons: View {
+    let recorder: Recorder
+
+    var body: some View {
         HStack(spacing: 12) {
             TransportButton(label: "REC", symbol: "record.circle", tint: .red,
                             disabled: recorder.isRecording) {
