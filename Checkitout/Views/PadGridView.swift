@@ -51,17 +51,21 @@ struct PadButton: View {
     var body: some View {
         Group {
             if playsOnTouchDown {
-                TouchDownPad(pad: pad, action: action) { label }
+                TouchDownPad(pad: pad, action: action) { PadLabel(assignedName: assignedName) }
             } else {
                 // Fires on release, so sliding off the pad cancels the press.
-                Button(action: action) { label }
+                Button(action: action) { PadLabel(assignedName: assignedName) }
                     .buttonStyle(PadButtonStyle(pad: pad))
             }
         }
         .accessibilityIdentifier("pad-\(pad.slot)")
     }
+}
 
-    private var label: some View {
+private struct PadLabel: View {
+    let assignedName: String?
+
+    var body: some View {
         Color.clear
             .aspectRatio(1, contentMode: .fit)
             .overlay {
@@ -85,10 +89,10 @@ extension EnvironmentValues {
 /// A pad that fires the moment a finger lands on it. Each pad tracks its own
 /// touch, so several pads can be hit at once. VoiceOver activates it like a
 /// button.
-private struct TouchDownPad<Label: View>: View {
+private struct TouchDownPad<Content: View>: View {
     let pad: Pad
     let action: () -> Void
-    @ViewBuilder let label: Label
+    @ViewBuilder let label: Content
 
     @State private var isPressed = false
 
