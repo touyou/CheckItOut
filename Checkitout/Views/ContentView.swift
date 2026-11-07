@@ -98,7 +98,8 @@ struct ContentView: View {
         .onChange(of: library.isRecordingRequested, initial: true) { _, requested in
             guard requested else { return }
             library.isRecordingRequested = false
-            switchTo(.record)
+            // Already on the record screen: keep the take in progress instead of resetting it.
+            if mode != .record { switchTo(.record) }
         }
         .onChange(of: assignmentSignature) {
             if mode != .record { padPlayer.rebuild(from: sounds) }
