@@ -15,6 +15,10 @@ struct PlaySoundIntent: AppIntent {
     // Foreground: without the `audio` background mode a background launch
     // cannot start an audio session, and the app has no other use for it.
     static let supportedModes: IntentModes = .foreground(.immediate)
+    // An App Shortcut: the phrase resolves through `CheckitoutShortcuts`, which
+    // only the app process has.
+    @available(iOS 27.0, *)
+    static var allowedExecutionTargets: IntentExecutionTargets { [.main] }
 
     static var parameterSummary: some ParameterSummary {
         Summary("\(\.$sound)を鳴らす")

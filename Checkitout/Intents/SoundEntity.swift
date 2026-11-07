@@ -14,11 +14,14 @@ struct SoundEntity: AppEntity {
     static let defaultQuery = SoundEntityQuery()
 
     let id: String
-    @Property(title: "名前")
+    @Property(title: "サウンド名")
     var name: String
     /// Assigned pad number (1–16), or nil when the sound is not on a pad.
     @Property(title: "パッド")
     var pad: Int?
+    /// True for the person's own recordings, false for the bundled sounds.
+    @Property(title: "録音した音")
+    var isRecording: Bool
 
     var displayRepresentation: DisplayRepresentation {
         if let pad {
@@ -34,6 +37,7 @@ struct SoundEntity: AppEntity {
         id = sound.storageKey
         name = sound.displayName
         pad = (0..<16).contains(sound.padNum) ? sound.padNum + 1 : nil
+        isRecording = !sound.isBundle
     }
 }
 

@@ -29,7 +29,7 @@ struct CheckitoutShortcuts: AppShortcutsProvider {
                 "Record a sound in \(.applicationName)",
                 "Start recording in \(.applicationName)"
             ],
-            shortTitle: "録音",
+            shortTitle: "録音を始める",
             systemImageName: "mic.fill"
         )
     }

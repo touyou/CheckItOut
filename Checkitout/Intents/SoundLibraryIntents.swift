@@ -5,6 +5,7 @@
 //  Editing the board from Siri and Shortcuts. The delete alert runs
 //  `DeleteSoundNowIntent` because a confirmation from an in-app button has
 //  nowhere to appear; Siri and Shortcuts get the asking `DeleteSoundIntent`.
+//  Every intent here writes to the store, so each is pinned to the app process.
 //
 
 import AppIntents
@@ -42,8 +43,9 @@ struct AssignSoundToPadIntent: AppIntent {
     }
 }
 
-/// Deletes a sound after asking (Siri, Shortcuts).
-struct DeleteSoundIntent: AppIntent {
+/// Deletes sounds after asking (Siri, Shortcuts). A `DeleteIntent`, so the
+/// system knows it as "delete" rather than by its title alone.
+struct DeleteSoundIntent: DeleteIntent {
     static let title: LocalizedStringResource = "サウンドを削除"
     static let description = IntentDescription("サウンドボードからサウンドを削除します。録音した音は元に戻せません。")
     static let supportedModes: IntentModes = .background
@@ -51,22 +53,28 @@ struct DeleteSoundIntent: AppIntent {
     static var allowedExecutionTargets: IntentExecutionTargets { [.main] }
 
     static var parameterSummary: some ParameterSummary {
-        Summary("\(\.$sound)を削除")
+        Summary("\(\.$entities)を削除")
     }
 
     @Parameter(title: "サウンド")
-    var sound: SoundEntity
+    var entities: [SoundEntity]
 
     @Dependency private var library: SoundLibraryService
 
     init() {}
 
     @MainActor
-    func perform() async throws -> some IntentResult {
+    func perform() async throws -> some IntentResult & ProvidesDialog {
+        // Resolve everything before asking, so a missing sound fails the run
+        // before anything is deleted.
+        let sounds = try entities.map { try library.sound(storageKey: $0.id) }
+        let names = entities.map(\.name).formatted(.list(type: .and))
         // Throws (and cancels the run) when the person declines.
-        try await requestConfirmation(dialog: "\(sound.name)を削除しますか？")
-        try library.delete(library.sound(storageKey: sound.id))
-        return .result()
+        try await requestConfirmation(dialog: "\(names)を削除してよいですか？")
+        for sound in sounds {
+            try library.delete(sound)
+        }
+        return .result(dialog: "\(names)を削除しました。")
     }
 }
 
@@ -100,7 +108,7 @@ struct DeleteSoundNowIntent: AppIntent {
 /// Opens the record panel.
 struct StartRecordingIntent: AppIntent {
     static let title: LocalizedStringResource = "録音を始める"
-    static let description = IntentDescription("チェケラを開いて、新しいサウンドを録音する画面を出します。", searchKeywords: ["録音", "マイク", "新しい音"])
+    static let description = IntentDescription("チェケラを開いて、新しいサウンドを録音する画面を出します。", searchKeywords: ["マイク", "新しい音"])
     static let supportedModes: IntentModes = .foreground(.immediate)
     @available(iOS 27.0, *)
     static var allowedExecutionTargets: IntentExecutionTargets { [.main] }

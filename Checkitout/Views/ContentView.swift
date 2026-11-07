@@ -181,7 +181,11 @@ struct ContentView: View {
               let selected = sounds.first(where: { $0.persistentModelID == selectedID }) else { return }
         // The pads take a custom press, not a Button, so this calls the service the
         // Assign Sound to Pad intent uses rather than the intent itself.
-        try? library.assign(selected, toSlot: slot)
+        do {
+            try library.assign(selected, toSlot: slot)
+        } catch {
+            errorMessage = "パッドに割り当てられませんでした。"
+        }
         self.selectedID = nil
     }
 

@@ -1,0 +1,536 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "${entities}を削除" : {
+      "comment" : "App Intents copy (resolved from the app's main bundle; not auto-extracted).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete ${entities}"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "${entities}を削除"
+          }
+        }
+      }
+    },
+    "${sound}をパッド${pad}に割り当てる" : {
+      "comment" : "App Intents copy (resolved from the app's main bundle; not auto-extracted).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Assign ${sound} to pad ${pad}"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "${sound}をパッド${pad}に割り当てる"
+          }
+        }
+      }
+    },
+    "${sound}を鳴らす" : {
+      "comment" : "App Intents copy (resolved from the app's main bundle; not auto-extracted).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Play ${sound}"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "${sound}を鳴らす"
+          }
+        }
+      }
+    },
+    "%@" : {
+      "extractionState" : "manual",
+      "shouldTranslate" : false
+    },
+    "%@をパッド%lldに割り当てました。" : {
+      "comment" : "App Intents copy (resolved from the app's main bundle; not auto-extracted).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Assigned %1$@ to pad %2$lld."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@をパッド%2$lldに割り当てました。"
+          }
+        }
+      }
+    },
+    "%@を削除してよいですか？" : {
+      "comment" : "App Intents copy (resolved from the app's main bundle; not auto-extracted).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete %@?"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@を削除してよいですか？"
+          }
+        }
+      }
+    },
+    "%@を削除しました。" : {
+      "comment" : "App Intents copy (resolved from the app's main bundle; not auto-extracted).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deleted %@."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@を削除しました。"
+          }
+        }
+      }
+    },
+    "1 から 16 のパッドの番号（左上が 1）" : {
+      "comment" : "App Intents copy (resolved from the app's main bundle; not auto-extracted).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The pad number, from 1 to 16 (1 is the top left)."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 から 16 のパッドの番号（左上が 1）"
+          }
+        }
+      }
+    },
+    "PAD %lld" : {
+      "extractionState" : "manual",
+      "shouldTranslate" : false
+    },
+    "「%@」の音声ファイルが見つかりません。" : {
+      "comment" : "App Intents copy (resolved from the app's main bundle; not auto-extracted).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn’t find the audio file for “%@”."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「%@」の音声ファイルが見つかりません。"
+          }
+        }
+      }
+    },
+    "サウンド" : {
+      "comment" : "App Intents copy (resolved from the app's main bundle; not auto-extracted).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sound"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サウンド"
+          }
+        }
+      }
+    },
+    "サウンドが見つかりません。削除された可能性があります。" : {
+      "comment" : "App Intents copy (resolved from the app's main bundle; not auto-extracted).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn’t find the sound. It may have been deleted."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サウンドが見つかりません。削除された可能性があります。"
+          }
+        }
+      }
+    },
+    "サウンドを 16 個あるパッドのひとつに割り当てます。そのパッドにあった音は外れます。" : {
+      "comment" : "App Intents copy (resolved from the app's main bundle; not auto-extracted).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Puts a sound on one of the 16 pads. The sound that was on that pad comes off it."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サウンドを 16 個あるパッドのひとつに割り当てます。そのパッドにあった音は外れます。"
+          }
+        }
+      }
+    },
+    "サウンドをすぐに削除" : {
+      "comment" : "App Intents copy (resolved from the app's main bundle; not auto-extracted).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Sound Now"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サウンドをすぐに削除"
+          }
+        }
+      }
+    },
+    "サウンドをパッドに割り当てる" : {
+      "comment" : "App Intents copy (resolved from the app's main bundle; not auto-extracted).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Assign Sound to Pad"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サウンドをパッドに割り当てる"
+          }
+        }
+      }
+    },
+    "サウンドを削除" : {
+      "comment" : "App Intents copy (resolved from the app's main bundle; not auto-extracted).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Sound"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サウンドを削除"
+          }
+        }
+      }
+    },
+    "サウンドを鳴らす" : {
+      "comment" : "App Intents copy (resolved from the app's main bundle; not auto-extracted).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Play Sound"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サウンドを鳴らす"
+          }
+        }
+      }
+    },
+    "サウンドボードからサウンドを削除します。録音した音は元に戻せません。" : {
+      "comment" : "App Intents copy (resolved from the app's main bundle; not auto-extracted).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deletes sounds from the soundboard. Deleted recordings can’t be restored."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サウンドボードからサウンドを削除します。録音した音は元に戻せません。"
+          }
+        }
+      }
+    },
+    "サウンドボードの音を再生します。" : {
+      "comment" : "App Intents copy (resolved from the app's main bundle; not auto-extracted).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plays a sound from the soundboard."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サウンドボードの音を再生します。"
+          }
+        }
+      }
+    },
+    "サウンド名" : {
+      "comment" : "App Intents copy (resolved from the app's main bundle; not auto-extracted).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Name"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サウンド名"
+          }
+        }
+      }
+    },
+    "チェケラを開いて、新しいサウンドを録音する画面を出します。" : {
+      "comment" : "App Intents copy (resolved from the app's main bundle; not auto-extracted).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opens the app on the screen for recording a new sound."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "チェケラを開いて、新しいサウンドを録音する画面を出します。"
+          }
+        }
+      }
+    },
+    "パッド" : {
+      "comment" : "App Intents copy (resolved from the app's main bundle; not auto-extracted).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pad"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "パッド"
+          }
+        }
+      }
+    },
+    "パッドの番号は 1 から 16 で指定してください。" : {
+      "comment" : "App Intents copy (resolved from the app's main bundle; not auto-extracted).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose a pad number from 1 to 16."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "パッドの番号は 1 から 16 で指定してください。"
+          }
+        }
+      }
+    },
+    "マイク" : {
+      "comment" : "App Intents copy (resolved from the app's main bundle; not auto-extracted).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Microphone"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "マイク"
+          }
+        }
+      }
+    },
+    "割り当て" : {
+      "comment" : "App Intents copy (resolved from the app's main bundle; not auto-extracted).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Assign"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "割り当て"
+          }
+        }
+      }
+    },
+    "新しい音" : {
+      "comment" : "App Intents copy (resolved from the app's main bundle; not auto-extracted).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New sound"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新しい音"
+          }
+        }
+      }
+    },
+    "確認せずにサウンドを削除します。" : {
+      "comment" : "App Intents copy (resolved from the app's main bundle; not auto-extracted).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deletes a sound without asking first."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "確認せずにサウンドを削除します。"
+          }
+        }
+      }
+    },
+    "配置" : {
+      "comment" : "App Intents copy (resolved from the app's main bundle; not auto-extracted).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Place"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "配置"
+          }
+        }
+      }
+    },
+    "録音した音" : {
+      "comment" : "App Intents copy (resolved from the app's main bundle; not auto-extracted).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recorded"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "録音した音"
+          }
+        }
+      }
+    },
+    "録音を始める" : {
+      "comment" : "App Intents copy (resolved from the app's main bundle; not auto-extracted).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start Recording"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "録音を始める"
+          }
+        }
+      }
+    },
+    "音声を再生できませんでした。" : {
+      "comment" : "App Intents copy (resolved from the app's main bundle; not auto-extracted).",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn’t play the sound."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "音声を再生できませんでした。"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}
