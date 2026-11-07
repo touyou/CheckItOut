@@ -1,0 +1,20 @@
+{
+  "actions": {
+    "AudioSessionManager.reset": "plumbing: audio engine driven by the pads and the record panel",
+    "AudioSessionManager.startRecording": "plumbing: audio engine driven by the pads and the record panel",
+    "AudioSessionManager.stop": "plumbing: audio engine driven by the pads and the record panel",
+    "AudioSessionManager.stop (2)": "plumbing: audio engine driven by the pads and the record panel",
+    "AudioSessionManager.stopRecording": "plumbing: audio engine driven by the pads and the record panel",
+    "SeedService.add": "plumbing: first-launch seeding"
+  },
+  "ui": {
+    "ui-button Checkitout/Views/ContentView.swift: Button(\"OK\", role: .cancel) { message.wrappedValue = nil }": "dismisses an alert or the panel",
+    "ui-button Checkitout/Views/ContentView.swift: Button(\"キャンセル\", role: .cancel) { pendingDelete = nil }": "dismisses an alert or the panel",
+    "ui-button Checkitout/Views/ModeControls.swift: Button(\"録音\") { onSelect(.record) }": "switches the board's mode on screen; Siri opens the record panel with Start Recording",
+    "ui-button Checkitout/Views/PadGridView.swift: Button(action: action) { PadLabel(assignedName: assignedName) }": "pad press: plays (latency-critical) or assigns through SoundLibraryService, the same service the intent uses",
+    "ui-button Checkitout/Views/RecordPanelView.swift: Button(\"保存\", systemImage: \"square.and.arrow.down\", role: .confirm) {": "saves the take being recorded on this panel (local recorder state)",
+    "ui-button Checkitout/Views/RecordPanelView.swift: Button(\"閉じる\", systemImage: \"xmark\", role: .close) {": "dismisses an alert or the panel",
+    "ui-button Checkitout/Views/RecordPanelView.swift: Button(action: action) {": "record / stop on the panel's recorder (local recorder state)",
+    "ui-button Checkitout/Views/SoundListView.swift: Button(\"削除\", role: .destructive) { requestDelete(sound) }": "confirm step: opens the alert, whose button runs Delete Sound Now"
+  }
+}

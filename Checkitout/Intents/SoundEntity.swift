@@ -14,15 +14,20 @@ struct SoundEntity: AppEntity {
     static let defaultQuery = SoundEntityQuery()
 
     let id: String
-    let name: String
-    /// Assigned pad slot, or nil when the sound is not on a pad.
-    let padSlot: Int?
+    @Property(title: "サウンド名")
+    var name: String
+    /// Assigned pad number (1–16), or nil when the sound is not on a pad.
+    @Property(title: "パッド")
+    var pad: Int?
+    /// True for the person's own recordings, false for the bundled sounds.
+    @Property(title: "録音した音")
+    var isRecording: Bool
 
     var displayRepresentation: DisplayRepresentation {
-        if let padSlot {
+        if let pad {
             // `"\(…)"` rather than `LocalizedStringResource(stringLiteral:)`:
             // a user-chosen name must not become a localization key.
-            DisplayRepresentation(title: "\(name)", subtitle: "PAD \(padSlot + 1)")
+            DisplayRepresentation(title: "\(name)", subtitle: "PAD \(pad)")
         } else {
             DisplayRepresentation(title: "\(name)")
         }
@@ -31,7 +36,8 @@ struct SoundEntity: AppEntity {
     init(_ sound: SoundData) {
         id = sound.storageKey
         name = sound.displayName
-        padSlot = (0..<16).contains(sound.padNum) ? sound.padNum : nil
+        pad = (0..<16).contains(sound.padNum) ? sound.padNum + 1 : nil
+        isRecording = !sound.isBundle
     }
 }
 

@@ -8,7 +8,6 @@
 //
 
 import AppIntents
-import SwiftData
 
 struct PlaySoundIntent: AppIntent {
     static let title: LocalizedStringResource = "サウンドを鳴らす"
@@ -16,6 +15,10 @@ struct PlaySoundIntent: AppIntent {
     // Foreground: without the `audio` background mode a background launch
     // cannot start an audio session, and the app has no other use for it.
     static let supportedModes: IntentModes = .foreground(.immediate)
+    // An App Shortcut: the phrase resolves through `CheckitoutShortcuts`, which
+    // only the app process has.
+    @available(iOS 27.0, *)
+    static var allowedExecutionTargets: IntentExecutionTargets { [.main] }
 
     static var parameterSummary: some ParameterSummary {
         Summary("\(\.$sound)を鳴らす")
@@ -24,7 +27,7 @@ struct PlaySoundIntent: AppIntent {
     @Parameter(title: "サウンド")
     var sound: SoundEntity
 
-    @Dependency private var container: ModelContainer
+    @Dependency private var library: SoundLibraryService
     @Dependency private var player: SoundPlaybackService
 
     init() {}
@@ -35,9 +38,7 @@ struct PlaySoundIntent: AppIntent {
 
     @MainActor
     func perform() async throws -> some IntentResult {
-        let key = sound.id
-        let descriptor = FetchDescriptor<SoundData>(predicate: #Predicate { $0.storageKey == key })
-        guard let url = try container.mainContext.fetch(descriptor).first?.resolvedURL else {
+        guard let url = try library.sound(storageKey: sound.id).resolvedURL else {
             throw SoundPlaybackError.missingFile(sound.name)
         }
         try await player.playToEnd(url)
