@@ -23,5 +23,14 @@ struct CheckitoutShortcuts: AppShortcutsProvider {
             shortTitle: "サウンドを鳴らす",
             systemImageName: "speaker.wave.2.fill"
         )
+        AppShortcut(
+            intent: StartRecordingIntent(),
+            phrases: [
+                "Record a sound in \(.applicationName)",
+                "Start recording in \(.applicationName)"
+            ],
+            shortTitle: "録音",
+            systemImageName: "mic.fill"
+        )
     }
 }

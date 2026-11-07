@@ -12,6 +12,7 @@ import AppIntents
 
 struct ContentView: View {
     @Environment(\.modelContext) private var context
+    @Environment(SoundLibraryService.self) private var library
     @Query(sort: \SoundData.sortIndex) private var sounds: [SoundData]
 
     @AppStorage(SettingsKey.playOnTouchDown) private var playOnTouchDown = false
@@ -94,6 +95,11 @@ struct ContentView: View {
             TapLatencyProbe.runIntentCheckIfNeeded(container: context.container)
             #endif
         }
+        .onChange(of: library.isRecordingRequested, initial: true) { _, requested in
+            guard requested else { return }
+            library.isRecordingRequested = false
+            switchTo(.record)
+        }
         .onChange(of: assignmentSignature) {
             if mode != .record { padPlayer.rebuild(from: sounds) }
             // Phrases with a sound name only match names Siri has fetched.
@@ -102,7 +108,8 @@ struct ContentView: View {
         .alert("削除", isPresented: Binding(get: { pendingDelete != nil },
                                           set: { if !$0 { pendingDelete = nil } }),
                presenting: pendingDelete) { sound in
-            Button("削除", role: .destructive) { delete(sound) }
+            // The alert is the confirmation, so it runs the intent that doesn't ask again.
+            Button("削除", role: .destructive, intent: DeleteSoundNowIntent(sound: SoundEntity(sound)))
             Button("キャンセル", role: .cancel) { pendingDelete = nil }
         } message: { sound in
             Text("\(sound.displayName)を削除しますか？")
@@ -171,12 +178,9 @@ struct ContentView: View {
     private func assignSelected(toSlot slot: Int) {
         guard let selectedID,
               let selected = sounds.first(where: { $0.persistentModelID == selectedID }) else { return }
-        // Free any sound currently occupying this pad.
-        if let occupant = sounds.first(where: { $0.padNum == slot }) {
-            occupant.padNum = -1
-        }
-        selected.padNum = slot
-        try? context.save()
+        // The pads take a custom press, not a Button, so this calls the service the
+        // Assign Sound to Pad intent uses rather than the intent itself.
+        try? library.assign(selected, toSlot: slot)
         self.selectedID = nil
     }
 
@@ -203,18 +207,6 @@ struct ContentView: View {
         }
     }
 
-    private func delete(_ sound: SoundData) {
-        if (0..<16).contains(sound.padNum) {
-            padPlayer.stop(slot: sound.padNum)
-        }
-        // Remove the underlying recording file so it doesn't orphan.
-        if !sound.isBundle, let url = sound.resolvedURL {
-            try? FileManager.default.removeItem(at: url)
-        }
-        context.delete(sound)
-        try? context.save()
-        pendingDelete = nil
-    }
 }
 
 extension View {

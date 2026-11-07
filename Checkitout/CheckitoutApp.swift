@@ -13,6 +13,8 @@ import AppIntents
 @main
 struct CheckitoutApp: App {
     let container: ModelContainer
+    /// Shared with the intents: the same instance edits the board and asks for the record panel.
+    let library: SoundLibraryService
 
     init() {
         do {
@@ -40,8 +42,11 @@ struct CheckitoutApp: App {
         // `dependency:` is an escaping, nonisolated autoclosure: pass locals built here.
         let container = container
         let player = SoundPlaybackService()
+        let library = SoundLibraryService(container: container)
+        self.library = library
         AppDependencyManager.shared.add(dependency: container)
         AppDependencyManager.shared.add(dependency: player)
+        AppDependencyManager.shared.add(dependency: library)
     }
 
     /// The tap-latency bench (Debug only) runs on its own in-memory board.
@@ -56,6 +61,7 @@ struct CheckitoutApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environment(library)
         }
         .modelContainer(container)
     }

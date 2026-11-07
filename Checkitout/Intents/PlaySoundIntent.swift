@@ -8,7 +8,6 @@
 //
 
 import AppIntents
-import SwiftData
 
 struct PlaySoundIntent: AppIntent {
     static let title: LocalizedStringResource = "サウンドを鳴らす"
@@ -24,7 +23,7 @@ struct PlaySoundIntent: AppIntent {
     @Parameter(title: "サウンド")
     var sound: SoundEntity
 
-    @Dependency private var container: ModelContainer
+    @Dependency private var library: SoundLibraryService
     @Dependency private var player: SoundPlaybackService
 
     init() {}
@@ -35,9 +34,7 @@ struct PlaySoundIntent: AppIntent {
 
     @MainActor
     func perform() async throws -> some IntentResult {
-        let key = sound.id
-        let descriptor = FetchDescriptor<SoundData>(predicate: #Predicate { $0.storageKey == key })
-        guard let url = try container.mainContext.fetch(descriptor).first?.resolvedURL else {
+        guard let url = try library.sound(storageKey: sound.id).resolvedURL else {
             throw SoundPlaybackError.missingFile(sound.name)
         }
         try await player.playToEnd(url)
