@@ -28,6 +28,30 @@
           }
         }
       }
+    },
+    "Record a sound in ${applicationName}": {
+      "extractionState": "extracted_with_value",
+      "localizations": {
+        "en": {
+          "stringSet": {
+            "state": "new",
+            "values": [
+              "Record a sound in ${applicationName}",
+              "Start recording in ${applicationName}"
+            ]
+          }
+        },
+        "ja": {
+          "stringSet": {
+            "state": "translated",
+            "values": [
+              "${applicationName}で録音",
+              "${applicationName}で録音して",
+              "${applicationName}で新しい音を録音"
+            ]
+          }
+        }
+      }
     }
   }
 }
