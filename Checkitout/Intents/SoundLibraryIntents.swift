@@ -17,6 +17,7 @@ struct AssignSoundToPadIntent: AppIntent {
         searchKeywords: ["パッド", "割り当て", "配置"]
     )
     static let supportedModes: IntentModes = .background
+    @available(iOS 27.0, *)
     static var allowedExecutionTargets: IntentExecutionTargets { [.main] }
 
     static var parameterSummary: some ParameterSummary {
@@ -46,6 +47,7 @@ struct DeleteSoundIntent: AppIntent {
     static let title: LocalizedStringResource = "サウンドを削除"
     static let description = IntentDescription("サウンドボードからサウンドを削除します。録音した音は元に戻せません。")
     static let supportedModes: IntentModes = .background
+    @available(iOS 27.0, *)
     static var allowedExecutionTargets: IntentExecutionTargets { [.main] }
 
     static var parameterSummary: some ParameterSummary {
@@ -74,6 +76,7 @@ struct DeleteSoundNowIntent: AppIntent {
     static let description = IntentDescription("確認せずにサウンドを削除します。")
     static let isDiscoverable = false
     static let supportedModes: IntentModes = .background
+    @available(iOS 27.0, *)
     static var allowedExecutionTargets: IntentExecutionTargets { [.main] }
 
     @Parameter(title: "サウンド")
@@ -99,6 +102,7 @@ struct StartRecordingIntent: AppIntent {
     static let title: LocalizedStringResource = "録音を始める"
     static let description = IntentDescription("チェケラを開いて、新しいサウンドを録音する画面を出します。", searchKeywords: ["録音", "マイク", "新しい音"])
     static let supportedModes: IntentModes = .foreground(.immediate)
+    @available(iOS 27.0, *)
     static var allowedExecutionTargets: IntentExecutionTargets { [.main] }
 
     @Dependency private var library: SoundLibraryService
