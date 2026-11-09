@@ -62,12 +62,13 @@ enum VoiceEffect: String, CaseIterable, Identifiable {
         }
     }
 
-    /// Extra time rendered after the source ends, so echoes and reverb fade out instead of being cut.
+    /// Extra time rendered after the source ends. TimePitch's latency would otherwise cut the
+    /// last few tens of ms, and echoes and reverb need room to fade out.
     fileprivate var tailSeconds: Double {
         switch self {
         case .echo: 1.5
         case .hall: 2.5
-        default: 0
+        default: 0.1
         }
     }
 
@@ -99,6 +100,7 @@ enum VoiceEffectRenderer {
     /// Renders `source` through `effect` into a 16-bit stereo WAV at `destination`.
     static func render(_ effect: VoiceEffect, from source: URL, to destination: URL) throws {
         let file = try AVAudioFile(forReading: source)
+        guard file.length > 0 else { throw RenderError.renderFailed }
         let sampleRate = file.processingFormat.sampleRate
         guard let stereo = AVAudioFormat(standardFormatWithSampleRate: sampleRate, channels: 2) else {
             throw RenderError.unsupportedFormat

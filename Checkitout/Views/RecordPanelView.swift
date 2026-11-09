@@ -106,7 +106,7 @@ private struct TransportButtons: View {
 
 /// Picking an effect plays the take with it, so the choice is heard right away.
 private struct EffectPicker: View {
-    @Bindable var recorder: Recorder
+    let recorder: Recorder
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
