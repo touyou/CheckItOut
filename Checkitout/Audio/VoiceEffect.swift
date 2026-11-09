@@ -152,18 +152,69 @@ enum VoiceEffectRenderer {
 
         let total = AVAudioFramePosition(Double(file.length) / Double(effect.rate)
                                          + effect.tailSeconds * sampleRate)
+        var rendered: [AVAudioPCMBuffer] = []
+        var outputPeak: Float = 0
         while engine.manualRenderingSampleTime < total {
             let remaining = total - engine.manualRenderingSampleTime
             let frames = AVAudioFrameCount(min(remaining, AVAudioFramePosition(buffer.frameCapacity)))
             switch try engine.renderOffline(frames, to: buffer) {
             case .success:
-                try output.write(from: buffer)
+                guard let copy = buffer.duplicate() else { throw RenderError.renderFailed }
+                outputPeak = max(outputPeak, copy.peak)
+                rendered.append(copy)
             case .insufficientDataFromInputNode, .cannotDoInCurrentContext, .error:
                 // Offline rendering with no input node shouldn't return these; bail out rather than spin.
                 throw RenderError.renderFailed
             @unknown default:
                 throw RenderError.renderFailed
             }
+        }
+
+        // The mono-to-stereo upmix and TimePitch drop the level by 3 to 9 dB, which made
+        // processed pads quieter than the rest. Bring the peak back to the original's.
+        let sourcePeak = try inputPeak(of: source)
+        let gain = outputPeak > 0 ? min(sourcePeak / outputPeak, 4) : 1
+        for chunk in rendered {
+            if gain != 1 { chunk.scale(by: gain) }
+            try output.write(from: chunk)
+        }
+    }
+
+    private static func inputPeak(of url: URL) throws -> Float {
+        let file = try AVAudioFile(forReading: url)
+        guard let buffer = AVAudioPCMBuffer(pcmFormat: file.processingFormat,
+                                            frameCapacity: AVAudioFrameCount(file.length)) else {
+            throw RenderError.renderFailed
+        }
+        try file.read(into: buffer)
+        return buffer.peak
+    }
+}
+
+private extension AVAudioPCMBuffer {
+    func duplicate() -> AVAudioPCMBuffer? {
+        guard let copy = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: frameLength),
+              let source = floatChannelData, let target = copy.floatChannelData else { return nil }
+        copy.frameLength = frameLength
+        for channel in 0..<Int(format.channelCount) {
+            target[channel].update(from: source[channel], count: Int(frameLength))
+        }
+        return copy
+    }
+
+    var peak: Float {
+        guard let channels = floatChannelData else { return 0 }
+        var peak: Float = 0
+        for channel in 0..<Int(format.channelCount) {
+            for frame in 0..<Int(frameLength) { peak = max(peak, abs(channels[channel][frame])) }
+        }
+        return peak
+    }
+
+    func scale(by gain: Float) {
+        guard let channels = floatChannelData else { return }
+        for channel in 0..<Int(format.channelCount) {
+            for frame in 0..<Int(frameLength) { channels[channel][frame] *= gain }
         }
     }
 }
