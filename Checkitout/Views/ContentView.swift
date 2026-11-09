@@ -95,6 +95,12 @@ struct ContentView: View {
             TapLatencyProbe.runIntentCheckIfNeeded(container: context.container)
             #endif
         }
+        // Preview and effect failures are raised by the recorder; show them in the same alert.
+        .onChange(of: recorder.errorMessage) { _, message in
+            guard let message else { return }
+            errorMessage = message
+            recorder.errorMessage = nil
+        }
         .onChange(of: library.isRecordingRequested, initial: true) { _, requested in
             guard requested else { return }
             library.isRecordingRequested = false

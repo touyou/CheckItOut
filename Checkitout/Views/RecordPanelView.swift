@@ -42,6 +42,8 @@ struct RecordPanelView: View {
                             .controlSize(.large)
                     }
                 }
+
+                EffectPicker(recorder: recorder)
             }
             .padding(20)
             .frame(maxWidth: 460)
@@ -97,6 +99,58 @@ private struct TransportButtons: View {
                 recorder.playPreview()
             }
         }
+    }
+}
+
+// MARK: - Effect picker
+
+/// Picking an effect plays the take with it, so the choice is heard right away.
+private struct EffectPicker: View {
+    let recorder: Recorder
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("エフェクト")
+                .font(.brand(13))
+                .foregroundStyle(.secondary)
+            ScrollView(.horizontal) {
+                GlassEffectContainer(spacing: 8) {
+                    HStack(spacing: 8) {
+                        ForEach(VoiceEffect.allCases) { effect in
+                            EffectButton(effect: effect,
+                                         isSelected: recorder.effect == effect,
+                                         disabled: recorder.isRecording || !recorder.hasRecording) {
+                                recorder.effect = effect
+                                recorder.playPreview()
+                            }
+                        }
+                    }
+                    .padding(.vertical, 2)
+                }
+            }
+            .scrollIndicators(.hidden)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .accessibilityIdentifier("effectPicker")
+    }
+}
+
+private struct EffectButton: View {
+    let effect: VoiceEffect
+    let isSelected: Bool
+    let disabled: Bool
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Label(effect.title, systemImage: effect.symbol)
+                .font(.brand(14))
+                .lineLimit(1)
+        }
+        .buttonStyle(.glass)
+        .tint(isSelected ? .orange : nil)
+        .disabled(disabled)
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 }
 

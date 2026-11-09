@@ -125,6 +125,8 @@ final class Recorder {
     /// Rolling amplitude samples (0...1) for the live waveform.
     private(set) var waveformSamples: [Float] = []
     var errorMessage: String?
+    /// Applied to the take on preview and on save.
+    var effect: VoiceEffect = .none
 
     private let engine = AVAudioEngine()
     private var recorder: AVAudioRecorder?
@@ -132,6 +134,9 @@ final class Recorder {
     private let maxSamples = 256
 
     private var tempURL: URL { URL.temporaryDirectory.appending(path: "temp.wav") }
+    private var effectURL: URL { URL.temporaryDirectory.appending(path: "temp-effect.wav") }
+    /// The effect `effectURL` currently holds, so switching back and forth doesn't re-render.
+    private var renderedEffect: VoiceEffect?
 
     func requestPermission() async -> Bool {
         await AVAudioApplication.requestRecordPermission()
@@ -155,6 +160,7 @@ final class Recorder {
             self.recorder = recorder
 
             waveformSamples = []
+            renderedEffect = nil
             let input = engine.inputNode
             let format = input.outputFormat(forBus: 0)
             input.installTap(onBus: 0, bufferSize: 1024, format: format) { [weak self] buffer, _ in
@@ -179,13 +185,32 @@ final class Recorder {
 
     func playPreview() {
         guard FileManager.default.fileExists(atPath: tempURL.path) else { return }
+        let url: URL
         do {
-            let player = try AVAudioPlayer(contentsOf: tempURL)
+            url = try processedTake()
+        } catch {
+            errorMessage = "エフェクトをかけられませんでした。"
+            return
+        }
+        do {
+            previewPlayer?.stop()
+            let player = try AVAudioPlayer(contentsOf: url)
             previewPlayer = player
             player.play()
         } catch {
             errorMessage = "プレビューの再生に失敗しました。"
         }
+    }
+
+    /// The take with `effect` applied, rendered on demand.
+    private func processedTake() throws -> URL {
+        guard effect != .none else { return tempURL }
+        if renderedEffect != effect {
+            renderedEffect = nil
+            try VoiceEffectRenderer.render(effect, from: tempURL, to: effectURL)
+            renderedEffect = effect
+        }
+        return effectURL
     }
 
     /// Moves the temp recording into Documents under a filesystem-safe unique
@@ -194,7 +219,9 @@ final class Recorder {
     func commitRecording() throws -> String {
         let key = "\(UUID().uuidString).wav"
         let destination = URL.documentsDirectory.appending(path: key)
-        try FileManager.default.moveItem(at: tempURL, to: destination)
+        previewPlayer?.stop()
+        try FileManager.default.moveItem(at: processedTake(), to: destination)
+        try? FileManager.default.removeItem(at: tempURL)
         reset()
         return key
     }
@@ -210,6 +237,8 @@ final class Recorder {
     func reset() {
         previewPlayer?.stop()
         previewPlayer = nil
+        effect = .none
+        renderedEffect = nil
         waveformSamples = []
         hasRecording = false
         recorder = nil
