@@ -16,6 +16,8 @@ struct RecordPanelView: View {
     @State private var title = ScreenshotFixture.isActive ? ScreenshotFixture.recordingTitle : ""
     @FocusState private var titleFocused: Bool
 
+    static let panelPadding: CGFloat = 20
+
     var body: some View {
         NavigationStack {
             VStack(spacing: 16) {
@@ -45,7 +47,7 @@ struct RecordPanelView: View {
 
                 EffectPicker(recorder: recorder)
             }
-            .padding(20)
+            .padding(Self.panelPadding)
             .frame(maxWidth: 460)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             .navigationTitle("録音")
@@ -107,6 +109,7 @@ private struct TransportButtons: View {
 /// Picking an effect plays the take with it, so the choice is heard right away.
 private struct EffectPicker: View {
     let recorder: Recorder
+    private let edge = RecordPanelView.panelPadding
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -125,10 +128,28 @@ private struct EffectPicker: View {
                             }
                         }
                     }
-                    .padding(.vertical, 2)
                 }
             }
             .scrollIndicators(.hidden)
+            // Horizontal margins put the first button back in line with the
+            // label; vertical ones leave room for the glass to render unclipped.
+            .contentMargins(.horizontal, edge, for: .scrollContent)
+            .contentMargins(.vertical, 6, for: .scrollContent)
+            // Where the sheet is wider than the panel (iPad) the row ends
+            // mid-sheet; fade both ends so the cut reads as "more to scroll".
+            .mask {
+                HStack(spacing: 0) {
+                    LinearGradient(colors: [.clear, .black], startPoint: .leading, endPoint: .trailing)
+                        .frame(width: edge)
+                    Color.black
+                    LinearGradient(colors: [.black, .clear], startPoint: .leading, endPoint: .trailing)
+                        .frame(width: edge)
+                }
+            }
+            // Run the row out through the panel's padding so it ends at the
+            // sheet edge instead of being cut short inside the panel.
+            .padding(.horizontal, -edge)
+            .padding(.vertical, -6)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .accessibilityIdentifier("effectPicker")
