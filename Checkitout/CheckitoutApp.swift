@@ -32,6 +32,7 @@ struct CheckitoutApp: App {
         if ScreenshotFixture.isActive {
             ScreenshotFixture.seed(into: container.mainContext)
         }
+        ReviewPrompt.recordLaunch()
         #if DEBUG
         if Self.isTapBench {
             TapLatencyProbe.seed(into: container.mainContext)
