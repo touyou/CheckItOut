@@ -9,10 +9,12 @@
 import SwiftUI
 import SwiftData
 import AppIntents
+import StoreKit
 
 struct ContentView: View {
     @Environment(\.modelContext) private var context
     @Environment(SoundLibraryService.self) private var library
+    @Environment(\.requestReview) private var requestReview
     @Query(sort: \SoundData.sortIndex) private var sounds: [SoundData]
 
     @AppStorage(SettingsKey.playOnTouchDown) private var playOnTouchDown = false
@@ -213,6 +215,13 @@ struct ContentView: View {
             // in the list behind it.
             saveCount += 1
             switchTo(.play)
+            // Ask once the new sound is visible in the list, not over the panel.
+            if !ScreenshotFixture.isActive, ReviewPrompt.recordAchievement() {
+                Task {
+                    try? await Task.sleep(for: .seconds(1))
+                    requestReview()
+                }
+            }
         } catch {
             errorMessage = "セーブに失敗しました。"
         }
