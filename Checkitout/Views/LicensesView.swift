@@ -2,14 +2,12 @@
 //  LicensesView.swift
 //  Checkitout
 //
-//  Third-party licenses bundled with the app (Licenses.txt).
+//  Third-party licenses bundled with the app (Licenses.txt). Pushed from AboutView.
 //
 
 import SwiftUI
 
 struct LicensesView: View {
-    @Environment(\.dismiss) private var dismiss
-
     // 依存やフォントを足したら Licenses.txt も更新する
     private let text: String = {
         guard let url = Bundle.main.url(forResource: "Licenses", withExtension: "txt"),
@@ -18,21 +16,14 @@ struct LicensesView: View {
     }()
 
     var body: some View {
-        NavigationStack {
-            ScrollView {
-                Text(verbatim: text)
-                    .font(.footnote.monospaced())
-                    .textSelection(.enabled)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding()
-            }
-            .navigationTitle("オープンソースライセンス")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("閉じる", systemImage: "xmark", role: .close) { dismiss() }
-                }
-            }
+        ScrollView {
+            Text(verbatim: text)
+                .font(.footnote.monospaced())
+                .textSelection(.enabled)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding()
         }
+        .navigationTitle("オープンソースライセンス")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
