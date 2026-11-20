@@ -22,6 +22,7 @@ struct ModeControls: View {
     let onSelect: (Mode) -> Void
 
     @AppStorage(SettingsKey.playOnTouchDown) private var playOnTouchDown = false
+    @State private var showsAbout = false
 
     var body: some View {
         HStack(spacing: 12) {
@@ -47,18 +48,22 @@ struct ModeControls: View {
                 .buttonStyle(.glass)
                 .tint(.red)
 
-            // The app's only setting, so a menu rather than a settings screen.
+            // The app's only setting, so a menu rather than a settings screen. The About sheet
+            // (version, feedback, legal) hangs off the same menu.
             Menu {
                 Toggle(isOn: $playOnTouchDown) {
                     Text("触れた瞬間に鳴らす")
                     Text("オフのときは指を離すと鳴り、ずらすと取り消せます")
                 }
+                Divider()
+                Button("チェケラについて", systemImage: "info.circle") { showsAbout = true }
             } label: {
                 Image(systemName: "gearshape")
             }
             .accessibilityLabel("設定")
             .accessibilityIdentifier("settingsMenu")
             .buttonStyle(.glass)
+            .sheet(isPresented: $showsAbout) { AboutView() }
         }
         .frame(height: 44)
     }
