@@ -22,6 +22,7 @@ struct ModeControls: View {
     let onSelect: (Mode) -> Void
 
     @AppStorage(SettingsKey.playOnTouchDown) private var playOnTouchDown = false
+    @State private var showsLicenses = false
 
     var body: some View {
         HStack(spacing: 12) {
@@ -53,12 +54,15 @@ struct ModeControls: View {
                     Text("触れた瞬間に鳴らす")
                     Text("オフのときは指を離すと鳴り、ずらすと取り消せます")
                 }
+                Divider()
+                Button("ライセンス", systemImage: "doc.text") { showsLicenses = true }
             } label: {
                 Image(systemName: "gearshape")
             }
             .accessibilityLabel("設定")
             .accessibilityIdentifier("settingsMenu")
             .buttonStyle(.glass)
+            .sheet(isPresented: $showsLicenses) { LicensesView() }
         }
         .frame(height: 44)
     }
