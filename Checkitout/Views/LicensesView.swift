@@ -26,7 +26,7 @@ struct LicensesView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding()
             }
-            .navigationTitle("ライセンス")
+            .navigationTitle("オープンソースライセンス")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {

@@ -55,7 +55,7 @@ struct ModeControls: View {
                     Text("オフのときは指を離すと鳴り、ずらすと取り消せます")
                 }
                 Divider()
-                Button("ライセンス", systemImage: "doc.text") { showsLicenses = true }
+                Button("オープンソースライセンス", systemImage: "doc.text") { showsLicenses = true }
             } label: {
                 Image(systemName: "gearshape")
             }
