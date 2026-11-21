@@ -21,12 +21,24 @@ struct AboutView: View {
                 Section("フィードバック") {
                     AboutLinkRow(title: "アプリを評価", systemImage: "star", destination: AppLinks.writeReview)
                     AboutLinkRow(title: "機能要望・不具合報告", systemImage: "envelope", destination: AppLinks.support)
-                    ShareLink(item: AppLinks.appStore) {
+                    ShareLink(
+                        item: AppLinks.appStore,
+                        subject: Text(verbatim: "チェケラ"),
+                        message: Text("ぼくらを鳴らしてみない？ 好きな音をボタンにして鳴らせるサウンドボード「チェケラ」だよ。")
+                    ) {
                         Label("アプリを共有", systemImage: "square.and.arrow.up")
                     }
                 }
 
                 Section {
+                    // お知らせを出した版がまだ無いあいだは、行も出さない
+                    if !WhatsNew.releases.isEmpty {
+                        NavigationLink {
+                            WhatsNewHistoryView()
+                        } label: {
+                            Label("新機能", systemImage: "sparkles")
+                        }
+                    }
                     AboutLinkRow(title: "開発者について", systemImage: "person", destination: AppLinks.developer)
                 }
 
@@ -52,13 +64,19 @@ struct AboutView: View {
 
 private struct AboutHeader: View {
     var body: some View {
-        VStack(spacing: 6) {
+        VStack(spacing: 8) {
+            Image("AboutIcon")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 64, height: 64)
+                .clipShape(.rect(cornerRadius: 14, style: .continuous))
+                .accessibilityHidden(true)
             Text(verbatim: "チェケラ")
                 .font(.brand(24))
             Text("バージョン \(AppLinks.version)")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
-            Text("日本で個人が開発しています。")
+            Text("日本で開発しています。")
                 .font(.footnote)
                 .padding(.top, 4)
         }
