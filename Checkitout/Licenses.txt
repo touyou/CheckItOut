@@ -1,14 +1,7 @@
-このアプリは次のオープンソースソフトウェアとフォントを使っています。
-
 Realm Swift / Realm Core
-Copyright Realm Inc.
 Apache License 2.0
 
-コーポレート・ロゴ B (Corporate Logo Bold)
-[M+] Copyright (c) 2014 M+ FONTS PROJECT. [KANA] Copyright (c) 2015 Logotype JP.
-配布元 LOGOTYPE.JP の利用規約に従って同梱（M+ FONTS の部分は M+ FONT LICENSE）
-
-----------------------------------------------------------------------
+Copyright Realm Inc.
 
                                  Apache License
                            Version 2.0, January 2004
@@ -186,3 +179,18 @@ Apache License 2.0
       of your accepting any such warranty or additional liability.
 
    END OF TERMS AND CONDITIONS
+=====
+コーポレート・ロゴ B (Corporate Logo Bold)
+LOGOTYPE.JP の利用規約 / M+ FONT LICENSE
+
+[M+] Copyright (c) 2014 M+ FONTS PROJECT.
+[KANA] Copyright (c) 2015 Logotype JP.
+
+配布元 LOGOTYPE.JP の利用規約に従って同梱しています。M+ FONTS の部分は M+ FONT LICENSE に従います。
+
+M+ FONT LICENSE
+
+These fonts are free software.
+Unlimited permission is granted to use, copy, and distribute them, with
+or without modification, either commercially or noncommercially.
+THESE FONTS ARE PROVIDED "AS IS" WITHOUT WARRANTY.

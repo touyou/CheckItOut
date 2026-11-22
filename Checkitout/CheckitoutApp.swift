@@ -32,6 +32,7 @@ struct CheckitoutApp: App {
         if ScreenshotFixture.isActive {
             ScreenshotFixture.seed(into: container.mainContext)
         }
+        WhatsNew.prepareOnLaunch()
         ReviewPrompt.recordLaunch()
         #if DEBUG
         if Self.isTapBench {
@@ -63,6 +64,7 @@ struct CheckitoutApp: App {
         WindowGroup {
             ContentView()
                 .environment(library)
+                .whatsNewOnUpdate()
         }
         .modelContainer(container)
     }
