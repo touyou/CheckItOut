@@ -161,7 +161,6 @@ struct WhatsNewHistoryView: View {
             } label: {
                 WhatsNewHistoryRow(release: release)
             }
-            .foregroundStyle(.primary)
         }
         .navigationTitle("新機能")
         #if os(iOS)
@@ -192,12 +191,8 @@ private struct WhatsNewHistoryRow: View {
                 .foregroundStyle(.secondary)
                 .lineLimit(2)
             }
-            Spacer()
-            Image(systemName: "chevron.right")
-                .font(.footnote.weight(.semibold))
-                .foregroundStyle(.tertiary)
-                .accessibilityHidden(true)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
         .contentShape(.rect)
     }
 }
