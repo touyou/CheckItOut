@@ -45,17 +45,15 @@ final class TipJar {
         case unverified
     }
 
-    private static let countKey = "tipJarCount"
     private static let handledKey = "tipJarHandledTransactionIDs"
 
     private(set) var products: [Tier: Product] = [:]
     private(set) var phase: Phase = .idle
-    private(set) var tipCount: Int
     private var handledIDs: Set<String>
+    var tipCount: Int { handledIDs.count }
     private var observer: Task<Void, Never>?
 
     private init() {
-        tipCount = UserDefaults.standard.integer(forKey: Self.countKey)
         handledIDs = Set(UserDefaults.standard.stringArray(forKey: Self.handledKey) ?? [])
     }
 
@@ -111,9 +109,9 @@ final class TipJar {
         case .verified(let verified):
             transaction = verified
         case .unverified(let unverified, _):
+            if isPurchasing { phase = .unverified }
             guard Self.isTip(unverified) else { return }
             // Not counted, but finished so it stops being redelivered on every launch.
-            if isPurchasing { phase = .unverified }
             await unverified.finish()
             return
         }
@@ -121,8 +119,6 @@ final class TipJar {
         // `updates` and `unfinished` both deliver the same transaction at launch, and a quit
         // between counting and finish() redelivers it, so each id is counted once.
         if transaction.revocationDate == nil, handledIDs.insert(String(transaction.id)).inserted {
-            tipCount += 1
-            UserDefaults.standard.set(tipCount, forKey: Self.countKey)
             UserDefaults.standard.set(Array(handledIDs), forKey: Self.handledKey)
             phase = .thanked
         } else if isPurchasing {
