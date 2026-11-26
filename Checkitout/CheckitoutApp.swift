@@ -34,6 +34,7 @@ struct CheckitoutApp: App {
         }
         WhatsNew.prepareOnLaunch()
         ReviewPrompt.recordLaunch()
+        TipJar.shared.startObservingTransactions()
         #if DEBUG
         if Self.isTapBench {
             TapLatencyProbe.seed(into: container.mainContext)
