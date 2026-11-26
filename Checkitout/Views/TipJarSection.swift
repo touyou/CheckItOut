@@ -55,7 +55,7 @@ private struct TipRow: View {
                 }
             }
         }
-        .disabled(jar.phase == .purchasing(tier))
+        .disabled(jar.isPurchasing)
     }
 }
 
@@ -69,6 +69,8 @@ private struct TipJarFooter: View {
             Text("ありがとう！ ぼくら、もっといい音で鳴れるようにがんばるね。")
         case .failed:
             Text("購入が完了しませんでした。料金はかかっていません。")
+        case .unverified:
+            Text("App Store で購入を確認できませんでした。")
         case .idle, .purchasing:
             if tipCount > 0 {
                 Text("これまでに \(tipCount) 回応援してもらいました。ありがとう！")
