@@ -131,6 +131,22 @@
         }
       }
     },
+    "App Store で購入を確認できませんでした。" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "We couldn't verify the purchase with the App Store."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App Store で購入を確認できませんでした。"
+          }
+        }
+      }
+    },
     "PAD %lld" : {
       "extractionState" : "manual",
       "shouldTranslate" : false
@@ -149,6 +165,98 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "「%@」の音声ファイルが見つかりません。"
+          }
+        }
+      }
+    },
+    "ありがとう！ ぼくら、もっといい音で鳴れるようにがんばるね。" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thank you! We'll do our best to sound even better."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ありがとう！ ぼくら、もっといい音で鳴れるようにがんばるね。"
+          }
+        }
+      }
+    },
+    "お昼ごはん" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunch"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "お昼ごはん"
+          }
+        }
+      }
+    },
+    "これまでに %lld 回応援してもらいました。ありがとう！" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "You've cheered us on once. Thank you!"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "You've cheered us on %lld times. Thank you!"
+                }
+              }
+            }
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "これまでに %lld 回応援してもらいました。ありがとう！"
+          }
+        }
+      }
+    },
+    "ケーキも添えて" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coffee and Cake"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ケーキも添えて"
+          }
+        }
+      }
+    },
+    "コーヒー一杯" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A Coffee"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "コーヒー一杯"
           }
         }
       }
@@ -441,6 +549,22 @@
         }
       }
     },
+    "機能は増えないけれど、チェケラを続けていく励みになります。" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A tip unlocks nothing extra, but it helps keep this app going."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "機能は増えないけれど、チェケラを続けていく励みになります。"
+          }
+        }
+      }
+    },
     "確認せずにサウンドを削除します。" : {
       "comment" : "App Intents copy (resolved from the app's main bundle; not auto-extracted).",
       "extractionState" : "manual",
@@ -455,6 +579,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "確認せずにサウンドを削除します。"
+          }
+        }
+      }
+    },
+    "購入が完了しませんでした。料金はかかっていません。" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The purchase didn't go through. You haven't been charged."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "購入が完了しませんでした。料金はかかっていません。"
           }
         }
       }
@@ -509,6 +649,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "録音を始める"
+          }
+        }
+      }
+    },
+    "開発を応援する" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Support the Developer"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開発を応援する"
           }
         }
       }
