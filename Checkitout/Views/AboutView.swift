@@ -30,6 +30,8 @@ struct AboutView: View {
                     }
                 }
 
+                TipJarSection()
+
                 Section {
                     // お知らせを出した版がまだ無いあいだは、行も出さない
                     if !WhatsNew.releases.isEmpty {
